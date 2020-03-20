@@ -53,12 +53,13 @@ app.post('/notifications', FBAuth, markNotificationsRead);
 
 exports.api = functions.https.onRequest(app);
 
+// Create notification on Likes
 exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
     .onCreate((snapshot) => {
-        // Check for which one! HERE
-        db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
+        // TODO Check for which one! HERE
+        return db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
             .then(doc => {
-                if (doc.exists) {
+                if (doc.exists && doc.data().userId !== snapshot.data().userId) {
                     return db.doc(`/notifications/${snapshot.id}`).set({
                         createdAt: new Date().toISOString(),
                         recipientName: doc.data().userName,
@@ -71,34 +72,27 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
                     })
                 }
             })
-            .then(() => {
-                return;
-            })
             .catch(err => {
                 console.error(err);
-                return;
             })
-    });
+});
 
+// Delete notifications on Unlikes
 exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
     .onDelete((snapshot) => {
-        db.doc(`/notifications/${snapshot.id}`)
+        return db.doc(`/notifications/${snapshot.id}`)
             .delete()
-            .then(() => {
-                return;
-            })
             .catch(err => {
                 console.error(err);
-                return;
             })
-    })
+})
 
+// Create notifications on Comments
 exports.createNotificationOnComment = functions.firestore.document('comments/{id}')
     .onCreate((snapshot) => {
-        // Check for which one! HERE
-        db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
+        return db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
             .then(doc => {
-                if (doc.exists) {
+                if (doc.exists && doc.data().userId !== snapshot.data().userId) {
                     return db.doc(`/notifications/${snapshot.id}`).set({
                         createdAt: new Date().toISOString(),
                         recipientName: doc.data().userName,
@@ -111,11 +105,107 @@ exports.createNotificationOnComment = functions.firestore.document('comments/{id
                     })
                 }
             })
-            .then(() => {
-                return;
-            })
             .catch(err => {
                 console.error(err);
-                return;
             })
     });
+
+// Changes all Names of user if user updates name
+exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}')
+    .onUpdate((change) => {
+        // console.log(change.before.data());
+        // console.log(change.after.data());
+        const batch = db.batch();
+        if (change.before.data().imageUrl !== change.after.data().imageUrl || change.before.data().userName !== change.after.data().userName) {
+            return db.collection('tierLists').where('userId', '==', change.before.data().userId).get()
+                .then(data => {
+                    data.forEach(doc => {
+                        const tierList = db.doc(`/tierLists/${doc.id}`);
+                        batch.update(tierList, { userName: change.after.data().userName });
+                        batch.update(tierList, { userImage: change.after.data().imageUrl });
+                    });
+                    return db.collection('comments').where('userId', '==', change.before.data().userId).get();
+                })
+                .then(data => {
+                    data.forEach(doc => {
+                        const comment = db.doc(`/comments/${doc.id}`);
+                        batch.update(comment, { userName: change.after.data().userName });
+                        batch.update(comment, { userImage: change.after.data().imageUrl });
+                    });
+                    return db.collection('replies').where('userId', '==', change.before.data().userId).get();
+                })
+                .then(data => {
+                    data.forEach(doc => {
+                        const reply = db.doc(`/replies/${doc.id}`);
+                        batch.update(reply, { userName: change.after.data().userName });
+                        batch.update(reply, { userImage: change.after.data().imageUrl });
+                    });
+                    return db.collection('likes').where('userId', '==', change.before.data().userId).get();
+                })
+                .then(data => {
+                    data.forEach(doc => {
+                        const like = db.doc(`/likes/${doc.id}`);
+                        batch.update(like, { userName: change.after.data().userName });
+                    });
+                    return db.collection('notifications').where('recipientId', '==', change.before.data().userId).get();
+                })
+                .then(data => {
+                    data.forEach(doc => {
+                        const notification = db.doc(`/notifications/${doc.id}`);
+                        batch.update(notification, { recipientName: change.after.data().userName });
+                    });
+                    return db.collection('notifications').where('senderId', '==', change.before.data().userId).get();
+                })
+                .then(data => {
+                    data.forEach(doc => {
+                        const notification = db.doc(`/notifications/${doc.id}`);
+                        batch.update(notification, { senderName: change.after.data().userName });
+                    });
+                    return batch.commit();
+                })
+                .catch(err => console.error(err));
+        } else {
+            return true;
+        }
+})
+
+exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}')
+    .onDelete((snapshot, context) => {
+        const tierListId = context.params.tierListId;
+        const batch = db.batch();
+        let commentIds = [];
+        //let replyIds = [];
+        return db.collection('comments').where('tierListId', '==', tierListId).get()
+            .then(data => {
+                data.forEach(doc => {
+                    db.collection('replies').where('commentId', '==', doc.id).get()
+                        .then(data => {
+                            data.forEach(doc => {
+                                batch.delete(db.doc(`/likes/${doc.id}`));   // Delete the associated like
+                                batch.delete(db.doc(`/replies/${doc.id}`));
+                            });
+                        })
+                    batch.delete(db.doc(`/likes/${doc.id}`));   // Delete the associated like
+                    batch.delete(db.doc(`/comments/${doc.id}`));
+                })
+                return db.collection('notifications').get();
+            }) 
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().itemId === tierListId || commentIds.includes(doc.data().itemId))
+                        batch.delete(db.doc(`/notifications/${doc.id}`));
+                })
+                return db.collection('likes').where('tierListId', '==', tierListId).get();
+            })
+            .then(data => {
+                data.forEach(doc => batch.delete(db.doc(`/likes/${doc.id}`)));
+                return batch.commit();
+            })
+            .catch(err => console.error(err));
+    })
+
+// TODO Create notifications for liking comments and replies
+// TODO Create notification for reply
+// TODO Make Manager access everything
+// TODO Add tierItems
+// TODO Add the rest of the db event methods (delete comments, delete replies???, change tierList name, change tierItem name / image, )

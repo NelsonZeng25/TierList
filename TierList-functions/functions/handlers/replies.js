@@ -72,7 +72,7 @@ exports.likeReply = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.collection('likes').add({
+        return db.doc(`/likes/${replyData.replyId}`).set({
           replyId: req.params.replyId,
           userName: req.user.userName,
           userId: req.user.uid,

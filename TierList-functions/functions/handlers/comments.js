@@ -126,7 +126,7 @@ exports.likeComment = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.collection('likes').add({
+        return db.doc(`/likes/${commentData.commentId}`).set({
           commentId: req.params.commentId,
           userName: req.user.userName,
           userId: req.user.uid,

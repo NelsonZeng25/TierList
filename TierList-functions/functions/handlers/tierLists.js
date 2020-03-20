@@ -71,7 +71,7 @@ exports.getTierList = (req, res) => {
 
 // Comment on 1 Tier List
 exports.commentOnTierList = (req, res) => {
-  if (req.body.body.trim() === '') return res.status(400).json({ error: 'Must not be empty'});
+  if (req.body.body.trim() === '') return res.status(400).json({ comment: 'Must not be empty'});
 
   const newComment = {
     body: req.body.body,
@@ -125,7 +125,7 @@ exports.likeTierList = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.collection('likes').add({
+        return db.doc(`/likes/${tierListData.tierListId}`).set({
           tierListId: req.params.tierListId,
           userName: req.user.userName,
           userId: req.user.uid,
