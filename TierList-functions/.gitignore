@@ -8,7 +8,7 @@ firebase-debug.log*
 
 .DS_Store
 admin.json
-/functions/util/config.js
+config.js
 
 # Firebase cache
 .firebase/
