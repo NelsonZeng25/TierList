@@ -15,6 +15,15 @@ module.exports = (req, res, next) => {
         .then(decodedToken => {
             req.user = decodedToken;
             console.log(decodedToken);
+            return db.collection('managers')
+                .where('userId', '==', req.user.uid)
+                .limit(1)
+                .get()
+        })
+        .then(data => {
+            if (typeof data.docs[0] !== "undefined") req.user.isManager = true;
+            else req.user.isManager = false;
+
             return db.collection('users')
                 .where('userId', '==', req.user.uid)
                 .limit(1)
