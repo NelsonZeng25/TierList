@@ -123,7 +123,7 @@ exports.deleteReply = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Reply not found'})
       }
-      if (doc.data().userId !== req.user.uid) {
+      if (!req.user.isManager && doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
         commentDocument = db.doc(`comments/${doc.data().commentId}`);

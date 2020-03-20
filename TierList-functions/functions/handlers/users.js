@@ -122,6 +122,22 @@ exports.login = (req, res) => {
     });
 };
 
+exports.getAllUsers = (req, res) => {
+  db.collection("users")
+    .orderBy("userName", "asc")
+    .get()
+    .then(data => {
+      let users = [];
+      data.forEach(doc => {
+          users.push({
+            ...doc.data()
+        });
+      });
+      return res.json(users);
+    })
+    .catch(err => console.error(err));
+}
+
 // Add User Details
 exports.addUserDetails = (req, res) => {
   let userDetails = reduceUserDetails(req.body);
@@ -280,3 +296,26 @@ exports.markNotificationsRead = (req, res) => {
       return res.status(500).json({ error: err.code });
     })
 }
+
+// Delete a user
+exports.deleteUser = (req, res) => {
+  const document = db.doc(`/users/${req.params.userId}`);
+  document.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      if (!req.user.isManager) {
+        return res.status(403).json({ error: "Unauthorized" });
+      } else {
+        return document.delete();
+      }
+    })
+    .then(() => {
+      res.json({ message: "User deleted successfully" });
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
+};

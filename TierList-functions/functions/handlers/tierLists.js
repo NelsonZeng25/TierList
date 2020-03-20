@@ -107,7 +107,9 @@ exports.commentOnTierList = (req, res) => {
 
 // Like a Tier List
 exports.likeTierList = (req, res) => {
+  console.log(req.user.isOwner);
   console.log(req.user.isManager);
+
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
     .where('tierListId', '==', req.params.tierListId).limit(1);
 
@@ -195,7 +197,7 @@ exports.deleteTierList = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Tier List not found'})
       }
-      if (doc.data().userId !== req.user.uid) {
+      if (!req.user.isManager && doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
         return document.delete();

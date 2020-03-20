@@ -172,7 +172,7 @@ exports.deleteComment = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Comment not found'})
       }
-      if (doc.data().userId !== req.user.uid) {
+      if (!req.user.isManager && doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
         tierListDocument = db.doc(`/tierLists/${doc.data().tierListId}`);

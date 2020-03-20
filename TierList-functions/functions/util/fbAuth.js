@@ -21,8 +21,14 @@ module.exports = (req, res, next) => {
                 .get()
         })
         .then(data => {
-            if (typeof data.docs[0] !== "undefined") req.user.isManager = true;
-            else req.user.isManager = false;
+            req.user.isOwner = false;
+            if (typeof data.docs[0] !== "undefined") {
+                if (data.docs[0].data().email === 'nelson.zeng25@gmail.com')    // Check if it's the Owner!
+                    req.user.isOwner = true;
+                req.user.isManager = true;
+            } else { 
+                req.user.isManager = false;
+            }
 
             return db.collection('users')
                 .where('userId', '==', req.user.uid)

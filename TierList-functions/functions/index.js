@@ -13,12 +13,12 @@ const { getAllCategories, postOneCategory, getCategory, deleteCategory } = requi
 const { getAllComments, getComment, 
     replyOnComment, deleteComment, likeComment, unlikeComment } = require('./handlers/comments');
 const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
-const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead } = require('./handlers/users');
+const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead, deleteUser, getAllUsers } = require('./handlers/users');
 const { getAllManagers, postOneManager, deleteManager } = require('./handlers/managers');
 
 // tierLists routes
 app.get("/tierLists", getAllTierLists);
-app.post("/createTierList", FBAuth, postOneTierList);
+app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
@@ -60,11 +60,13 @@ app.post("/user", FBAuth, addUserDetails);
 app.get("/user", FBAuth, getAuthenticatedUser);
 app.get('/user/:userId', getUserDetails);
 app.post('/notifications', FBAuth, markNotificationsRead);
+app.delete('/users/:userId', FBAuth, deleteUser);
+app.get('/users', getAllUsers);
 
 // managers route
-// app.get('/managers', getAllManagers);
-// app.post('/managers/createManager', FBAuth, postOneManager);
-// app.delete('/managers/:managerId', FBAuth, deleteManager);
+app.get('/managers', getAllManagers);
+app.post('/managers/createManager', FBAuth, postOneManager);
+app.delete('/managers/:managerId', FBAuth, deleteManager);
 
 exports.api = functions.https.onRequest(app);
 
@@ -189,6 +191,12 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                         batch.update(reply, { userName: change.after.data().userName });
                         batch.update(reply, { userImage: change.after.data().imageUrl });
                     });
+                    return db.collection('managers').where('userId', '==', change.before.data().userId).limit(1).get();
+                })
+                .then(data => {
+                    const manager = db.doc(`/managers/${data.docs[0].data().userId}`);
+                    batch.update(manager, { userName: change.after.data().userName });
+                    batch.update(manager, { userImage: change.after.data().imageUrl });
                     return db.collection('likes').where('userId', '==', change.before.data().userId).get();
                 })
                 .then(data => {
@@ -212,6 +220,7 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                     });
                     return batch.commit();
                 })
+                
                 .catch(err => console.error(err));
         } else {
             return true;
