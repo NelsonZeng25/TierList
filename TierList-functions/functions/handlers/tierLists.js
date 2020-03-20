@@ -107,9 +107,6 @@ exports.commentOnTierList = (req, res) => {
 
 // Like a Tier List
 exports.likeTierList = (req, res) => {
-  console.log(req.user.isOwner);
-  console.log(req.user.isManager);
-
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
     .where('tierListId', '==', req.params.tierListId).limit(1);
 
