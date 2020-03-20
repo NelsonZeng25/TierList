@@ -8,9 +8,9 @@ const FBAuth = require('./util/fbAuth');
 
 const { getAllTierLists, postOneTierList, getTierList, 
     commentOnTierList, likeTierList, unlikeTierList, deleteTierList } = require('./handlers/tierLists');
-const { getAllComments, postOneComment, getComment, 
+const { getAllComments, getComment, 
     replyOnComment, deleteComment, likeComment, unlikeComment } = require('./handlers/comments');
-const { getAllReplies, postOneReply, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
+const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
 const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead } = require('./handlers/users');
 
 // tierLists routes
@@ -24,7 +24,6 @@ app.post('/tierlists/:tierListId/comment', FBAuth, commentOnTierList);
 
 // comments route
 app.get("/comments", getAllComments);
-app.post("/createComment", FBAuth, postOneComment);
 app.get("/comments/:commentId", getComment);
 app.delete("/comments/:commentId", FBAuth, deleteComment);
 app.get('/comments/:commentId/like', FBAuth, likeComment);
@@ -33,7 +32,6 @@ app.post('/comments/:commentId/reply', FBAuth, replyOnComment);
 
 // replies route
 app.get("/replies", getAllReplies);
-app.post("/createReply", FBAuth, postOneReply);
 app.get("/replies/:replyId", getReply);
 app.delete("/replies/:replyId", FBAuth, deleteReply);
 app.get('/replies/:replyId/like', FBAuth, likeReply);
@@ -200,40 +198,96 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
         }
 })
 
+// Deletes all related components when Tier List gets deleted
 exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}')
     .onDelete((snapshot, context) => {
         const tierListId = context.params.tierListId;
         const batch = db.batch();
         let commentIds = [];
+        let replyIds = [];
         return db.collection('comments').where('tierListId', '==', tierListId).get()
             .then(data => {
                 data.forEach(doc => {
+                    if (doc.data().likeCount > 0 || doc.data().replyCount > 0) commentIds.push(doc.id);
                     db.collection('replies').where('commentId', '==', doc.id).get()
                         .then(data => {
                             data.forEach(doc => {
-                                batch.delete(db.doc(`/likes/${doc.id}`));   // Delete the associated like
+                                if (doc.data().likeCount > 0) replyIds.push(doc.id);
                                 batch.delete(db.doc(`/replies/${doc.id}`));
                             });
                         })
-                    batch.delete(db.doc(`/likes/${doc.id}`));   // Delete the associated like
                     batch.delete(db.doc(`/comments/${doc.id}`));
                 })
                 return db.collection('notifications').get();
             }) 
             .then(data => {
                 data.forEach(doc => {
-                    if (doc.data().itemId === tierListId || commentIds.includes(doc.data().itemId))
+                    if (doc.data().itemId === tierListId || (doc.data().type === 'reply' && commentIds.includes(doc.data().itemId)))
                         batch.delete(db.doc(`/notifications/${doc.id}`));
                 })
-                return db.collection('likes').where('tierListId', '==', tierListId).get();
+                return db.collection('likes').get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    if ((doc.data().hasOwnProperty('tierListId') && doc.data().tierListId === tierListId) ||
+                        (doc.data().hasOwnProperty('commentId') && commentIds.includes(doc.data().commentId)) ||
+                        (doc.data().hasOwnProperty('replyId') && replyIds.includes(doc.data().replyId)))
+                        batch.delete(db.doc(`/likes/${doc.id}`))
+                });
+                return batch.commit();
+            })
+            .catch(err => console.error(err));
+})
+
+// Deletes all replies and likes when Comment gets deleted
+exports.onCommentDelete = functions.firestore.document('/comments/{commentId}')
+    .onDelete((snapshot, context) => {
+        const commentId = context.params.commentId;
+        const batch = db.batch();
+        let replyIds = [];
+        return db.collection('replies').where('commentId', '==', commentId).get()
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().likeCount > 0) replyIds.push(doc.id);
+                    batch.delete(db.doc(`/replies/${doc.id}`));
+                })
+                return db.collection('notifications').where('itemId', '==', commentId).get();
+            }) 
+            .then(data => {
+                data.forEach(doc => batch.delete(db.doc(`/notifications/${doc.id}`)));
+                return db.collection('likes').get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    if ((doc.data().hasOwnProperty('commentId') && doc.data().commentId === commentId) ||
+                        (doc.data().hasOwnProperty('replyId') && replyIds.includes(doc.data().replyId)))
+                        batch.delete(db.doc(`/likes/${doc.id}`))
+                });
+                return batch.commit();
+            })
+            .catch(err => console.error(err));
+})
+
+// Deletes all likes when Reply gets deleted
+exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
+    .onDelete((snapshot, context) => {
+        const replyId = context.params.replyId;
+        const batch = db.batch();
+        return db.collection('notifications').get()
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.id === replyId)
+                        batch.delete(db.doc(`/notifications/${doc.id}`));
+                });
+                return db.collection('likes').where('replyId', '==', replyId).get();
             })
             .then(data => {
                 data.forEach(doc => batch.delete(db.doc(`/likes/${doc.id}`)));
                 return batch.commit();
             })
             .catch(err => console.error(err));
-    })
+})
 
 // TODO Make Manager access everything
 // TODO Add tierItems
-// TODO Add the rest of the db event methods (delete comments, delete replies???, change tierList name, change tierItem name / image, )
+// TODO Add the rest of the db event methods (change tierItem name / image, )

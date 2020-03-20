@@ -20,25 +20,6 @@ exports.getAllReplies = (req, res) => {
       });
 }
 
-exports.postOneReply = (req, res) => {
-    const newReply = {
-      body: req.body.body,
-      userName: req.user.userName,
-      userId: req.user.uid,
-      createdAt: new Date().toISOString()
-    };
-  
-    db.collection("replies")
-      .add(newReply)
-      .then(doc => {
-        res.json({ message: `document ${doc.id} created succesfully` });
-      })
-      .catch(err => {
-        console.error(err);
-        return res.status(500).json({ error: "Something went wrong" });
-      });
-}
-
 // Get 1 Reply
 exports.getReply = (req, res) => {
     db.doc(`replies/${req.params.replyId}`).get()
@@ -72,7 +53,7 @@ exports.likeReply = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.doc(`/likes/${replyData.replyId}`).set({
+        return db.collection('likes').add({
           replyId: req.params.replyId,
           userName: req.user.userName,
           userId: req.user.uid,

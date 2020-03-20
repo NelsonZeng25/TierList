@@ -20,30 +20,6 @@ exports.getAllComments = (req, res) => {
       });
 }
 
-exports.postOneComment = (req, res) => {
-    const newComment = {
-      body: req.body.body,
-      userName: req.user.userName,
-      userId: req.user.uid,
-      userImage: req.user.imageUrl,
-      createdAt: new Date().toISOString(),
-      likeCount: 0,
-      replyCount: 0,
-    };
-  
-    db.collection("comments")
-      .add(newComment)
-      .then(doc => {
-        const resComment = newComment;
-        resComment.commentId = doc.id;
-        res.json(resComment);
-      })
-      .catch(err => {
-        console.error(err);
-        return res.status(500).json({ error: "Something went wrong" });
-      });
-}
-
 // Get 1 Comment
 exports.getComment = (req, res) => {
   let commentData = {};
@@ -126,7 +102,7 @@ exports.likeComment = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.doc(`/likes/${commentData.commentId}`).set({
+        return db.collection('likes').add({
           commentId: req.params.commentId,
           userName: req.user.userName,
           userId: req.user.uid,

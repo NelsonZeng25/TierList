@@ -125,7 +125,7 @@ exports.likeTierList = (req, res) => {
     })
     .then(data => {
       if (data.empty) {
-        return db.doc(`/likes/${tierListData.tierListId}`).set({
+        return db.collection('likes').add({
           tierListId: req.params.tierListId,
           userName: req.user.userName,
           userId: req.user.uid,
