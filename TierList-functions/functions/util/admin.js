@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 // admin.initializeApp(functions.config().firebase);
 
 admin.initializeApp({
-    credential: admin.credential.cert(require('/Users/nelsonzeng/Documents/Project/TierList/admin.json')),
+    credential: admin.credential.cert(require('../../../../../Project/TierList/admin.json')),
     databaseURL: "https://tierlist-57d59.firebaseio.com",
     storageBucket: "tierlist-57d59.appspot.com"
 });

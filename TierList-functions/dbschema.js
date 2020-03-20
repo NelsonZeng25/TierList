@@ -51,8 +51,10 @@ let db = {
     ],
     notifications: [
         {
-            recipient: 'user',
-            sender: 'john',
+            recipientName: 'user',
+            recipientId: 'adfafasfsasf',
+            senderName: 'john',
+            senderId: 'dasddasd',
             read: 'true | false',
             itemId: 'dankdnsla',
             type: 'like | comment | reply',
