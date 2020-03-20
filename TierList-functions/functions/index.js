@@ -9,7 +9,7 @@ const FBAuth = require('./util/fbAuth');
 const { getAllTierLists, postOneTierList, getTierList, 
     commentOnTierList, likeTierList, unlikeTierList, deleteTierList } = require('./handlers/tierLists');
 const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem } = require('./handlers/tierItems');
-const { getAllCategories, postOneCategory, getCategory, deleteCategory } = require('./handlers/tierItems');
+const { getAllCategories, postOneCategory, getCategory, deleteCategory } = require('./handlers/categories');
 const { getAllComments, getComment, 
     replyOnComment, deleteComment, likeComment, unlikeComment } = require('./handlers/comments');
 const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
@@ -31,11 +31,11 @@ app.post('/tierlists/:tierListId/comment', FBAuth, commentOnTierList);
 // app.get("/tierItems/:tierItemId", FBAuth, getTierItem);
 // app.delete("/tierItems/:tierItemId", FBAuth, deleteTierItem);
 
-// // categories routes
-// app.get("/categories", getAllCategories);
-// app.post("/createCategory", FBAuth, postOneCategory);
-// app.get("/categories/:categoryId", FBAuth, getCategory);
-// app.delete("/categories/:categoryId", FBAuth, deleteCategory);
+// categories routes
+app.get("/categories", getAllCategories);
+app.post("/categories/createCategory", FBAuth, postOneCategory);
+app.get("/categories/:categoryId", getCategory);
+app.delete("/categories/:categoryId", FBAuth, deleteCategory);
 
 // comments route
 app.get("/comments", getAllComments);
@@ -317,6 +317,5 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
             .catch(err => console.error(err));
 })
 
-// TODO Make Manager access everything
 // TODO Add tierItems
 // TODO Add the rest of the db event methods (change tierItem name / image, delete category -> delete all tierLists???)
