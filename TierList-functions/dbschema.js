@@ -14,6 +14,10 @@ let db = {
     tierLists: [
         {
             name: 'user',
+            userName: '',
+            userId: '',
+            userImage: '',
+            category: '',
             likeCount: 3,
             commentCount: 3,
             SRank : [

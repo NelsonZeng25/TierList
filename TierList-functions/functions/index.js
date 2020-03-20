@@ -11,7 +11,7 @@ const { getAllTierLists, postOneTierList, getTierList,
 const { getAllComments, postOneComment, getComment, 
     replyOnComment, deleteComment, likeComment, unlikeComment } = require('./handlers/comments');
 const { getAllReplies, postOneReply, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
-const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser } = require('./handlers/users');
+const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead } = require('./handlers/users');
 
 // tierLists routes
 app.get("/tierLists", getAllTierLists);
@@ -45,6 +45,8 @@ app.post("/login", login);
 app.post("/user/image", FBAuth, uploadImage);
 app.post("/user", FBAuth, addUserDetails);
 app.get("/user", FBAuth, getAuthenticatedUser);
+app.get('/user/:userId', getUserDetails);
+app.post('/notifications', FBAuth, markNotificationsRead);
 
 
 // https://baseurl.com/api/
@@ -57,7 +59,7 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
         db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
             .then(doc => {
                 if (doc.exists) {
-                    return db.doc(`/notification/${snapshot.id}`).set({
+                    return db.doc(`/notifications/${snapshot.id}`).set({
                         createdAt: new Date().toISOString(),
                         recipientName: doc.data().userName,
                         recipientId: doc.data().userId,
@@ -97,7 +99,7 @@ exports.createNotificationOnComment = functions.firestore.document('comments/{id
         db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
             .then(doc => {
                 if (doc.exists) {
-                    return db.doc(`/notification/${snapshot.id}`).set({
+                    return db.doc(`/notifications/${snapshot.id}`).set({
                         createdAt: new Date().toISOString(),
                         recipientName: doc.data().userName,
                         recipientId: doc.data().userId,

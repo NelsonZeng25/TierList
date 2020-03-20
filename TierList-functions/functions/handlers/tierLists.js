@@ -2,7 +2,7 @@ const { db } = require('../util/admin');
 
 exports.getAllTierLists = (req, res) => {
     db.collection("tierLists")
-      .orderBy("userName", "asc")
+      .orderBy("name", "asc")
       .get()
       .then(data => {
         let tierLists = [];
@@ -19,10 +19,12 @@ exports.getAllTierLists = (req, res) => {
 
 exports.postOneTierList = (req, res) => {
     const newTierList = {
+      name: req.body.name,
       body: req.body.body,
       userName: req.user.userName,
       userId: req.user.uid,
       userImage: req.user.imageUrl,
+      category: req.body.category,
       likeCount: 0,
       commentCount: 0,
     };

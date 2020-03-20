@@ -138,6 +138,42 @@ exports.addUserDetails = (req, res) => {
     })
 }
 
+// Get any user's details
+exports.getUserDetails = (req, res) => {
+  let userData = {};
+
+  db.doc(`users/${req.params.userId}`).get()
+    .then(doc => {
+      if (doc.exists) {
+        userData.user = doc.data();
+        return db.collection('tierLists').where('userId', '==', req.params.userId)
+          .orderBy('name', 'asc')
+          .get();
+      } else {
+        return res.status(404).json({ error: 'User not found' });
+      }
+    })
+    .then(data => {
+      userData.tierLists = [];
+      data.forEach(doc => {
+        userData.tierLists.push({
+          tierListId: doc.id,
+          name: doc.data().name,
+          userName: doc.data().userName,
+          userImage: doc.data().userImage,
+          category: doc.data().category,
+          likeCount: doc.data().likeCount,
+          commentCount: doc.data().commentCount,
+        })
+      });
+      return res.json(userData);
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}
+
 // Get own user details
 exports.getAuthenticatedUser = (req, res) => {
   let userData = {};
@@ -152,6 +188,24 @@ exports.getAuthenticatedUser = (req, res) => {
       userData.likes = []
       data.forEach(doc => {
         userData.likes.push(doc.data());
+      });
+      return db.collection('notifications').where('recipientId', '==', req.user.uid)
+        .orderBy('createdAt', 'desc').limit(10).get();
+    })
+    .then((data) => {
+      userData.notifications = [];
+      data.forEach(doc => {
+        userData.notifications.push({
+          recipientName: doc.data().recipientName,
+          recipientId: doc.data().recipientId,
+          senderName: doc.data().senderName,
+          senderId: doc.data().senderId,
+          read: doc.data().read,
+          itemId: doc.data().itemId,
+          type: doc.data().type,
+          createdAt: doc.data().createdAt,
+          notificationId: doc.id,
+        })
       });
       return res.json(userData);
     })
@@ -211,3 +265,20 @@ exports.uploadImage = (req,res) => {
 
     busboy.end(req.rawBody);
 };
+
+// Mark notification read
+exports.markNotificationsRead = (req, res) => {
+  let batch = db.batch();
+  req.body.forEach(notificationId => {
+    const notification = db.doc(`/notifications/${notificationId}`);
+    batch.update(notification, { read: true });
+  });
+  batch.commit()
+    .then(() => {
+      return res.json({ message: 'Notifications marked read'});
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}
