@@ -68,14 +68,12 @@ exports.deleteTierItem = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Tier Item not found'})
       }
-      if (!req.user.isManager) {
+      else if (!req.user.isManager) {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
-        return document.delete();
+        document.delete();
+        return res.json({ message: 'Tier Item deleted successfully'});
       }
-    })
-    .then(() => {
-      res.json({ message: 'Tier Item deleted successfully'});
     })
     .catch(err => {
       console.error(err);
@@ -104,7 +102,7 @@ exports.updateTierItem = (req, res) => {
       }
     })
     .then(() => {
-      res.json({ message: 'Tier Item updated successfully'});
+      return res.json({ message: 'Tier Item updated successfully'});
     })
     .catch(err => {
       console.error(err);

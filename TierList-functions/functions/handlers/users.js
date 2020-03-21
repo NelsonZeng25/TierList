@@ -308,11 +308,9 @@ exports.deleteUser = (req, res) => {
       if (!req.user.isManager) {
         return res.status(403).json({ error: "Unauthorized" });
       } else {
-        return document.delete();
+        document.delete();
+        return res.json({ message: "User deleted successfully" });
       }
-    })
-    .then(() => {
-      res.json({ message: "User deleted successfully" });
     })
     .catch(err => {
       console.error(err);

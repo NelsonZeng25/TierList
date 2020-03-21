@@ -328,5 +328,4 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
 })
 
 // TODO Add tierItems
-// TODO Add the rest of the db event methods (change tierItem name / image)
-// 
+// TODO Add the rest of the db event methods (change tierItem name / image, delete tierItem, delete User)

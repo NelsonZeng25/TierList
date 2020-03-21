@@ -194,14 +194,12 @@ exports.deleteTierList = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Tier List not found'})
       }
-      if (!req.user.isManager && doc.data().userId !== req.user.uid) {
+      else if (!req.user.isManager && doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
-        return document.delete();
+        document.delete();
+        return res.json({ message: 'Tier List deleted successfully'});
       }
-    })
-    .then(() => {
-      res.json({ message: 'Tier List deleted successfully'});
     })
     .catch(err => {
       console.error(err);
@@ -238,10 +236,10 @@ exports.addTierItemToTierList = (req, res) => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Tier List not found'})
       }
-      else if (doc.data().userId !== req.user.uid) {
+      if (doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: 'Unauthorized'});
       } 
-      else if (category !== doc.data().category) {
+      if (category !== doc.data().category) {
         return res.status(400).json({ error: "Categories aren't matching" });
       } else {
         tierItemData = doc.data().tierItems;

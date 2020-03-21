@@ -127,17 +127,13 @@ exports.deleteReply = (req, res) => {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
         commentDocument = db.doc(`comments/${doc.data().commentId}`);
-        return commentDocument.get();
+        commentDocument.get()
+          .then((doc) => {
+            commentDocument.update({ replyCount: doc.data().replyCount - 1 });
+            document.delete();
+            return res.json({ message: 'Reply deleted successfully'});
+          })
       }
-    })
-    .then((doc) => {
-      return commentDocument.update({ replyCount: doc.data().replyCount - 1 });
-    })
-    .then(() => {
-      return document.delete();
-    })
-    .then(() => {
-      res.json({ message: 'Reply deleted successfully'});
     })
     .catch(err => {
       console.error(err);

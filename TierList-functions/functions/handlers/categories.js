@@ -69,11 +69,9 @@ exports.deleteCategory = (req, res) => {
       if (!req.user.isManager) {
         return res.status(403).json({ error: "Unauthorized" });
       } else {
-        return document.delete();
+        document.delete();
+        return res.json({ message: "Category deleted successfully" });
       }
-    })
-    .then(() => {
-      res.json({ message: "Category deleted successfully" });
     })
     .catch(err => {
       console.error(err);

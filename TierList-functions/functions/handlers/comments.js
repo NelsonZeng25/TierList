@@ -176,17 +176,13 @@ exports.deleteComment = (req, res) => {
         return res.status(403).json({ error: 'Unauthorized'});
       } else {
         tierListDocument = db.doc(`/tierLists/${doc.data().tierListId}`);
-        return tierListDocument.get();
+        tierListDocument.get()
+          .then((doc) => {
+            tierListDocument.update({ commentCount: doc.data().commentCount - 1 });
+            document.delete();
+            return res.json({ message: 'Comment deleted successfully'});
+          })
       }
-    })
-    .then((doc) => {
-      return tierListDocument.update({ commentCount: doc.data().commentCount - 1 });
-    })
-    .then(() => {
-      return document.delete();
-    })
-    .then(() => {
-      res.json({ message: 'Comment deleted successfully'});
     })
     .catch(err => {
       console.error(err);
