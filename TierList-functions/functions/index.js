@@ -449,3 +449,5 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
 })
 
 // TODO When user updates profile pic, delete old pic from storage
+// TODO update user info
+// TODO Check if all indexes are made
