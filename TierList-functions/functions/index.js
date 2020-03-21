@@ -2,7 +2,8 @@ const functions = require("firebase-functions");
 const firebase = require('firebase');
 const express = require("express");
 const app = express();
-const { db } = require('./util/admin');
+const config = require('./util/config');
+const { admin, db } = require('./util/admin');
 const FBAuth = require('./util/fbAuth');
 
 const { getAllTierLists, postOneTierList, getTierList, 
@@ -172,11 +173,13 @@ exports.createNotificationOnReply = functions.firestore.document('replies/{id}')
             })
 });
 
+const defaultImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/userImages%2Fno-img.png?alt=media';
+// Delete all tierLists, notifications, likes and managers associated with deleted User
+// For comments, replies and tierItems, we simply replace userId/userName with [Deleted] and replace userImage with default image
 exports.onUserDelete = functions.firestore.document('/users/{userId}')
     .onDelete((snapshot, context) => {
         const userId = context.params.userId;
         const batch = db.batch();
-        let defaultImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/no-img.png?alt=media';
         let commentId, comment, reply;
         let tierListIds = [];
         let commentIds = [];
@@ -230,6 +233,9 @@ exports.onUserDelete = functions.firestore.document('/users/{userId}')
             })
             .then(data => {
                 data.forEach(doc => batch.delete(db.doc(`/managers/${doc.data().userId}`)));
+                return db.collection('tierItems').where('userId', '==', userId).get();
+            }).then(data => {
+                data.forEach(doc => batch.update(db.doc(`/tierItems/${doc.id}`), { userId: '[Deleted]' }));
                 return batch.commit();
             })
             .catch(err => console.error(err));
@@ -294,9 +300,15 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                         const notification = db.doc(`/notifications/${doc.id}`);
                         batch.update(notification, { senderName: change.after.data().userName });
                     });
+                    if (change.before.data().imageUrl !== defaultImg) {
+                        const bucket = admin.storage().bucket(config.storageBucket);
+                        const fileName = change.before.data().imageUrl.split('%2F')[1].split('?')[0];
+                        return bucket.file(`userImages/${fileName}`).delete();
+                    }
+                })
+                .then(() => {
                     return batch.commit();
                 })
-                
                 .catch(err => console.error(err));
         } else {
             return true;

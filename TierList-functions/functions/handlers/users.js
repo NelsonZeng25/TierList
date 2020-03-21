@@ -7,6 +7,8 @@ firebase.initializeApp(config);
 
 const { validateSignupData, validateLoginData, reduceUserDetails } = require("../util/validators");
 
+const noImg = "no-img.png";
+
 // Sign up user
 exports.signup = (req, res) => {
   const newUser = {
@@ -19,8 +21,6 @@ exports.signup = (req, res) => {
   const { valid, errors } = validateSignupData(newUser);
 
   if (!valid) return res.status(400).json(errors);
-
-  const noImg = "no-img.png";
 
   let token, userId;
 
@@ -74,7 +74,7 @@ exports.signup = (req, res) => {
         userName: newUser.userName,
         email: newUser.email,
         createdAt: new Date().toISOString(),
-        imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`,
+        imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/userImages%2F${noImg}?alt=media`,
         userId
       };
       return db.doc(`/users/${userId}`).set(userCredentials);
@@ -246,17 +246,20 @@ exports.uploadImage = (req,res) => {
         return res.status(400).json({ error: 'Wrong file type submitted'});
       }
       const imageExtension = filename.split(".")[filename.split(".").length - 1];
-      imageFileName = `${Math.round(Math.random() * 100000000000)}.${imageExtension}`;
+      const imgName = new Date().getTime();
+      imageFileName = `${req.user.uid}_${imgName}.${imageExtension}`;
       const filepath = path.join(os.tmpdir(), imageFileName);
       imageToBeUploaded = { filepath, mimetype };
       file.pipe(fs.createWriteStream(filepath));
     });
-
+    
     busboy.on("finish", () => {
+      const destinationData = `userImages/${imageFileName}`;
       admin
         .storage()
-        .bucket()
+        .bucket(config.storageBucket)
         .upload(imageToBeUploaded.filepath, {
+          destination: destinationData,
           resumable: false,
           metadata: {
             metadata: {
@@ -265,7 +268,7 @@ exports.uploadImage = (req,res) => {
           }
         })
         .then(() => {
-          const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+          const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/userImages%2F${imageFileName}?alt=media`;
           return db.doc(`/users/${req.user.uid}`).update({ imageUrl });
         })
         .then(() => {

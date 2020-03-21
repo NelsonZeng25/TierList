@@ -1,5 +1,9 @@
 const { db } = require('../util/admin');
 
+const config = require("../util/config");
+
+const noImg = 'no-img.jpg';
+
 exports.getAllTierItems = (req, res) => {
     db.collection("tierItems")
       .orderBy("name", "asc")
@@ -24,6 +28,9 @@ exports.postOneTierItem = (req, res) => {
     category: req.body.category.toUpperCase(),
     userId: req.user.uid,
   };
+  if (req.body.imageUrl === 'undefined'|| req.body.imageUrl.trim() === '') {
+    updateTierItem.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages2%F${noImg}?alt=media`;
+  }
   return db.collection('categories').where('name', '==', updateTierItem.category).limit(1).get()
     .then(data => {
       if (data.empty) {
