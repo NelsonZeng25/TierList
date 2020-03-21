@@ -87,7 +87,6 @@ exports.updateTierItem = (req, res) => {
   const updateTierItem = {
     name: req.body.name,
     imageUrl: req.body.imageUrl,
-    category: req.body.category.toUpperCase(),
     userId: req.user.uid,
   }
   document.get()

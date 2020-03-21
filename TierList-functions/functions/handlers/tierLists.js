@@ -220,6 +220,7 @@ exports.addTierItemToTierList = (req, res) => {
     tier: req.body.tier,
   }
   let tierItemData, category;
+  let temp = {};
 
   tierItemdocument.get()
     .then(doc => {
@@ -227,8 +228,8 @@ exports.addTierItemToTierList = (req, res) => {
         return res.status(404).json({ error: 'Tier Item not found'})
       } else {
         category = doc.data().category;
-        updateTierItem.name = doc.data().name;
-        updateTierItem.imageUrl = doc.data().imageUrl;
+        updateTierItem['name'] = doc.data().name;
+        updateTierItem['imageUrl'] = doc.data().imageUrl;
         return tierListdocument.get()
       }
     })
@@ -243,7 +244,8 @@ exports.addTierItemToTierList = (req, res) => {
         return res.status(400).json({ error: "Categories aren't matching" });
       } else {
         tierItemData = doc.data().tierItems;
-        tierItemData[req.params.tierItemId] = updateTierItem;
+        temp[req.params.tierItemId] = updateTierItem;
+        Object.assign(tierItemData, temp);
         tierListdocument.update({ tierItems: tierItemData });
         return res.json({ message: 'Tier Item has been added in Tier List successfully'});
       }

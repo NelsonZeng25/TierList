@@ -1,4 +1,5 @@
 const functions = require("firebase-functions");
+const firebase = require('firebase');
 const express = require("express");
 const app = express();
 const { db } = require('./util/admin');
@@ -234,7 +235,7 @@ exports.onUserDelete = functions.firestore.document('/users/{userId}')
             .catch(err => console.error(err));
     })
 
-// Changes all Names of user if user updates name
+// Changes all Names and Images of user if user updates name/image
 exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}')
     .onUpdate((change) => {
         // console.log(change.before.data());
@@ -301,6 +302,61 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
             return true;
         }
 })
+
+// Changes all names and image of a Tier Item when user/manager updates it
+exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{tierItemId}')
+    .onUpdate((change, context) => {
+        const tierItemId = context.params.tierItemId;
+        let tierList, tierItemData;
+        let temp = {};
+        let updateTierItem = {};
+        const batch = db.batch();
+        if (change.before.data().imageUrl !== change.after.data().imageUrl || change.before.data().name !== change.after.data().name) {
+            return db.collection('tierLists').get()
+                .then(data => {
+                    data.forEach(doc => {
+                        if (doc.data().tierItems.hasOwnProperty(tierItemId)) {
+                            updateTierItem = doc.data().tierItems[tierItemId];
+                            updateTierItem['name'] = change.after.data().name;
+                            updateTierItem['imageUrl'] = change.after.data().imageUrl;
+
+                            tierItemData = doc.data().tierItems;
+                            temp[tierItemId] = updateTierItem;
+                            Object.assign(tierItemData, temp);
+
+                            tierList = db.doc(`/tierLists/${doc.id}`);
+                            batch.update(tierList, { tierItems: tierItemData });
+                        }
+                    });
+                    return batch.commit();
+                })
+                .catch(err => console.error(err));
+        } else {
+            return true;
+        }
+    })
+
+// Delete all related Tier Items in different TierLists when it gets deleted
+exports.onTierItemDelete = functions.firestore.document("/tierItems/{tierItemId}")
+    .onDelete((snapshot, context) => {
+        const tierItemId = context.params.tierItemId;
+        let tierList, tierItemData;
+        const batch = db.batch();
+        return db.collection("tierLists").get()
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().tierItems.hasOwnProperty(tierItemId)) {
+                        tierItemData = doc.data().tierItems;
+                        delete tierItemData[tierItemId];
+
+                        tierList = db.doc(`/tierLists/${doc.id}`);
+                        batch.update(tierList, { tierItems: tierItemData });
+                    }
+                });
+                return batch.commit();
+            })
+            .catch(err => console.error(err));
+  });
 
 // Deletes all related components when Tier List gets deleted
 exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}')
@@ -393,4 +449,3 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
 })
 
 // TODO When user updates profile pic, delete old pic from storage
-// TODO Add the rest of the db event methods (change tierItem name / image, delete tierItem)
