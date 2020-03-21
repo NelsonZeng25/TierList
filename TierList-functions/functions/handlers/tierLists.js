@@ -245,10 +245,8 @@ exports.addTierItemToTierList = (req, res) => {
         tierItemData = doc.data().tierItems;
         tierItemData[req.params.tierItemId] = updateTierItem;
         tierListdocument.update({ tierItems: tierItemData });
+        return res.json({ message: 'Tier Item has been added in Tier List successfully'});
       }
-    })
-    .then(() => {
-      res.json({ message: 'Tier Item has been added in Tier List successfully'});
     })
     .catch(err => {
       console.error(err);

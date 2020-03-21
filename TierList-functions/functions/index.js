@@ -26,10 +26,10 @@ app.get("/tierLists", getAllTierLists);
 app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
-app.post('/tierLists/:tierListId/:tierItemId', FBAuth, addTierItemToTierList);
+app.put('/tierLists/:tierListId/:tierItemId', FBAuth, addTierItemToTierList);
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
 app.get('/tierLists/:tierListId/unlike', FBAuth, unlikeTierList);
-app.post('/tierlists/:tierListId/comment', FBAuth, commentOnTierList);
+app.post('/tierLists/:tierListId/comment', FBAuth, commentOnTierList);
 
 // tierItem routes
 app.get("/tierItems", getAllTierItems);
@@ -171,6 +171,69 @@ exports.createNotificationOnReply = functions.firestore.document('replies/{id}')
             })
 });
 
+exports.onUserDelete = functions.firestore.document('/users/{userId}')
+    .onDelete((snapshot, context) => {
+        const userId = context.params.userId;
+        const batch = db.batch();
+        let defaultImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/no-img.png?alt=media';
+        let commentId, comment, reply;
+        let tierListIds = [];
+        let commentIds = [];
+        let replyIds = [];
+        return db.collection('tierLists').where('userId', '==', userId).get()
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().likeCount > 0 || doc.data().commentCount > 0)
+                        tierListIds.push(doc.id);
+                    batch.delete(db.doc(`/tierLists/${doc.id}`))
+                });
+                return db.collection('comments').where('userId', '==', userId).get()
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    commentId = doc.id;
+                    if (doc.data().likeCount > 0 || doc.data().replyCount > 0) commentIds.push(commentId);
+                    db.collection('replies').get()
+                        .then(data => {
+                            data.forEach(doc => {
+                                if (doc.data().userId === userId)
+                                    if (doc.data().likeCount > 0) 
+                                        replyIds.push(doc.id);
+                                    reply = db.doc(`/replies/${doc.id}`);
+                                    batch.update(reply, { userId: '[Deleted]' });
+                                    batch.update(reply, { userName: '[Deleted]' });
+                                    batch.update(reply, { userImage: defaultImg });
+                            });
+                        })
+                    comment = db.doc(`/comments/${doc.id}`);
+                    batch.update(comment, { userId: '[Deleted]' });
+                    batch.update(comment, { userName: '[Deleted]' });
+                    batch.update(comment, { userImage: defaultImg });
+                })
+                return db.collection('notifications').get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().recipientId === userId || doc.data().senderId === userId ||tierListIds.includes(doc.data().itemId) || 
+                        commentIds.includes(doc.data().itemId) || replyIds.includes(doc.data().itemId))
+                        batch.delete(db.doc(`/notifications/${doc.id}`));
+                })
+                return db.collection('likes').get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    if (doc.data().userId === userId || (doc.data().hasOwnProperty('tierListId') && tierListIds.includes(doc.data().tierListId)))
+                        batch.delete(db.doc(`/likes/${doc.id}`));
+                });
+                return db.collection('managers').where('userId', '==', userId).get();
+            })
+            .then(data => {
+                data.forEach(doc => batch.delete(db.doc(`/managers/${doc.data().userId}`)));
+                return batch.commit();
+            })
+            .catch(err => console.error(err));
+    })
+
 // Changes all Names of user if user updates name
 exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}')
     .onUpdate((change) => {
@@ -201,12 +264,14 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                         batch.update(reply, { userName: change.after.data().userName });
                         batch.update(reply, { userImage: change.after.data().imageUrl });
                     });
-                    return db.collection('managers').where('userId', '==', change.before.data().userId).limit(1).get();
+                    return db.collection('managers').where('userId', '==', change.before.data().userId).get();
                 })
                 .then(data => {
-                    const manager = db.doc(`/managers/${data.docs[0].data().userId}`);
-                    batch.update(manager, { userName: change.after.data().userName });
-                    batch.update(manager, { userImage: change.after.data().imageUrl });
+                    data.forEach(doc => {
+                        const manager = db.doc(`/managers/${data.docs[0].data().userId}`);
+                        batch.update(manager, { userName: change.after.data().userName });
+                        batch.update(manager, { userImage: change.after.data().imageUrl });
+                    })
                     return db.collection('likes').where('userId', '==', change.before.data().userId).get();
                 })
                 .then(data => {
@@ -261,7 +326,7 @@ exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}
             }) 
             .then(data => {
                 data.forEach(doc => {
-                    if (doc.data().itemId === tierListId || (doc.data().type === 'reply' && commentIds.includes(doc.data().itemId)))
+                    if (doc.data().itemId === tierListId || commentIds.includes(doc.data().itemId) || replyIds.includes(doc.data().itemId))
                         batch.delete(db.doc(`/notifications/${doc.id}`));
                 })
                 return db.collection('likes').get();
@@ -327,5 +392,5 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
             .catch(err => console.error(err));
 })
 
-// TODO Add tierItems
-// TODO Add the rest of the db event methods (change tierItem name / image, delete tierItem, delete User)
+// TODO When user updates profile pic, delete old pic from storage
+// TODO Add the rest of the db event methods (change tierItem name / image, delete tierItem)

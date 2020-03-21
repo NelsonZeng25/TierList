@@ -308,8 +308,17 @@ exports.deleteUser = (req, res) => {
       if (!req.user.isManager) {
         return res.status(403).json({ error: "Unauthorized" });
       } else {
-        document.delete();
-        return res.json({ message: "User deleted successfully" });
+        document.delete()
+          .then(() => {
+            admin.auth().deleteUser(req.params.userId);
+          })
+          .then(() => {
+            return res.json({ message: "User deleted successfully" });
+          })
+          .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+          });
       }
     })
     .catch(err => {
