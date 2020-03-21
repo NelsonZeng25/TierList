@@ -20,11 +20,11 @@ exports.getAllTierLists = (req, res) => {
 exports.postOneTierList = (req, res) => {
     const newTierList = {
       name: req.body.name,
-      body: req.body.body,
+      tierItems: {},
       userName: req.user.userName,
       userId: req.user.uid,
       userImage: req.user.imageUrl,
-      category: req.body.category,
+      category: req.body.category.toUpperCase(),
       likeCount: 0,
       commentCount: 0,
     };
@@ -202,6 +202,55 @@ exports.deleteTierList = (req, res) => {
     })
     .then(() => {
       res.json({ message: 'Tier List deleted successfully'});
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}
+
+// Add a edited Tier Item to a Tier List
+exports.addTierItemToTierList = (req, res) => {
+  const tierListdocument = db.doc(`/tierLists/${req.params.tierListId}`);
+  const tierItemdocument = db.doc(`/tierItems/${req.params.tierItemId}`);
+
+  const updateTierItem = {
+    score: req.body.score,
+    pros: req.body.pros,
+    cons: req.body.cons,
+    thoughts: req.body.thoughts,
+    tier: req.body.tier,
+  }
+  let tierItemData, category;
+
+  tierItemdocument.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Tier Item not found'})
+      } else {
+        category = doc.data().category;
+        updateTierItem.name = doc.data().name;
+        updateTierItem.imageUrl = doc.data().imageUrl;
+        return tierListdocument.get()
+      }
+    })
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Tier List not found'})
+      }
+      else if (doc.data().userId !== req.user.uid) {
+        return res.status(403).json({ error: 'Unauthorized'});
+      } 
+      else if (category !== doc.data().category) {
+        return res.status(400).json({ error: "Categories aren't matching" });
+      } else {
+        tierItemData = doc.data().tierItems;
+        tierItemData[req.params.tierItemId] = updateTierItem;
+        tierListdocument.update({ tierItems: tierItemData });
+      }
+    })
+    .then(() => {
+      res.json({ message: 'Tier Item has been added in Tier List successfully'});
     })
     .catch(err => {
       console.error(err);

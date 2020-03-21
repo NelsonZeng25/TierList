@@ -1,19 +1,24 @@
 const functions = require("firebase-functions");
 const express = require("express");
 const app = express();
-
 const { db } = require('./util/admin');
-
 const FBAuth = require('./util/fbAuth');
 
 const { getAllTierLists, postOneTierList, getTierList, 
-    commentOnTierList, likeTierList, unlikeTierList, deleteTierList } = require('./handlers/tierLists');
-const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem } = require('./handlers/tierItems');
-const { getAllCategories, postOneCategory, getCategory, deleteCategory } = require('./handlers/categories');
-const { getAllComments, getComment, 
-    replyOnComment, deleteComment, likeComment, unlikeComment } = require('./handlers/comments');
-const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply } = require('./handlers/replies');
-const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead, deleteUser, getAllUsers } = require('./handlers/users');
+    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, updateTierList, addTierItemToTierList } = require('./handlers/tierLists');
+
+const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem } = require('./handlers/tierItems');
+
+const { getAllCategories, postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
+
+const { getAllComments, getComment, replyOnComment, deleteComment, likeComment, 
+    unlikeComment, updateComment } = require('./handlers/comments');
+
+const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply, updateReply } = require('./handlers/replies');
+
+const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, 
+    markNotificationsRead, deleteUser, getAllUsers } = require('./handlers/users');
+
 const { getAllManagers, postOneManager, deleteManager } = require('./handlers/managers');
 
 // tierLists routes
@@ -21,26 +26,31 @@ app.get("/tierLists", getAllTierLists);
 app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
+app.put('/tierLists/:tierListId', FBAuth, updateTierList);
+app.post('/tierLists/:tierListId/:tierItemId', FBAuth, addTierItemToTierList);
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
 app.get('/tierLists/:tierListId/unlike', FBAuth, unlikeTierList);
 app.post('/tierlists/:tierListId/comment', FBAuth, commentOnTierList);
 
-// // tierItem routes
-// app.get("/tierItems", getAllTierItems);
-// app.post("/createTierItem", FBAuth, postOneTierItem);
-// app.get("/tierItems/:tierItemId", FBAuth, getTierItem);
-// app.delete("/tierItems/:tierItemId", FBAuth, deleteTierItem);
+// tierItem routes
+app.get("/tierItems", getAllTierItems);
+app.post("/tierItems/createTierItem", FBAuth, postOneTierItem);
+app.get("/tierItems/:tierItemId", FBAuth, getTierItem);
+app.delete("/tierItems/:tierItemId", FBAuth, deleteTierItem);
+app.put('/tierItems/:tierItemId', FBAuth, updateTierItem);
 
 // categories routes
 app.get("/categories", getAllCategories);
 app.post("/categories/createCategory", FBAuth, postOneCategory);
 app.get("/categories/:categoryId", getCategory);
 app.delete("/categories/:categoryId", FBAuth, deleteCategory);
+app.put('/categories/:categoryId', FBAuth, updateCategory);
 
 // comments route
 app.get("/comments", getAllComments);
 app.get("/comments/:commentId", getComment);
 app.delete("/comments/:commentId", FBAuth, deleteComment);
+app.put('/comments/:commentId', FBAuth, updateComment);
 app.get('/comments/:commentId/like', FBAuth, likeComment);
 app.get('/comments/:commentId/unlike', FBAuth, unlikeComment);
 app.post('/comments/:commentId/reply', FBAuth, replyOnComment);
@@ -49,6 +59,7 @@ app.post('/comments/:commentId/reply', FBAuth, replyOnComment);
 app.get("/replies", getAllReplies);
 app.get("/replies/:replyId", getReply);
 app.delete("/replies/:replyId", FBAuth, deleteReply);
+app.put('/replies/:replyId', FBAuth, updateReply);
 app.get('/replies/:replyId/like', FBAuth, likeReply);
 app.get('/replies/:replyId/unlike', FBAuth, unlikeReply);
 
@@ -318,4 +329,5 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
 })
 
 // TODO Add tierItems
-// TODO Add the rest of the db event methods (change tierItem name / image, delete category -> delete all tierLists???)
+// TODO Add the rest of the db event methods (change tierItem name / image)
+// 

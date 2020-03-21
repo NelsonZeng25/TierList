@@ -36,20 +36,28 @@ exports.getCategory = (req, res) => {
   }
 
 exports.postOneCategory = (req, res) => {
-  const newCategory = {
-    name: req.body.name
+  const updateCategory = {
+    name: req.body.name.toUpperCase()
   };
-  db.collection("categories")
-    .add(newCategory)
-    .then(doc => {
-      newCategory.categoryId = doc.id;
-      return res.json(newCategory);
+  db.collection('categories').where('name', '==', updateCategory.name).limit(1).get()
+    .then(data => {
+      if (updateCategory.name.trim() === '') {
+        return res.status(400).json({ error: 'Cannot have empty category'});
+      } else if (data.empty) {
+        return db.collection('categories').add(updateCategory)
+          .then(doc => {
+            updateCategory.categoryId = doc.id;
+            return res.json(updateCategory)
+          })
+      } else {
+        return res.status(400).json({ error: 'Category already added '});
+      }
     })
     .catch(err => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}
 
 exports.deleteCategory = (req, res) => {
   const document = db.doc(`/categories/${req.params.categoryId}`);
@@ -73,3 +81,28 @@ exports.deleteCategory = (req, res) => {
     });
 };
 
+// Update Category
+exports.updateCategory = (req, res) => {
+  const document = db.doc(`/categories/${req.params.categoryId}`);
+  const updateCategory = {
+    name: req.body.name.toUpperCase(),
+  }
+  document.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Category not found'})
+      }
+      if (!req.user.isManager) {
+        return res.status(403).json({ error: 'Unauthorized'});
+      } else {
+        return document.update(updateCategory);
+      }
+    })
+    .then(() => {
+      res.json({ message: 'Category updated successfully'});
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}

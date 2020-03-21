@@ -193,3 +193,29 @@ exports.deleteComment = (req, res) => {
       return res.status(500).json({ error: err.code });
     })
 }
+
+// Update Comment
+exports.updateComment = (req, res) => {
+  const document = db.doc(`/comments/${req.params.commentId}`);
+  const updateComment = {
+    body: req.body.body,
+  }
+  document.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Comment not found'})
+      }
+      if (doc.data().userId !== req.user.uid) {
+        return res.status(403).json({ error: 'Unauthorized'});
+      } else {
+        return document.update(updateComment);
+      }
+    })
+    .then(() => {
+      res.json({ message: 'Comment updated successfully'});
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}

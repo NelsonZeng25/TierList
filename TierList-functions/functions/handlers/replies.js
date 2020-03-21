@@ -144,3 +144,29 @@ exports.deleteReply = (req, res) => {
       return res.status(500).json({ error: err.code });
     })
 }
+
+// Update Reply
+exports.updateReply = (req, res) => {
+  const document = db.doc(`/replies/${req.params.replyId}`);
+  const updateReply = {
+    body: req.body.body,
+  }
+  document.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Reply not found'})
+      }
+      if (doc.data().userId !== req.user.uid) {
+        return res.status(403).json({ error: 'Unauthorized'});
+      } else {
+        return document.update(updateReply);
+      }
+    })
+    .then(() => {
+      res.json({ message: 'Reply updated successfully'});
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}
