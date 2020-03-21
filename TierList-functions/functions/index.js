@@ -5,7 +5,7 @@ const { db } = require('./util/admin');
 const FBAuth = require('./util/fbAuth');
 
 const { getAllTierLists, postOneTierList, getTierList, 
-    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, updateTierList, addTierItemToTierList } = require('./handlers/tierLists');
+    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList } = require('./handlers/tierLists');
 
 const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem } = require('./handlers/tierItems');
 
@@ -26,7 +26,6 @@ app.get("/tierLists", getAllTierLists);
 app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
-app.put('/tierLists/:tierListId', FBAuth, updateTierList);
 app.post('/tierLists/:tierListId/:tierItemId', FBAuth, addTierItemToTierList);
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
 app.get('/tierLists/:tierListId/unlike', FBAuth, unlikeTierList);
