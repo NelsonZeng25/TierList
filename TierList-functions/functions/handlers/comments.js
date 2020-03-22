@@ -37,7 +37,10 @@ exports.getComment = (req, res) => {
     .then(data => {
       commentData.replies = [];
       data.forEach(doc => {
-        commentData.replies.push(doc.data());
+        commentData.replies.push({
+          replyId: doc.id,
+          ...doc.data()
+        });
       });
       return res.json(commentData);
     })

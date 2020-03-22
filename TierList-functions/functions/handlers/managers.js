@@ -22,7 +22,7 @@ exports.postOneManager = (req, res) => {
         const newManager = {
             userId: req.body.userId,
             userName: req.body.userName,
-            userImage: req.body.userImage,
+            imageUrl: req.body.imageUrl,
             email: req.body.email,
         }
         db.doc(`/managers/${newManager.userId}`).set({

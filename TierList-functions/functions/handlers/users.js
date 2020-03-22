@@ -24,43 +24,6 @@ exports.signup = (req, res) => {
 
   let token, userId;
 
-  // This part basically checks the collection of users to see if a userName has already been taken
-  // However, in our app, we don't care about unique userNames
-
-  // db.doc(`/users/${newUser.userName}`).get()
-  //     .then(doc => {
-  //         if (doc.exists) {
-  //             return res.status(400).json({ userName: 'This handle is already taken'});
-  //         } else {
-  //             return firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password);
-  //         }
-  //     })
-  //     .then(data => {
-  //         userId = data.user.uid;
-  //         return data.user.getIdToken();
-  //     })
-  //     .then(token => {
-  //         token = token;
-  //         const userCredentials = {
-  //             userName: newUser.userName,
-  //             email: newUser.email,
-  //             createdAt: new Date().toISOString(),
-  //             userId
-  //         };
-  //         return db.doc(`/users/${newUser.userName}`).set(userCredentials);
-  //     })
-  //     .then(() => {
-  //         return res.status(201).json({ token });
-  //     })
-  //     .catch(err => {
-  //         console.log(err);
-  //         if (err.code === "auth/email-already-in-use") {
-  //             return res.status(400).json({ email: "email is already in use"})
-  //         } else {
-  //             return res.status(500).json({ error: err.code });
-  //         }
-  //     })
-
   firebase
     .auth()
     .createUserWithEmailAndPassword(newUser.email, newUser.password)
@@ -153,7 +116,7 @@ exports.addUserDetails = (req, res) => {
 }
 
 // Get any user's details
-exports.getUserDetails = (req, res) => {
+exports.getUser = (req, res) => {
   let userData = {};
 
   db.doc(`users/${req.params.userId}`).get()
@@ -172,12 +135,7 @@ exports.getUserDetails = (req, res) => {
       data.forEach(doc => {
         userData.tierLists.push({
           tierListId: doc.id,
-          name: doc.data().name,
-          userName: doc.data().userName,
-          userImage: doc.data().userImage,
-          category: doc.data().category,
-          likeCount: doc.data().likeCount,
-          commentCount: doc.data().commentCount,
+          ...doc.data()
         })
       });
       return res.json(userData);
@@ -210,15 +168,8 @@ exports.getAuthenticatedUser = (req, res) => {
       userData.notifications = [];
       data.forEach(doc => {
         userData.notifications.push({
-          recipientName: doc.data().recipientName,
-          recipientId: doc.data().recipientId,
-          senderName: doc.data().senderName,
-          senderId: doc.data().senderId,
-          read: doc.data().read,
-          itemId: doc.data().itemId,
-          type: doc.data().type,
-          createdAt: doc.data().createdAt,
           notificationId: doc.id,
+          ...doc.data()
         })
       });
       return res.json(userData);

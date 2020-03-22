@@ -18,7 +18,7 @@ const { getAllComments, getComment, replyOnComment, deleteComment, likeComment,
 
 const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply, updateReply } = require('./handlers/replies');
 
-const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, 
+const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUser, 
     markNotificationsRead, deleteUser, getAllUsers } = require('./handlers/users');
 
 const { getAllManagers, postOneManager, deleteManager } = require('./handlers/managers');
@@ -66,15 +66,15 @@ app.get('/replies/:replyId/like', FBAuth, likeReply);
 app.get('/replies/:replyId/unlike', FBAuth, unlikeReply);
 
 // users route
+app.get('/users', getAllUsers);
 app.post("/signup", signup);
 app.post("/login", login);
 app.post("/user/image", FBAuth, uploadImage);
 app.post("/user", FBAuth, addUserDetails);
 app.get("/user", FBAuth, getAuthenticatedUser);
-app.get('/user/:userId', getUserDetails);
+app.get('/users/:userId', getUser);
 app.post('/notifications', FBAuth, markNotificationsRead);
 app.delete('/users/:userId', FBAuth, deleteUser);
-app.get('/users', getAllUsers);
 
 // managers route
 app.get('/managers', getAllManagers);
@@ -245,8 +245,6 @@ exports.onUserDelete = functions.firestore.document('/users/{userId}')
 // Changes all Names and Images of user if user updates name/image
 exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}')
     .onUpdate((change) => {
-        // console.log(change.before.data());
-        // console.log(change.after.data());
         const batch = db.batch();
         if (change.before.data().imageUrl !== change.after.data().imageUrl || change.before.data().userName !== change.after.data().userName) {
             return db.collection('tierLists').where('userId', '==', change.before.data().userId).get()
@@ -278,7 +276,7 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                     data.forEach(doc => {
                         const manager = db.doc(`/managers/${data.docs[0].data().userId}`);
                         batch.update(manager, { userName: change.after.data().userName });
-                        batch.update(manager, { userImage: change.after.data().imageUrl });
+                        batch.update(manager, { imageUrl: change.after.data().imageUrl });
                     })
                     return db.collection('likes').where('userId', '==', change.before.data().userId).get();
                 })
@@ -432,10 +430,13 @@ exports.onCommentDelete = functions.firestore.document('/comments/{commentId}')
                     if (doc.data().likeCount > 0) replyIds.push(doc.id);
                     batch.delete(db.doc(`/replies/${doc.id}`));
                 })
-                return db.collection('notifications').where('itemId', '==', commentId).get();
+                return db.collection('notifications').get();
             }) 
             .then(data => {
-                data.forEach(doc => batch.delete(db.doc(`/notifications/${doc.id}`)));
+                data.forEach(doc => {
+                    if (doc.data().itemId === commentId || doc.id === commentId)
+                        batch.delete(db.doc(`/notifications/${doc.id}`))
+                });
                 return db.collection('likes').get();
             })
             .then(data => {
@@ -468,6 +469,3 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
             })
             .catch(err => console.error(err));
 })
-
-// TODO update user info
-// TODO Check if all indexes are made

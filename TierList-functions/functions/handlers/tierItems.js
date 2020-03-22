@@ -24,13 +24,10 @@ exports.getAllTierItems = (req, res) => {
 exports.postOneTierItem = (req, res) => {
   const updateTierItem = {
     name: req.body.name,
-    imageUrl: req.body.imageUrl,
+    imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${noImg}?alt=media`,
     category: req.body.category.toUpperCase(),
     userId: req.user.uid,
   };
-  if (req.body.imageUrl === 'undefined'|| req.body.imageUrl.trim() === '') {
-    updateTierItem.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${noImg}?alt=media`;
-  }
   return db.collection('categories').where('name', '==', updateTierItem.category).limit(1).get()
     .then(data => {
       if (data.empty) {
@@ -60,60 +57,75 @@ exports.uploadTierItemImage = (req,res) => {
 
   let imageFileName;
   let imageToBeUploaded = {};
+  var isAuthorized = true;
 
-  busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
-      return res.status(400).json({ error: 'Wrong file type submitted'});
-    }
-    const imageExtension = filename.split(".")[filename.split(".").length - 1];
-    const imgName = new Date().getTime();
-    imageFileName = `${req.user.uid}_${imgName}.${imageExtension}`;
-    const filepath = path.join(os.tmpdir(), imageFileName);
-    imageToBeUploaded = { filepath, mimetype };
-    file.pipe(fs.createWriteStream(filepath));
-  });
-  
-  busboy.on("finish", () => {
-    const destinationData = `tierItemImages/${imageFileName}`;
-    admin
-      .storage()
-      .bucket(config.storageBucket)
-      .upload(imageToBeUploaded.filepath, {
-        destination: destinationData,
-        resumable: false,
-        metadata: {
-          metadata: {
-            contentType: imageToBeUploaded.mimetype
+  db.doc(`/tierItems/${req.params.tierItemId}`).get()
+    .then(doc => {
+      if (!doc.exists) {
+        isAuthorized = false;
+        return res.status(404).json({ error: 'Tier Item not found'})
+      }
+      else if (!req.user.isManager && doc.data().userId !== req.user.uid) {
+        isAuthorized = false;
+        return res.status(403).json({ error: 'Unauthorized'});
+      }
+    })
+    .then(() => {
+      if (isAuthorized) {
+        busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+          if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
+            return res.status(400).json({ error: 'Wrong file type submitted'});
           }
-        }
-      })
-      .then(() => {
-        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${imageFileName}?alt=media`;
-        return db.doc(`/tierItems/${req.params.tierItemId}`).update({ imageUrl });
-      })
-      .then(() => {
-          return res.json({ message: "Image uploaded succesfully" });
-      })
-      .catch((err) => {
-        console.error(err);
-        return res.status(500).json({ error: err.code });
-      });
-  });
-
-  busboy.end(req.rawBody);
+          const imageExtension = filename.split(".")[filename.split(".").length - 1];
+          const imgName = new Date().getTime();
+          imageFileName = `${req.user.uid}_${imgName}.${imageExtension}`;
+          const filepath = path.join(os.tmpdir(), imageFileName);
+          imageToBeUploaded = { filepath, mimetype };
+          file.pipe(fs.createWriteStream(filepath));
+        });
+        busboy.on("finish", () => {
+          const destinationData = `tierItemImages/${imageFileName}`;
+          admin
+            .storage()
+            .bucket(config.storageBucket)
+            .upload(imageToBeUploaded.filepath, {
+              destination: destinationData,
+              resumable: false,
+              metadata: {
+                metadata: {
+                  contentType: imageToBeUploaded.mimetype
+                }
+              }
+            })
+            .then(() => {
+              const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${imageFileName}?alt=media`;
+              return db.doc(`/tierItems/${req.params.tierItemId}`).update({ imageUrl });
+            })
+            .then(() => {
+                return res.json({ message: "Image uploaded succesfully" });
+            })
+            .catch((err) => {
+              console.error(err);
+              return res.status(500).json({ error: err.code });
+            });
+        });
+        busboy.end(req.rawBody);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
 };
 
 // Get 1 Tier Item
 exports.getTierItem = (req, res) => {
-  let tierItemData = {};
-  db.doc(`tierLists/${req.params.tierItemId}`).get()
+  db.doc(`tierItems/${req.params.tierItemId}`).get()
     .then(doc => {
       if (!doc.exists) {
         return res.status(404).json({ error: 'Tier Item not found'})
       }
-      tierItemData = doc.data();
-      tierItemData.tierItemId = doc.id;
-      return res.json(tierItemData);
+      return res.json(doc.data());
     })
     .catch(err => {
       console.error(err);
