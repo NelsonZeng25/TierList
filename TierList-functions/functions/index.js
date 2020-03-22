@@ -9,7 +9,7 @@ const FBAuth = require('./util/fbAuth');
 const { getAllTierLists, postOneTierList, getTierList, 
     commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList } = require('./handlers/tierLists');
 
-const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem } = require('./handlers/tierItems');
+const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } = require('./handlers/tierItems');
 
 const { getAllCategories, postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
 
@@ -39,6 +39,7 @@ app.post("/tierItems/createTierItem", FBAuth, postOneTierItem);
 app.get("/tierItems/:tierItemId", FBAuth, getTierItem);
 app.delete("/tierItems/:tierItemId", FBAuth, deleteTierItem);
 app.put('/tierItems/:tierItemId', FBAuth, updateTierItem);
+app.post("/tierItems/:tierItemId/image", FBAuth, uploadTierItemImage);
 
 // categories routes
 app.get("/categories", getAllCategories);
@@ -173,7 +174,7 @@ exports.createNotificationOnReply = functions.firestore.document('replies/{id}')
             })
 });
 
-const defaultImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/userImages%2Fno-img.png?alt=media';
+const defaultUserImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/userImages%2Fno-img.png?alt=media';
 // Delete all tierLists, notifications, likes and managers associated with deleted User
 // For comments, replies and tierItems, we simply replace userId/userName with [Deleted] and replace userImage with default image
 exports.onUserDelete = functions.firestore.document('/users/{userId}')
@@ -206,13 +207,13 @@ exports.onUserDelete = functions.firestore.document('/users/{userId}')
                                     reply = db.doc(`/replies/${doc.id}`);
                                     batch.update(reply, { userId: '[Deleted]' });
                                     batch.update(reply, { userName: '[Deleted]' });
-                                    batch.update(reply, { userImage: defaultImg });
+                                    batch.update(reply, { userImage: defaultUserImg });
                             });
                         })
                     comment = db.doc(`/comments/${doc.id}`);
                     batch.update(comment, { userId: '[Deleted]' });
                     batch.update(comment, { userName: '[Deleted]' });
-                    batch.update(comment, { userImage: defaultImg });
+                    batch.update(comment, { userImage: defaultUserImg });
                 })
                 return db.collection('notifications').get();
             })
@@ -300,7 +301,7 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                         const notification = db.doc(`/notifications/${doc.id}`);
                         batch.update(notification, { senderName: change.after.data().userName });
                     });
-                    if (change.before.data().imageUrl !== defaultImg) {
+                    if (change.before.data().imageUrl !== defaultUserImg) {
                         const bucket = admin.storage().bucket(config.storageBucket);
                         const fileName = change.before.data().imageUrl.split('%2F')[1].split('?')[0];
                         return bucket.file(`userImages/${fileName}`).delete();
@@ -315,6 +316,7 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
         }
 })
 
+const defaultTierItemImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media';
 // Changes all names and image of a Tier Item when user/manager updates it
 exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{tierItemId}')
     .onUpdate((change, context) => {
@@ -340,6 +342,13 @@ exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{
                             batch.update(tierList, { tierItems: tierItemData });
                         }
                     });
+                    if (change.before.data().imageUrl !== defaultTierItemImg) {
+                        const bucket = admin.storage().bucket(config.storageBucket);
+                        const fileName = change.before.data().imageUrl.split('%2F')[1].split('?')[0];
+                        return bucket.file(`tierItemImages/${fileName}`).delete();
+                    }
+                })
+                .then(() => {
                     return batch.commit();
                 })
                 .catch(err => console.error(err));
@@ -460,6 +469,5 @@ exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
             .catch(err => console.error(err));
 })
 
-// TODO When user updates profile pic, delete old pic from storage
 // TODO update user info
 // TODO Check if all indexes are made

@@ -1,8 +1,8 @@
-const { db } = require('../util/admin');
+const { admin, db } = require('../util/admin');
 
 const config = require("../util/config");
 
-const noImg = 'no-img.jpg';
+const noImg = 'no-img.png';
 
 exports.getAllTierItems = (req, res) => {
     db.collection("tierItems")
@@ -29,7 +29,7 @@ exports.postOneTierItem = (req, res) => {
     userId: req.user.uid,
   };
   if (req.body.imageUrl === 'undefined'|| req.body.imageUrl.trim() === '') {
-    updateTierItem.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages2%F${noImg}?alt=media`;
+    updateTierItem.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${noImg}?alt=media`;
   }
   return db.collection('categories').where('name', '==', updateTierItem.category).limit(1).get()
     .then(data => {
@@ -48,6 +48,60 @@ exports.postOneTierItem = (req, res) => {
       return res.status(500).json({ error: "Something went wrong" });
     });
 }
+
+// Upload an image for the Tier Item
+exports.uploadTierItemImage = (req,res) => {
+  const BusBoy = require("busboy");
+  const path = require("path");
+  const os = require("os");
+  const fs = require("fs");
+
+  const busboy = new BusBoy({ headers: req.headers });
+
+  let imageFileName;
+  let imageToBeUploaded = {};
+
+  busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
+      return res.status(400).json({ error: 'Wrong file type submitted'});
+    }
+    const imageExtension = filename.split(".")[filename.split(".").length - 1];
+    const imgName = new Date().getTime();
+    imageFileName = `${req.user.uid}_${imgName}.${imageExtension}`;
+    const filepath = path.join(os.tmpdir(), imageFileName);
+    imageToBeUploaded = { filepath, mimetype };
+    file.pipe(fs.createWriteStream(filepath));
+  });
+  
+  busboy.on("finish", () => {
+    const destinationData = `tierItemImages/${imageFileName}`;
+    admin
+      .storage()
+      .bucket(config.storageBucket)
+      .upload(imageToBeUploaded.filepath, {
+        destination: destinationData,
+        resumable: false,
+        metadata: {
+          metadata: {
+            contentType: imageToBeUploaded.mimetype
+          }
+        }
+      })
+      .then(() => {
+        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/tierItemImages%2F${imageFileName}?alt=media`;
+        return db.doc(`/tierItems/${req.params.tierItemId}`).update({ imageUrl });
+      })
+      .then(() => {
+          return res.json({ message: "Image uploaded succesfully" });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+      });
+  });
+
+  busboy.end(req.rawBody);
+};
 
 // Get 1 Tier Item
 exports.getTierItem = (req, res) => {
