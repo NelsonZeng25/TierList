@@ -12,36 +12,9 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const styles = {
-    form: {
-        textAlign: 'center',
-    },
-    image: {
-        margin: '1rem auto 1rem auto',
-        maxWidth: '5rem'
-    },
-    pageTitle: {
-        margin: '0.5rem auto 0.5rem auto',
-    },
-    textField: {
-      margin: '0.5rem auto 0.5rem auto',
-    },
-    button: {
-      marginTop: '1rem',
-      position: 'relative',
-    },
-    customError: {
-      color: 'red',
-      fontSize: '0.8rem',
-      marginTop: '0.5rem',
-    },
-    progress: {
-      position: 'absolute'
-    },
-    login: {
-        marginTop: '1rem'
-    },
-};
+const styles = theme => ({
+    ...theme.spreadThis,
+});
 
 export class signup extends Component {
     constructor(){
@@ -122,7 +95,7 @@ export class signup extends Component {
                             )}
                         </Button>
                         <br />
-                        <Typography variant="subtitle1" className={classes.login}>Already have an account? Login <Link to="/login">here</Link></Typography>
+                        <Typography variant="subtitle1" className={classes.login_signup_text}>Already have an account? Login <Link to="/login">here</Link></Typography>
                     </form>
                 </Grid>
                 <Grid item sm/>

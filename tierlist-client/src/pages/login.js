@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import withStyles from '@material-ui/core/styles/withStyles';
+import { withStyles, makeStyles } from '@material-ui/core/styles/';
+import { useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import AppIcon from '../images/icon.png';
 import axios from 'axios';
@@ -12,36 +13,9 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const styles = {
-    form: {
-        textAlign: 'center',
-    },
-    image: {
-        margin: '1rem auto 1rem auto',
-        maxWidth: '5rem'
-    },
-    pageTitle: {
-        margin: '0.5rem auto 0.5rem auto',
-    },
-    textField: {
-      margin: '0.5rem auto 0.5rem auto',
-    },
-    button: {
-      marginTop: '1rem',
-      position: 'relative',
-    },
-    customError: {
-      color: 'red',
-      fontSize: '0.8rem',
-      marginTop: '0.5rem',
-    },
-    progress: {
-      position: 'absolute'
-    },
-    signup: {
-        marginTop: '1rem'
-    },
-};
+const styles = theme => ({
+    ...theme.spreadThis,
+});
 
 export class login extends Component {
     constructor(){
@@ -111,7 +85,7 @@ export class login extends Component {
                             )}
                         </Button>
                         <br />
-                        <Typography variant="subtitle1" className={classes.signup}>Don't have an account? Sign up <Link to="/signup">here</Link></Typography>
+                        <Typography variant="subtitle1" className={classes.login_signup_text}>Don't have an account? Sign up <Link to="/signup">here</Link></Typography>
                     </form>
                 </Grid>
                 <Grid item sm/>
