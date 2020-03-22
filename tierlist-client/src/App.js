@@ -3,46 +3,45 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import {ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import themeFile from './util/theme';
+import jwtDecode from 'jwt-decode';
 
 //Components
 import Navbar from './components/Navbar';
+import AuthRoute from './util/AuthRoute';
 
 // Pages
 import home  from './pages/home';
 import login from './pages/login';
-import signup  from './pages/signup';
+import signup from './pages/signup';
+import comment  from './pages/comment';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: '#718792',
-      main: '#455a64',
-      dark: '#1c313a',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      light: '#b2fef7',
-      main: '#80cbc4',
-      dark: '#4f9a94',
-      contrastText: '#000000',
-    },
-  },
-  typography: {
-    useNextVariant: true
+const theme = createMuiTheme(themeFile);
+
+let authenticated;
+const token = localStorage.FBIdToken;
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    window.location.href('/login');
+    authenticated = false;
+  } else {
+    authenticated = true;
   }
-})
+}
 
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <div className="App">
         <Router>
-        <Navbar />
+          <Navbar />
           <div className="container">
             <Switch>
               <Route exact path='/' component={home}></Route>
-              <Route exact path='/login' component={login}></Route>
-              <Route exact path='/signup' component={signup}></Route>
+              <AuthRoute exact path='/login' component={login} authenticated={authenticated}></AuthRoute>
+              <AuthRoute exact path='/signup' component={signup} authenticated={authenticated}></AuthRoute>
+              <Route exact path='/comment' component={comment}></Route>
             </Switch>
           </div>
         </Router>
