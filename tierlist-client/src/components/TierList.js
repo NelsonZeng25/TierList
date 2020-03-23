@@ -3,6 +3,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../util/MyButton';
+import DeleteTierList from './DeleteTierList';
 
 // MUI
 import Card from '@material-ui/core/Card';
@@ -17,10 +18,11 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 // Redux
 import { connect } from 'react-redux';
-import { likeTierList, unlikeTierList } from '../redux/actions/dataActions';
+import { likeTierList, unlikeTierList, deleteTierList } from '../redux/actions/dataActions';
 
 const styles = {
     card: {
+        position: 'relative',
         display: 'flex',
         marginBottom: 20,
     },
@@ -51,6 +53,7 @@ export class TierList extends Component {
                 tierList: { name, userId, userImage, userName, tierListId, likeCount, commentCount },
                 user : { authenticated },
         } = this.props;
+        const id = this.props.user.credentials.userId;
         const likeButton = !authenticated ? (
             <MyButton tip="Like">
                 <Link to="/login">
@@ -68,6 +71,9 @@ export class TierList extends Component {
                 </MyButton>
             )
         );
+        const deleteButton = authenticated && userId === id ? (
+            <DeleteTierList tierListId={tierListId}/>
+        ) : null
         return (
             <Card className={classes.card}>
                 <CardMedia 
@@ -76,6 +82,7 @@ export class TierList extends Component {
                 className={classes.image}/>
                 <CardContent className={classes.content}>
                     <Typography variant="h5" component={Link} to={`/users/${userId}`} color="primary">{userName}</Typography>
+                    {deleteButton}
                     <Typography variant="body2" color="textSecondary">{tierListId}</Typography>
                     <Typography variant="body1">{name}</Typography>
                     {likeButton}

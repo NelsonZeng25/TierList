@@ -1,11 +1,11 @@
-import { SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, LOADING_DATA } from '../types';
+import { SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, LOADING_DATA } from '../types';
 
 const initialState = {
     tierLists: [],
     tierList: {},
     loading: false,
 };
-
+let index;
 export default function(state = initialState, action){
     switch(action.type){
         case LOADING_DATA:
@@ -26,10 +26,16 @@ export default function(state = initialState, action){
             };
         case LIKE_TIERLIST:
         case UNLIKE_TIERLIST:
-            let index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
+            index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
             state.tierLists[index] = action.payload;
             return {
                 ...state,
+            };
+        case DELETE_TIERLIST:
+            index = state.tierLists.findIndex(tierList => tierList.tierListId === action.payload);
+            state.tierLists.splice(index, 1);
+            return {
+                ...state
             };
         default:
             return state;

@@ -1,4 +1,4 @@
-import { SET_TIERLISTS, LOADING_DATA, LIKE_TIERLIST, UNLIKE_TIERLIST } from '../types';
+import { SET_TIERLISTS, LOADING_DATA, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST } from '../types';
 import axios from 'axios';
 
 // Get All Tier Lists
@@ -38,6 +38,17 @@ export const unlikeTierList = (tierListId) => (dispatch) => {
             dispatch({ 
                 type: UNLIKE_TIERLIST,
                 payload: res.data,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+export const deleteTierList = (tierListId) => (dispatch) => {
+    axios.delete(`/tierLists/${tierListId}`)
+        .then(() => {
+            dispatch({ 
+                type: DELETE_TIERLIST,
+                payload: tierListId,
             });
         })
         .catch(err => console.log(err))
