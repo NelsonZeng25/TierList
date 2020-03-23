@@ -1,6 +1,7 @@
 import { 
-    SET_TIERLISTS, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
-    LOADING_DATA, LOADING_UI, SET_ERRORS, CLEAR_ERRORS 
+    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
+    LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
+    SET_ERRORS, CLEAR_ERRORS 
 } from '../types';
 import axios from 'axios';
 
@@ -20,6 +21,20 @@ export const getTierLists = () => (dispatch) => {
                 payload: []
             })
         })
+}
+
+// Get a single Tier List
+export const getTierList = (tierListId) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
+    axios.get(`/tierLists/${tierListId}`)
+        .then(res => {
+            dispatch({
+                type: SET_TIERLIST,
+                payload: res.data
+            });
+            dispatch({ type: STOP_LOADING_UI });
+        })
+        .catch(err => console.log(err))
 }
 
 // Post a Tier List

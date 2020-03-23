@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../util/MyButton';
 import DeleteTierList from './DeleteTierList';
+import TierListDialog from './TierListDialog';
 
 // MUI
 import Card from '@material-ui/core/Card';
@@ -35,7 +36,7 @@ const styles = {
     }
 }
 
-export class TierList extends Component {
+class TierList extends Component {
     likedTierList = () => {
         if (this.props.user.likes && this.props.user.likes.find(like => like.tierListId === this.props.tierList.tierListId))
             return true;
@@ -91,6 +92,7 @@ export class TierList extends Component {
                         <ChatIcon color="secondary"></ChatIcon>
                     </MyButton>
                     <span>{commentCount} Comments</span>
+                    <TierListDialog tierListId={tierListId} userId={userId}></TierListDialog>
                 </CardContent>
             </Card>
         )

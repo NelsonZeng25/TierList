@@ -24,6 +24,7 @@ export default function(state = initialState, action){
         case SET_TIERLIST:
             return {
                 ...state,
+                tierList: action.payload,
                 loading: false,
             };
         case LIKE_TIERLIST:
