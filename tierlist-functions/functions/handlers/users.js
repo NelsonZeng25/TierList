@@ -63,7 +63,6 @@ exports.login = (req, res) => {
   };
 
   const { valid, errors } = validateLoginData(user);
-
   if (!valid) return res.status(400).json(errors);
 
   firebase

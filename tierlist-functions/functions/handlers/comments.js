@@ -52,7 +52,7 @@ exports.getComment = (req, res) => {
 
 // Reply to 1 Comment
 exports.replyOnComment = (req, res) => {
-  if (req.body.body.trim() === '') return res.status(400).json({ error: 'Must not be empty'});
+  if (req.body.body.trim() === '') return res.status(400).json({ reply: 'Must not be empty'});
 
   const newReply = {
     body: req.body.body,

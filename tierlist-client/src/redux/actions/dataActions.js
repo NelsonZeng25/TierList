@@ -1,4 +1,7 @@
-import { SET_TIERLISTS, LOADING_DATA, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST } from '../types';
+import { 
+    SET_TIERLISTS, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
+    LOADING_DATA, LOADING_UI, SET_ERRORS, CLEAR_ERRORS 
+} from '../types';
 import axios from 'axios';
 
 // Get All Tier Lists
@@ -16,6 +19,25 @@ export const getTierLists = () => (dispatch) => {
                 type: SET_TIERLISTS,
                 payload: []
             })
+        })
+}
+
+// Post a Tier List
+export const postTierList = (newTierList) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
+    axios.post('/tierLists/createTierList', newTierList)
+        .then(res => {
+            dispatch({ 
+                type: POST_TIERLIST,
+                payload: res.data,
+            });
+            dispatch({ type: CLEAR_ERRORS });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            });
         })
 }
 
@@ -52,4 +74,8 @@ export const deleteTierList = (tierListId) => (dispatch) => {
             });
         })
         .catch(err => console.log(err))
+}
+
+export const clearErrors = () => (dispatch) => {
+    dispatch({ type: CLEAR_ERRORS });
 }

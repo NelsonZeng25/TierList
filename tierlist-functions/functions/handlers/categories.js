@@ -36,6 +36,8 @@ exports.getCategory = (req, res) => {
   }
 
 exports.postOneCategory = (req, res) => {
+  if (req.body.name.trim() === '') return res.status(400).json({ name: 'Must not be empty'});
+
   const updateCategory = {
     name: req.body.name.toUpperCase()
   };

@@ -18,6 +18,8 @@ exports.getAllTierLists = (req, res) => {
 }
 
 exports.postOneTierList = (req, res) => {
+    if (req.body.name.trim() === '') return res.status(400).json({ name: 'Must not be empty'});
+
     const newTierList = {
       name: req.body.name,
       tierItems: {},

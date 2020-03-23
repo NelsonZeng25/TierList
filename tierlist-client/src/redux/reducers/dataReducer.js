@@ -1,4 +1,6 @@
-import { SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, LOADING_DATA } from '../types';
+import { 
+    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
+    LOADING_DATA } from '../types';
 
 const initialState = {
     tierLists: [],
@@ -37,6 +39,14 @@ export default function(state = initialState, action){
             return {
                 ...state
             };
+        case POST_TIERLIST:
+            return {
+                ...state,
+                tierLists: [
+                    action.payload,
+                    ...state.tierLists,
+                ]
+            }
         default:
             return state;
     }
