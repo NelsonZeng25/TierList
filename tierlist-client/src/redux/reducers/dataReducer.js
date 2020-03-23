@@ -1,6 +1,7 @@
 import { 
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
-    LOADING_DATA } from '../types';
+    LOADING_DATA, 
+    SUBMIT_COMMENT} from '../types';
 
 const initialState = {
     tierLists: [],
@@ -49,6 +50,18 @@ export default function(state = initialState, action){
                     action.payload,
                     ...state.tierLists,
                 ]
+            }
+        case SUBMIT_COMMENT:
+            index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
+            state.tierLists[index].commentCount++;
+            if (state.tierList.tierListId === action.payload.tierListId)
+                state.tierList.commentCount++;
+            return{
+                ...state,
+                tierList: {
+                    ...state.tierList,
+                    comments: [action.payload, ...state.tierList.comments]
+                }
             }
         default:
             return state;

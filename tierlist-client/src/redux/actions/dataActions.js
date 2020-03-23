@@ -1,7 +1,7 @@
 import { 
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
-    SET_ERRORS, CLEAR_ERRORS 
+    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT 
 } from '../types';
 import axios from 'axios';
 
@@ -46,7 +46,7 @@ export const postTierList = (newTierList) => (dispatch) => {
                 type: POST_TIERLIST,
                 payload: res.data,
             });
-            dispatch({ type: CLEAR_ERRORS });
+            dispatch(clearErrors());
         })
         .catch(err => {
             dispatch({
@@ -80,6 +80,25 @@ export const unlikeTierList = (tierListId) => (dispatch) => {
         .catch(err => console.log(err))
 }
 
+// Submit a Comment
+export const submitComment = (tierListId, commentData) => (dispatch) => {
+    axios.post(`/tierLists/${tierListId}/comment`, commentData)
+        .then(res => {
+            dispatch({
+                type: SUBMIT_COMMENT,
+                payload: res.data,
+            });
+            dispatch(clearErrors());
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data,
+            })
+        })
+}
+
+// Delete a Tier List
 export const deleteTierList = (tierListId) => (dispatch) => {
     axios.delete(`/tierLists/${tierListId}`)
         .then(() => {
@@ -91,6 +110,7 @@ export const deleteTierList = (tierListId) => (dispatch) => {
         .catch(err => console.log(err))
 }
 
+// Clear errors
 export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });
 }

@@ -5,6 +5,7 @@ import MyButton from '../../util/MyButton';
 import { Link } from 'react-router-dom';
 import LikeButton from "./LikeButton";
 import Comments from './Comments';
+import CommentForm from './CommentForm';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -21,7 +22,7 @@ import UnfoledMore from '@material-ui/icons/UnfoldMore';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { getTierList } from '../../redux/actions/dataActions';
+import { getTierList, clearErrors } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -60,6 +61,7 @@ class TierListDialog extends Component {
     }
     handleClose = () => {
         this.setState({ open: false });
+        this.props.clearErrors();
     }
 
     render(){
@@ -97,6 +99,7 @@ class TierListDialog extends Component {
                     <span>{commentCount} Comments</span>
                 </Grid>
                 <hr className={classes.visibleSeperator} />
+                <CommentForm tierListId={tierListId}/>
                 <Comments comments={comments} />
             </Grid>
         )
@@ -120,6 +123,7 @@ class TierListDialog extends Component {
 
 TierListDialog.propTypes = {
     getTierList: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired,
     tierListId: PropTypes.string.isRequired,
     userId: PropTypes.string.isRequired,
     tierList: PropTypes.object.isRequired,
@@ -132,7 +136,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    getTierList
+    getTierList,
+    clearErrors
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(TierListDialog));
