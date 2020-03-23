@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import MyButton from '../util/MyButton';
+import MyButton from '../../util/MyButton';
 import DeleteTierList from './DeleteTierList';
 import TierListDialog from './TierListDialog';
 import LikeButton from './LikeButton';

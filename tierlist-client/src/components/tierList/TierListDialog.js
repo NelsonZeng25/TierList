@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
-import MyButton from '../util/MyButton';
+import MyButton from '../../util/MyButton';
 import { Link } from 'react-router-dom';
 import LikeButton from "./LikeButton";
+import Comments from './Comments';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -20,14 +21,10 @@ import UnfoledMore from '@material-ui/icons/UnfoldMore';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { getTierList } from '../redux/actions/dataActions';
+import { getTierList } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
-    invisibleSeperator: {
-        border: 'none',
-        margin: '4px'
-    },
     profileImage: {
         maxWidth: '200px',
         height: '200px',
@@ -68,7 +65,7 @@ class TierListDialog extends Component {
     render(){
         const { 
             classes, 
-            tierList: { tierListId, tierItems, userName, userImage, userId, name, category, commentCount, likeCount },
+            tierList: { tierListId, tierItems, userName, userImage, userId, name, category, comments, commentCount, likeCount },
             UI: { loading }
         } = this.props;
         const dialogMarkup = loading ? (
@@ -99,6 +96,8 @@ class TierListDialog extends Component {
                     </MyButton>
                     <span>{commentCount} Comments</span>
                 </Grid>
+                <hr className={classes.visibleSeperator} />
+                <Comments comments={comments} />
             </Grid>
         )
         return(

@@ -3,8 +3,8 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
-import TierList from '../components/TierList';
-import Profile from '../components/Profile';
+import TierList from '../components/tierList/TierList';
+import Profile from '../components/profile/Profile';
 
 import { connect } from 'react-redux';
 import { getTierLists } from '../redux/actions/dataActions';

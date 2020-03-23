@@ -44,6 +44,15 @@ export default {
     },
     login_signup_text: {
       marginTop: "1rem"
+    },
+    invisibleSeperator: {
+      border: 'none',
+      margin: '4px'
+    },
+    visibleSeperator: {
+      width: '100%',
+      borderBottom: '1px solid rgb(0,0,0, 0.1)',
+      marginBottom: '20px',
     }
   }
 };
