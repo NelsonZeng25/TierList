@@ -98,13 +98,13 @@ class Profile extends Component {
         classes,
         user: {
             credentials: {
-            userId,
-            userName,
-            createdAt,
-            imageUrl,
-            bio,
-            website,
-            location
+              userId,
+              userName,
+              createdAt,
+              imageUrl,
+              bio,
+              website,
+              location
             },
             loading,
             authenticated
@@ -166,7 +166,7 @@ class Profile extends Component {
             </Paper>
         ) : (
             <Paper className={classes.paper}>
-            <Typography variant="body2" align="center">
+            <Typography style={{color: 'white'}}variant="body2" align="center">
                 No Profile found, please login again
             </Typography>
             <div className={classes.buttons}>

@@ -1,4 +1,4 @@
-import { SET_USER, LOADING_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED } from '../types';
+import { SET_USER, LOADING_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LIKE_TIERLIST, UNLIKE_TIERLIST } from '../types';
 
 const initialState =  {
     authenticated: false,
@@ -27,6 +27,23 @@ export default function(state=initialState, action){
             return {
                 ...state,
                 loading: true
+            }
+        case LIKE_TIERLIST:
+            return {
+                ...state,
+                likes: [
+                    ...state.likes,
+                    {
+                        userId: state.credentials.userId,
+                        userName: state.credentials.userName,
+                        tierListId: action.payload.tierListId
+                    }
+                ]
+            }
+        case UNLIKE_TIERLIST:
+            return {
+                ...state,
+                likes: state.likes.filter(like => like.tierListId !== action.payload.tierListId)
             }
         default:
             return state;

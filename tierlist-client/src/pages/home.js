@@ -1,27 +1,25 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 
 import TierList from '../components/TierList';
 import Profile from '../components/Profile';
 
+import { connect } from 'react-redux';
+import { getTierLists } from '../redux/actions/dataActions';
+
 export class home extends Component {
-    state = {
-        tierLists: null,
-    }
     componentDidMount(){
-        axios.get('/tierLists')
-            .then(res =>{
-                this.setState({
-                    tierLists: res.data,
-                })
-            })
-            .catch(err => console.log(err));
+        this.props.getTierLists();
     }
     render() {
-        let recentTierListMarkup = this.state.tierLists ? (
-        this.state.tierLists.map(tierList => <TierList key={tierList.tierListId} tierList={tierList}/>)
-        ) : <p>Loading...</p>
+        const { tierLists, loading } = this.props.data;
+        let recentTierListMarkup = !loading ? (
+            tierLists.map(tierList => <TierList key={tierList.tierListId} tierList={tierList}/>)
+        ) : (
+            <p>Loading...</p>
+        )
         return (
             <Grid container spacing={2}>
                 <Grid item sm ={8} xs={12}>
@@ -35,4 +33,13 @@ export class home extends Component {
     }
 }
 
-export default home;
+home.propTypes = {
+    getTierLists: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    data: state.data
+})
+
+export default connect(mapStateToProps, { getTierLists })(home);
