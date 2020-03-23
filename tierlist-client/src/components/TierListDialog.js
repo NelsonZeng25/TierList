@@ -3,16 +3,17 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../util/MyButton';
 import { Link } from 'react-router-dom';
+import LikeButton from "./LikeButton";
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 // Icons
+import ChatIcon from '@material-ui/icons/Chat';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import UnfoledMore from '@material-ui/icons/UnfoldMore';
@@ -91,6 +92,12 @@ class TierListDialog extends Component {
                     <Typography variant="body1">
                         {name}
                     </Typography>
+                    <LikeButton tierListId={tierListId}></LikeButton>
+                    <span>{likeCount} likes</span>
+                    <MyButton tip="comments">
+                        <ChatIcon color="secondary"></ChatIcon>
+                    </MyButton>
+                    <span>{commentCount} Comments</span>
                 </Grid>
             </Grid>
         )

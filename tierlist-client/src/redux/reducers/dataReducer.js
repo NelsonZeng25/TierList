@@ -31,6 +31,8 @@ export default function(state = initialState, action){
         case UNLIKE_TIERLIST:
             index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
             state.tierLists[index] = action.payload;
+            if (state.tierList.tierListId === action.payload.tierListId)
+                state.tierList = action.payload;
             return {
                 ...state,
             };
