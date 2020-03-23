@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import EditDetails from "./EditDetails";
 
 // MUI Stuff
 import Button from "@material-ui/core/Button";
@@ -21,10 +22,12 @@ import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/Edit";
+import KeyboardReturn from "@material-ui/icons/KeyboardReturn";
 
 const styles = theme => ({
   ...theme.spreadThis,
   paper: {
+    background: theme.palette.primary.main,
     padding: 20
   },
   profile: {
@@ -42,15 +45,19 @@ const styles = theme => ({
       height: 200,
       objectFit: "cover",
       maxWidth: "100%",
-      borderRadius: "50%"
+      borderRadius: "50%",
+      border: '4px solid white'
     },
     "& .profile-details": {
       textAlign: "center",
+      "& span": {
+        color: theme.palette.primary.contrastText
+      },
       "& span, svg": {
         verticalAlign: "middle"
       },
       "& a": {
-        color: theme.palette.secondary.main
+        color: theme.palette.primary.contrastText
       }
     },
     "& hr": {
@@ -82,6 +89,9 @@ class Profile extends Component {
         const fileInput = document.getElementById('imageInput');
         fileInput.click();
     }
+    handleLogout = () => {
+        this.props.logoutUser();
+    }
     render() {
         const {
         classes,
@@ -104,18 +114,18 @@ class Profile extends Component {
             <Paper className={classes.paper}>
             <div className={classes.profile}>
                 <div className="image-wrapper">
-                <img className="profile-image" src={imageUrl} alt="profile" />
-                <input
-                    type="file"
-                    id="imageInput"
-                    hidden="hidden"
-                    onChange={this.handleImageChange}
-                />
-                <Tooltip title="Edit profile picture" placement="top">
-                    <IconButton onClick={this.handleEditPicture} className="button">
-                        <EditIcon color="secondary"/>
-                    </IconButton>
-                </Tooltip>
+                    <img className="profile-image" src={imageUrl} alt="profile" />
+                    <input
+                        type="file"
+                        id="imageInput"
+                        hidden="hidden"
+                        onChange={this.handleImageChange}
+                    />
+                    <Tooltip title="Edit profile picture" placement="top">
+                        <IconButton onClick={this.handleEditPicture} className="button">
+                            <EditIcon color="secondary"/>
+                        </IconButton>
+                    </Tooltip>
                 </div>
                 <hr />
                 <div className="profile-details">
@@ -128,12 +138,12 @@ class Profile extends Component {
                     @{userName}
                 </MuiLink>
                 <hr />
-                {bio && <Typography variant="body2">{bio}</Typography>}
+                {bio && <Typography style={{color:'white'}} variant="body2">{bio}</Typography>}
                 <hr />
                 {location && (
                     <Fragment>
-                    <LocationOn color="secondary" /> <span>{location}</span>
-                    <hr />
+                        <LocationOn color="secondary" /> <span>{location}</span>
+                        <hr />
                     </Fragment>
                 )}
                 {website && (
@@ -149,6 +159,12 @@ class Profile extends Component {
                 <CalendarToday color="secondary" />{" "}
                 <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
                 </div>
+                <Tooltip title="Logout" placement="top">
+                    <IconButton onClick={this.handleLogout}>
+                        <KeyboardReturn color="secondary"></KeyboardReturn>
+                    </IconButton>
+                </Tooltip>
+                <EditDetails/>
             </div>
             </Paper>
         ) : (

@@ -299,13 +299,11 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
                         const notification = db.doc(`/notifications/${doc.id}`);
                         batch.update(notification, { senderName: change.after.data().userName });
                     });
-                    if (change.before.data().imageUrl !== defaultUserImg) {
+                    if (change.before.data().imageUrl !== change.after.data().imageUrl && change.before.data().imageUrl !== defaultUserImg) {
                         const bucket = admin.storage().bucket(config.storageBucket);
                         const fileName = change.before.data().imageUrl.split('%2F')[1].split('?')[0];
-                        return bucket.file(`userImages/${fileName}`).delete();
+                        bucket.file(`userImages/${fileName}`).delete();
                     }
-                })
-                .then(() => {
                     return batch.commit();
                 })
                 .catch(err => console.error(err));
