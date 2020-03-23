@@ -61,7 +61,7 @@ class TierList extends Component {
                         <ChatIcon color="secondary"></ChatIcon>
                     </MyButton>
                     <span>{commentCount} Comments</span>
-                    <TierListDialog tierListId={tierListId} userId={userId}></TierListDialog>
+                    <TierListDialog tierListId={tierListId} userId={userId} openDialog={this.props.openDialog}></TierListDialog>
                 </CardContent>
             </Card>
         )
@@ -72,6 +72,7 @@ TierList.propTypes = {
     user: PropTypes.object.isRequired,
     tierList: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    openDialog: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => ({

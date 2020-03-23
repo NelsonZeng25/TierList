@@ -110,6 +110,24 @@ export const deleteTierList = (tierListId) => (dispatch) => {
         .catch(err => console.log(err))
 }
 
+// Get the user data for user page
+export const getUserData = (userId) => (dispatch) => {
+    dispatch({ type: LOADING_DATA });
+    axios.get(`/users/${userId}`)
+        .then(res => {
+            dispatch({
+                type: SET_TIERLISTS,
+                payload: res.data.tierLists,
+            });
+        })
+        .catch(() => {
+            dispatch({
+                type: SET_TIERLIST,
+                payload: null,
+            });
+        })
+}
+
 // Clear errors
 export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });
