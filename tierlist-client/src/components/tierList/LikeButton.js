@@ -10,6 +10,13 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 // Redux
 import { connect } from  'react-redux';
 import { likeTierList, unlikeTierList } from '../../redux/actions/dataActions';
+import { withStyles } from '@material-ui/core';
+
+const styles = theme => ({
+    likeButton: {
+        padding: '5px 5px 5px 0',
+    }
+})
 
 export class LikeButton extends Component {
     likedTierList = () => {
@@ -25,21 +32,22 @@ export class LikeButton extends Component {
         this.props.unlikeTierList(this.props.tierListId);
     }
     render() {
+        const { classes } = this.props;
         const { authenticated } = this.props.user;
         const likeButton = !authenticated ? (
             <Link to="/login">
-                <MyButton tip="Like">
+                <MyButton btnClassName={classes.likeButton} tip="Like">
                         <FavoriteBorder color="secondary"></FavoriteBorder>
                 </MyButton>
             </Link>
         ) : (
             this.likedTierList() ? (
-                <MyButton tip="Undo Like" onClick={this.unlikeTierList}>
-                    <FavoriteIcon color="secondary"></FavoriteIcon>
+                <MyButton btnClassName={classes.likeButton} tip="Undo Like" onClick={this.unlikeTierList}>
+                    <FavoriteIcon style={{color:'red'}}></FavoriteIcon>
                 </MyButton>
             ) : (
-                <MyButton tip="Like" onClick={this.likeTierList}>
-                    <FavoriteBorder color="secondary"></FavoriteBorder>
+                <MyButton btnClassName={classes.likeButton} tip="Like" onClick={this.likeTierList}>
+                    <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             )
         );
@@ -50,8 +58,9 @@ export class LikeButton extends Component {
 LikeButton.propTypes = {
     user: PropTypes.object.isRequired,
     tierListId: PropTypes.string.isRequired,
-    likedTierList: PropTypes.func.isRequired,
-    unlikedTierList: PropTypes.func.isRequired,
+    likeTierList: PropTypes.func.isRequired,
+    unlikeTierList: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -63,4 +72,4 @@ const mapActionsToProps = {
     unlikeTierList,
 }
 
-export default connect(mapStateToProps, mapActionsToProps)(LikeButton)
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(LikeButton));

@@ -1,6 +1,10 @@
 import { ThemeProvider } from "@material-ui/core";
 
 const palette = {
+  text: {
+    primary: "#ffffff",
+    secondary: "#000000",
+  },
   primary: {
     light: "#424250",
     main: "#33333d",
@@ -22,6 +26,7 @@ export default {
       useNextVariant: true
     },
     form: {
+      marginLeft: '-5%',
       textAlign: "center"
     },
     image: {

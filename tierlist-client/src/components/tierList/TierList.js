@@ -12,6 +12,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
@@ -19,25 +20,36 @@ import ChatIcon from '@material-ui/icons/Chat';
 // Redux
 import { connect } from 'react-redux';
 
-const styles = {
+const styles = theme => ({
+    ...theme.spreadThis,
     card: {
+        backgroundColor: theme.palette.primary.main,
         position: 'relative',
         display: 'flex',
-        marginBottom: 20,
+        padding: '15px',
     },
     image: {
-        minWidth: 200,
+        margin: '0 0 auto 0',
+        display: 'block',
+        width: '20%',
+        height: '58px',
+        borderRadius: '50%',
     },
     content: {
-        padding: 25,
-        objectFit: 'cover'
+        padding: '0 16px 24px 16px',
+        "&:last-child": {
+            paddingBottom: 0
+        }
+    },
+    commentButton: {
+        padding: '5px 5px 5px 10px',
     }
-}
+});
 
 class TierList extends Component {
     render() {
         const { classes, 
-                tierList: { name, userId, userImage, userName, tierListId, likeCount, commentCount },
+                tierList: { name, userId, userImage, userName, category, tierListId, likeCount, commentCount },
                 user : { authenticated },
         } = this.props;
         const id = this.props.user.credentials.userId;
@@ -51,17 +63,19 @@ class TierList extends Component {
                 title={"Profile Image"}
                 className={classes.image}/>
                 <CardContent className={classes.content}>
-                    <Typography variant="h5" component={Link} to={`/users/${userId}`} color="primary">{userName}</Typography>
+                    <div style={{overflow: "hidden", textOverflow: "ellipsis", width: '13rem'}}> 
+                        <Typography nowrap="true" variant="h5" component={Link} to={`/users/${userId}/tierList/${tierListId}`} color="secondary">{name}</Typography>
+                    </div>
                     {deleteButton}
-                    <Typography variant="body2" color="textSecondary">{tierListId}</Typography>
-                    <Typography variant="body1">{name}</Typography>
+                    <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>
+                    <Typography variant="body2" >Category: {category}</Typography>
                     <LikeButton tierListId={tierListId}></LikeButton>
                     <span>{likeCount} Likes</span>
-                    <MyButton tip="comments">
+                    <MyButton btnClassName={classes.commentButton} tip="comments">
                         <ChatIcon color="secondary"></ChatIcon>
                     </MyButton>
                     <span>{commentCount} Comments</span>
-                    <TierListDialog tierListId={tierListId} userId={userId} openDialog={this.props.openDialog}></TierListDialog>
+                    {/* <TierListDialog tierListId={tierListId} userId={userId} openDialog={this.props.openDialog}></TierListDialog> */}
                 </CardContent>
             </Card>
         )

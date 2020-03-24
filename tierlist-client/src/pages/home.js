@@ -24,7 +24,7 @@ export class home extends Component {
         const { tierLists, loading } = this.props.data;
         let recentTierListMarkup = !loading ? (
           tierLists.map(tierList => (
-            <Grid item xs={4}>
+            <Grid key={tierList.tierListId} item xs={4}>
                 <TierList key={tierList.tierListId} tierList={tierList} />
             </Grid>
           ))
@@ -38,7 +38,7 @@ export class home extends Component {
                         <Profile />
                     </Grid>
                 </Grid>
-                <Grid container item xs={9} spacing={3}>
+                <Grid container item xs={9} spacing={3} direction="row" justify="center" alignItems="baseline">
                     {recentTierListMarkup}
                 </Grid>
             </Grid>

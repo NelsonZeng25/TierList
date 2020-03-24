@@ -15,8 +15,8 @@ import { deleteTierList } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     deleteButton: {
-        left: '90%',
-        top: '9%',
+        left: '86%',
+        top: '6%',
         position: 'absolute',
     }
 });
@@ -40,7 +40,7 @@ class DeleteTierList extends Component {
         return (
             <Fragment>
                 <MyButton tip="Delete Tier List" placement="top" onClick={this.handleOpen} btnClassName={classes.deleteButton}>
-                    <DeleteOutline style={{color:'red'}}></DeleteOutline>
+                    <DeleteOutline style={{color:'grey'}}></DeleteOutline>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <DialogTitle>Are you sure you want to delete this Tier List?</DialogTitle>
