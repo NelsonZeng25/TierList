@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import TierList from '../components/tierList/TierList';
 import Profile from '../components/profile/Profile';
+import TierListSkeleton from '../util/TierListSkeleton';
 
 import { connect } from 'react-redux';
 import { getTierLists } from '../redux/actions/dataActions';
@@ -18,7 +19,7 @@ export class home extends Component {
         let recentTierListMarkup = !loading ? (
             tierLists.map(tierList => <TierList key={tierList.tierListId} tierList={tierList}/>)
         ) : (
-            <p>Loading...</p>
+            <TierListSkeleton/>
         )
         return (
             <Grid container spacing={2}>

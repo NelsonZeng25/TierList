@@ -4,6 +4,8 @@ import axios from 'axios';
 import TierList from '../components/tierList/TierList';
 import Grid from '@material-ui/core/Grid';
 import StaticProfile from '../components/profile/StaticProfile';
+import TierListSkeleton from '../util/TierListSkeleton';
+import ProfileSkeleton from '../util/ProfileSkeleton';
 
 import { connect } from 'react-redux';
 import { getUserData } from '../redux/actions/dataActions';
@@ -34,7 +36,7 @@ export class user extends Component {
         const { tierListIdParam } = this.state;
         const { tierLists, loading } = this.props.data;
         const tierListsMarkup = loading ? (
-            <p>Loading data...</p>
+            <TierListSkeleton/>
         ) : tierLists === null ? (
             <p>No Tier Lists from this user</p>
         ) : !tierListIdParam ? (
@@ -54,7 +56,7 @@ export class user extends Component {
                 </Grid>
                 <Grid item sm ={4} xs={12}>
                     {this.state.profile === null ? (
-                        <p>Loading </p>
+                        <ProfileSkeleton/>
                     ) : (
                         <StaticProfile profile={this.state.profile} />
                     )}
