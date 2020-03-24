@@ -37,7 +37,7 @@ export class LikeButton extends Component {
         const likeButton = !authenticated ? (
             <Link to="/login">
                 <MyButton btnClassName={classes.likeButton} tip="Like">
-                        <FavoriteBorder color="secondary"></FavoriteBorder>
+                        <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             </Link>
         ) : (

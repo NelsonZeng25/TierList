@@ -1,23 +1,34 @@
-import { ThemeProvider } from "@material-ui/core";
-
 const palette = {
   text: {
-    primary: "#ffffff",
+    primary: "#C5C6C7",
     secondary: "#000000",
   },
   primary: {
-    light: "#424250",
+    light: "#1F2833",
     main: "#33333d",
-    dark: "#0c0c17",
-    contrastText: "#ffffff"
+    dark: "#0B0C17",
+    contrastText: "#C5C6C7"
   },
   secondary: {
     light: "#62ecb0",
-    main: "#1eb980",
-    dark: "#008853",
+    main: "#66FCF1",
+    dark: "#16c8be",
     contrastText: "#000000"
   }
 }
+
+// primary: {
+//   light: "#424250",
+//   main: "#33333d",
+//   dark: "#0c0c17",
+//   contrastText: "#ffffff"
+// },
+// secondary: {
+//   light: "#62ecb0",
+//   main: "#1eb980",
+//   dark: "#008853",
+//   contrastText: "#000000"
+// }
 
 export default {
   palette,
@@ -27,7 +38,10 @@ export default {
     },
     form: {
       marginLeft: '-5%',
-      textAlign: "center"
+      textAlign: "center",
+    },
+    itemGrid: {
+      maxWidth: '270px',
     },
     image: {
       margin: "1rem auto 1rem auto",
@@ -42,7 +56,8 @@ export default {
     },
     button: {
       marginTop: "1rem",
-      position: "relative"
+      position: "relative",
+      width: '100%'
     },
     customError: {
       color: "red",
@@ -70,7 +85,7 @@ export default {
       marginBottom: '20px',
     },
     paper: {
-      background: palette.primary.dark,
+      background: palette.primary.main,
       padding: 20
     },
     profile: {
@@ -89,7 +104,7 @@ export default {
         objectFit: "cover",
         maxWidth: "100%",
         borderRadius: "50%",
-        border: '4px solid white'
+        border: `4px solid ${palette.primary.contrastText}`,
       },
       "& .profile-details": {
         textAlign: "center",

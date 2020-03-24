@@ -22,6 +22,7 @@ import home  from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
 import user from './pages/user';
+import Sidebar from './components/layout/Sidebar';
 
 const theme = createMuiTheme(themeFile);
 
@@ -46,16 +47,20 @@ function App() {
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <Router>
-          <Navbar />
-          <div className="container">
-            <Switch>
-              <Route exact path='/' component={home}></Route>
-              <AuthRoute exact path='/login' component={login}></AuthRoute>
-              <AuthRoute exact path='/signup' component={signup}></AuthRoute>
-              <Route exact path='/users/:userId' component={user}></Route>
-              <Route exact path='/users/:userId/tierList/:tierListId' component={user}></Route>
-            </Switch>
-          </div>
+            <Navbar/>
+            <Sidebar/>
+            <div className="container">
+              <div className="content-container">
+                <Switch>
+                  <Route exact path='/test' component={Sidebar}></Route>
+                  <Route exact path='/' component={home}></Route>
+                  <AuthRoute exact path='/login' component={login}></AuthRoute>
+                  <AuthRoute exact path='/signup' component={signup}></AuthRoute>
+                  <Route exact path='/users/:userId' component={user}></Route>
+                  <Route exact path='/users/:userId/tierList/:tierListId' component={user}></Route>
+                </Switch>
+                </div>
+            </div>
         </Router>
       </Provider>
     </MuiThemeProvider>

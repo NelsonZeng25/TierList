@@ -24,7 +24,8 @@ import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/Edit";
-import KeyboardReturn from "@material-ui/icons/KeyboardReturn";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ImageIcon from '@material-ui/icons/Image';
 
 const styles = theme => ({
   ...theme.spreadThis,
@@ -74,7 +75,7 @@ class Profile extends Component {
                         onChange={this.handleImageChange}
                     />
                     <MyButton tip="Edit Profile picture" placement="top" onClick={this.handleEditPicture} btnClassName="button">
-                      <EditIcon color="secondary"/>
+                      <ImageIcon color="secondary"/>
                     </MyButton>
                 </div>
                 <hr />
@@ -88,7 +89,7 @@ class Profile extends Component {
                     @{userName}
                 </MuiLink>
                 <hr />
-                {bio && <Typography style={{color:'white'}} variant="body2">{bio}</Typography>}
+                {bio && <Typography color="textPrimary" variant="body2">{bio}</Typography>}
                 <hr />
                 {location && (
                     <Fragment>
@@ -110,7 +111,7 @@ class Profile extends Component {
                 <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
                 </div>
                 <MyButton tip="Logout" placement="top" onClick={this.handleLogout}>
-                      <KeyboardReturn color="secondary"/>
+                      <ExitToAppIcon color="secondary"/>
                 </MyButton>
                 <EditDetails/>
             </div>

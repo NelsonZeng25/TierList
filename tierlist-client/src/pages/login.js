@@ -22,13 +22,13 @@ const styles = theme => ({
     },
     underline: {
         "&::before": {
-            borderBottom: "1px solid #ffffff"
+            borderBottom: `1px solid ${theme.palette.primary.contrastText}`
           },
           "&:hover:not(.Mui-disabled):before": {
-            borderBottom: "2px solid #ffffff"
+            borderBottom: `2px solid ${theme.palette.primary.contrastText}`
           },
           "&::after": {
-            borderBottom: "2px solid #ffffff"
+            borderBottom: `2px solid ${theme.palette.primary.contrastText}`
           }
     },
     cssInput: {
@@ -69,7 +69,7 @@ export class login extends Component {
         return (
             <Grid container className={classes.form}>
                 <Grid item sm/>
-                <Grid item sm>
+                <Grid className={classes.itemGrid} item sm>
                     <img src={AppIcon} alt="Monkey" className={classes.image}></img>
                     <Typography variant="h2" className={classes.pageTitle}>
                         Login
@@ -114,7 +114,7 @@ export class login extends Component {
                             )}
                         </Button>
                         <br />
-                        <Typography variant="subtitle1" className={classes.login_signup_text}>Don't have an account? Sign up <Link className={classes.login_signup_link} to="/signup">here</Link></Typography>
+                        <Typography variant="subtitle1" className={classes.login_signup_text}>Not a member? <Link className={classes.login_signup_link} to="/signup">Signup now</Link></Typography>
                     </form>
                 </Grid>
                 <Grid item sm/>

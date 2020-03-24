@@ -1,18 +1,133 @@
+:root{
+  --text-primary: #C5C6C7;
+  --text-primary-onHover: #FFFFFF;
+  --text-secondary: #000000;
+
+  --bg-primary: #33333d;
+  --bg-primary-dark: #0B0C17;
+  --bg-primary-light: #1F2833;
+
+  --bg-secondary: #66FCF1;
+  --bg-secondary-dark: #16c8be;
+  --bg-secondary-light: #62ecb0;
+
+  --transtition-speed: 600ms;
+
+}
+
 html,
 body{
+  font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
   sans-serif;
-  background-color: #424250;
+  background-color: #1F2833;
+  margin: 0;
+  padding: 0;
 }
+
+body::-webkit-scrollbar{
+  width: 0.25rem;
+  overflow: scroll;
+}
+body::-webkit-scrollbar-track{
+  background: #0B0C17;
+}
+body::-webkit-scrollbar-thumb{
+  background: #16c8be;
+  overflow: auto;
+}
+
 .container{
-  margin: 80px 2% 0 10%;
+  margin: 0 0.5rem 0 5rem;
+  padding: 1rem;
 }
+.content-container{
+  margin-top: 4rem;
+}
+
+.sidebar-logo {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  background-color: var(--bg-primary-dark);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3ch;
+  width: 100%;
+}
+#logo-text {
+  color: var(--text-primary-onHover);
+}
+.sidebar-logo svg {
+  transform: rotate(0deg);
+  transition: transform var(--transtition-speed);
+}
+.sidebar:hover .sidebar-logo svg {
+  transform: rotate(-180deg);
+}
+.sidebar{
+  width: 5rem;
+  height: 100vh;
+  position: fixed;
+  background-color: var(--bg-primary-dark);
+  z-index: 1200;
+  transition: width 200ms ease;
+}
+.sidebar-nav{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar-item{
+  width: 100%;
+}
+.sidebar-item:last-child{
+  margin-top: 28.6rem;
+}
+.sidebar-link{
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  text-decoration: none;
+  filter: grayscale(100%) opacity(0.7);
+  transition: var(--transtition-speed);
+}
+.sidebar-link:hover {
+  filter: grayscale(0%) opacity(1);
+  background-color: var(--bg-primary);
+}
+.sidebar-link:hover .link-text{
+  color: var(--text-primary-onHover);
+}
+.sidebar-link svg {
+  min-width: 2rem;
+  margin: 0 1.5rem;
+  font-size: 2rem;
+  color: var(--bg-secondary);
+}
+.link-text{
+  display: none;
+  color: var(--text-primary);
+  margin-left: 1rem;
+  white-space: nowrap;
+}
+.sidebar:hover{
+  width: 16rem;
+}
+.sidebar:hover .link-text{
+  display: block;
+}
+
 .nav-container{
   margin: auto;
 }
 .nav-container svg{
-  color: #ffffff
+  color: var(--text-primary);
 }
 a{
   text-decoration: none;

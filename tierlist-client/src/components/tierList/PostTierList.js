@@ -90,7 +90,7 @@ class PostTierList extends Component {
         return (
             <Fragment>
                 <MyButton tip="Post a Tier List" onClick={this.handleOpen} placement="bottom">
-                    <AddIcon style={{color:'white'}}></AddIcon>
+                    <AddIcon color="inherit"></AddIcon>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
