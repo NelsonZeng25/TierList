@@ -1,14 +1,16 @@
+import { ThemeProvider } from "@material-ui/core";
+
 const palette = {
   primary: {
-    light: "#718792",
-    main: "#455a64",
-    dark: "#1c313a",
+    light: "#424250",
+    main: "#33333d",
+    dark: "#0c0c17",
     contrastText: "#ffffff"
   },
   secondary: {
-    light: "#b2fef7",
-    main: "#80cbc4",
-    dark: "#4f9a94",
+    light: "#62ecb0",
+    main: "#1eb980",
+    dark: "#008853",
     contrastText: "#000000"
   }
 }
@@ -27,6 +29,7 @@ export default {
       maxWidth: "5rem"
     },
     pageTitle: {
+      color: palette.primary.contrastText,
       margin: "0.5rem auto 0.5rem auto"
     },
     textField: {
@@ -45,7 +48,12 @@ export default {
       position: "absolute"
     },
     login_signup_text: {
+      color: palette.primary.contrastText,
       marginTop: "1rem"
+    },
+    login_signup_link: {
+      color: palette.secondary.main,
+      textDecoration: 'inherit',
     },
     invisibleSeperator: {
       border: 'none',
@@ -57,7 +65,7 @@ export default {
       marginBottom: '20px',
     },
     paper: {
-      background: palette.primary.light,
+      background: palette.primary.dark,
       padding: 20
     },
     profile: {

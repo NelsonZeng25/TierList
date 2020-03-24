@@ -17,6 +17,24 @@ import { loginUser } from '../redux/actions/userActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
+    cssLabel: {
+        color: theme.palette.primary.contrastText
+    },
+    underline: {
+        "&::before": {
+            borderBottom: "1px solid #ffffff"
+          },
+          "&:hover:not(.Mui-disabled):before": {
+            borderBottom: "2px solid #ffffff"
+          },
+          "&::after": {
+            borderBottom: "2px solid #ffffff"
+          }
+    },
+    cssInput: {
+        color: 'white'
+    },
+
 });
 
 export class login extends Component {
@@ -59,10 +77,31 @@ export class login extends Component {
                     <form noValidate onSubmit={this.handleSubmit}>
                         <TextField id="email" name="email" type="email" label="Email" className={classes.textField}
                             helperText={errors.email} error={errors.email ? true : false} value={this.state.email} 
-                            onChange={this.handleChange} fullWidth/>
+                            onChange={this.handleChange} fullWidth 
+                            color="secondary" 
+                            autoComplete='off'
+                            InputLabelProps={{
+                                classes: { root: classes.cssLabel }
+                            }}
+                            InputProps={{
+                                classes: {
+                                    input: classes.cssInput,
+                                    underline: classes.underline,
+                                }
+                            }}
+                            />
                         <TextField id="password" name="password" type="password" label="Password" className={classes.textField}
                             helperText={errors.password} error={errors.password ? true : false} value={this.state.password} 
-                            onChange={this.handleChange} fullWidth/>
+                            onChange={this.handleChange} fullWidth color="secondary"
+                            InputLabelProps={{
+                                classes: { root: classes.cssLabel }
+                            }}
+                            InputProps={{
+                                classes: {
+                                    input: classes.cssInput,
+                                    underline: classes.underline,
+                                }
+                            }}/>
                         {errors.general && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.general}
@@ -75,7 +114,7 @@ export class login extends Component {
                             )}
                         </Button>
                         <br />
-                        <Typography variant="subtitle1" className={classes.login_signup_text}>Don't have an account? Sign up <Link to="/signup">here</Link></Typography>
+                        <Typography variant="subtitle1" className={classes.login_signup_text}>Don't have an account? Sign up <Link className={classes.login_signup_link} to="/signup">here</Link></Typography>
                     </form>
                 </Grid>
                 <Grid item sm/>

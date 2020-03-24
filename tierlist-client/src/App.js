@@ -15,7 +15,6 @@ import { logoutUser, getUserData } from './redux/actions/userActions';
 
 //Components
 import Navbar from './components/layout/Navbar';
-import themeObject from './util/theme';
 import AuthRoute from './util/AuthRoute';
 
 // Pages
@@ -26,7 +25,8 @@ import user from './pages/user';
 
 const theme = createMuiTheme(themeFile);
 
-axios.defaults.baseURL = "https://us-central1-tierlist-57d59.cloudfunctions.net/api";
+// Only when its deploying time!
+//axios.defaults.baseURL = "https://us-central1-tierlist-57d59.cloudfunctions.net/api";
 
 const token = localStorage.FBIdToken;
 if (token) {

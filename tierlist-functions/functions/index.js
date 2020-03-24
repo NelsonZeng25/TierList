@@ -6,6 +6,9 @@ const config = require('./util/config');
 const { admin, db } = require('./util/admin');
 const FBAuth = require('./util/fbAuth');
 
+const cors = require('cors');
+app.use(cors());
+
 const { getAllTierLists, postOneTierList, getTierList, 
     commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList } = require('./handlers/tierLists');
 
