@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
@@ -6,41 +6,54 @@ import PropTypes from 'prop-types';
 import TierList from '../components/tierList/TierList';
 import Profile from '../components/profile/Profile';
 import TierListSkeleton from '../util/TierListSkeleton';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 import { connect } from 'react-redux';
 import { getTierLists } from '../redux/actions/dataActions';
+
+const styles = theme => ({
+    ...theme.spreadThis,
+});
 
 export class home extends Component {
     componentDidMount(){
         this.props.getTierLists();
     }
     render() {
+        const { classes } = this.props;
         const { tierLists, loading } = this.props.data;
         let recentTierListMarkup = !loading ? (
-            tierLists.map(tierList => <TierList key={tierList.tierListId} tierList={tierList}/>)
+          tierLists.map(tierList => (
+            <Grid item xs={4}>
+                <TierList key={tierList.tierListId} tierList={tierList} />
+            </Grid>
+          ))
         ) : (
-            <TierListSkeleton/>
-        )
+          <TierListSkeleton />
+        );
         return (
-            <Grid container spacing={2}>
-                <Grid item sm ={8} xs={12}>
+            <Grid container spacing={3}>
+                <Grid container item xs={3} spacing={0}>
+                    <Grid item xs={12}>
+                        <Profile />
+                    </Grid>
+                </Grid>
+                <Grid container item xs={9} spacing={3}>
                     {recentTierListMarkup}
                 </Grid>
-                <Grid item sm ={4} xs={12}>
-                    <Profile />
-                </Grid>
             </Grid>
-        )
+        );
     }
 }
 
 home.propTypes = {
     getTierLists: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     data: state.data
 })
 
-export default connect(mapStateToProps, { getTierLists })(home);
+export default connect(mapStateToProps, { getTierLists })(withStyles(styles)(home));
