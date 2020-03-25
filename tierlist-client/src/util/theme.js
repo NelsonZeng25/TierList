@@ -1,3 +1,5 @@
+import { ThemeProvider } from "@material-ui/core";
+
 const palette = {
   text: {
     primary: "#C5C6C7",
@@ -38,11 +40,22 @@ export default {
       useNextVariant: true
     },
     form: {
-      marginLeft: '-5%',
       textAlign: "center",
+      paddingRight: '5rem',
+      "@media (max-width:600px)": {
+        paddingRight: 0,
+      }
     },
     itemGrid: {
-      maxWidth: '270px',
+      margin: '0 auto',
+      maxWidth: '300px',
+    },
+    inputIcon: {
+      marginTop: '-16px',
+      backgroundColor: palette.primary.main,
+      width: '1.3rem',
+      height: '1.3rem',
+      padding: '15px',
     },
     image: {
       margin: "1rem auto 1rem auto",
@@ -53,12 +66,23 @@ export default {
       margin: "0.5rem auto 0.5rem auto"
     },
     textField: {
-      margin: "0.5rem auto 0.5rem auto"
+      margin: "0.5rem auto 0.5rem auto",
+      "& p": {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }
     },
     button: {
       marginTop: "1rem",
       position: "relative",
-      width: '100%'
+      width: '100%',
+      height: '2.8rem',
+    },
+    cssInput: {
+      paddingLeft: 0,
+      "& input": {
+          padding: '16px 12px 16px 10px'
+      },
     },
     customError: {
       color: "red",

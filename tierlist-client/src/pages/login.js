@@ -10,31 +10,36 @@ import { Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 // Redux stuff
 import { connect } from 'react-redux';
 import { loginUser } from '../redux/actions/userActions';
 
+// Icons
+import AccountIcon from '@material-ui/icons/AccountCircle';
+import PersonIcon from '@material-ui/icons/Person';
+import LockIcon from '@material-ui/icons/Lock';
+
 const styles = theme => ({
     ...theme.spreadThis,
-    cssLabel: {
-        color: theme.palette.primary.contrastText
-    },
     underline: {
-        "&::before": {
-            borderBottom: `1px solid ${theme.palette.primary.contrastText}`
-          },
-          "&:hover:not(.Mui-disabled):before": {
-            borderBottom: `2px solid ${theme.palette.primary.contrastText}`
-          },
-          "&::after": {
-            borderBottom: `2px solid ${theme.palette.primary.contrastText}`
-          }
+        // "&::before": {
+        //     borderBottom: "1px solid #ffffff"
+        //   },
+        //   "&:hover:not(.Mui-disabled):before": {
+        //     borderBottom: "2px solid #ffffff"
+        //   },
+        //   "&::after": {
+        //     borderBottom: "2px solid #ffffff"
+        //   }
+        "&&&:before": {
+            borderBottom: "none"
+        },
+        "&&:after": {
+            borderBottom: "none"
+        }
     },
-    cssInput: {
-        color: 'white'
-    },
-
 });
 
 export class login extends Component {
@@ -68,56 +73,58 @@ export class login extends Component {
         const { errors } = this.state;
         return (
             <Grid container className={classes.form}>
-                <Grid item sm/>
                 <Grid className={classes.itemGrid} item sm>
                     <img src={AppIcon} alt="Monkey" className={classes.image}></img>
                     <Typography variant="h2" className={classes.pageTitle}>
                         Login
                     </Typography>
                     <form noValidate onSubmit={this.handleSubmit}>
-                        <TextField id="email" name="email" type="email" label="Email" className={classes.textField}
+                        <TextField id="email" name="email" type="email" placeholder="Email" className={classes.textField}
                             helperText={errors.email} error={errors.email ? true : false} value={this.state.email} 
-                            onChange={this.handleChange} fullWidth 
+                            onChange={this.handleChange} fullWidth variant="filled"
                             color="secondary" 
                             autoComplete='off'
-                            InputLabelProps={{
-                                classes: { root: classes.cssLabel }
-                            }}
                             InputProps={{
                                 classes: {
-                                    input: classes.cssInput,
+                                    root: classes.cssInput,
                                     underline: classes.underline,
-                                }
+                                },
+                                startAdornment: (
+                                    <InputAdornment className={classes.inputAdornment} position="start">
+                                      <PersonIcon className={classes.inputIcon}/>
+                                    </InputAdornment>
+                                  ),
                             }}
                             />
-                        <TextField id="password" name="password" type="password" label="Password" className={classes.textField}
+                        <TextField id="password" name="password" type="password" placeholder="Password" className={classes.textField}
                             helperText={errors.password} error={errors.password ? true : false} value={this.state.password} 
-                            onChange={this.handleChange} fullWidth color="secondary"
-                            InputLabelProps={{
-                                classes: { root: classes.cssLabel }
-                            }}
+                            onChange={this.handleChange} fullWidth color="secondary" variant="filled"
                             InputProps={{
                                 classes: {
-                                    input: classes.cssInput,
+                                    root: classes.cssInput,
                                     underline: classes.underline,
-                                }
+                                },
+                                startAdornment: (
+                                    <InputAdornment className={classes.inputAdornment} position="start">
+                                      <LockIcon className={classes.inputIcon}/>
+                                    </InputAdornment>
+                                  ),
                             }}/>
                         {errors.general && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.general}
                             </Typography>
                         )}
-                        <Button type="submit" variant="contained" color="secondary" className={classes.button} disabled={loading}>
-                            Login
+                        <Button type="submit" variant="contained" color='secondary' className={classes.button} disabled={loading}>
+                            Sign In
                             {loading && (
                                 <CircularProgress size={"1.5rem"} className={classes.progress}/>
                             )}
                         </Button>
                         <br />
-                        <Typography variant="subtitle1" className={classes.login_signup_text}>Not a member? <Link className={classes.login_signup_link} to="/signup">Signup now</Link></Typography>
+                        <Typography variant="subtitle1" className={classes.login_signup_text}>Not a member? <Link className={classes.login_signup_link} to="/signup">Sign up now</Link></Typography>
                     </form>
                 </Grid>
-                <Grid item sm/>
             </Grid>
         )
     }
