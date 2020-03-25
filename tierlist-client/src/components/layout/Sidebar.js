@@ -1,47 +1,69 @@
-import React, { Component } from "react";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
+import React, { Component, Fragment } from "react";
+import PropTypes from 'prop-types';
 
-// MUI stuff
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import Button from '@material-ui/core/Button';
 
 // Icons
 import HomeIcon from '@material-ui/icons/Home';
-import ProfileIcon from '@material-ui/icons/AccountBox';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PolymerIcon from '@material-ui/icons/Polymer';
-
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import GroupIcon from '@material-ui/icons/Group';
+import ArtTrackIcon from '@material-ui/icons/ArtTrack';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 
-const drawerWidth = 240;
-
-const styles = theme => ({});
+// Redux
+import { connect } from 'react-redux';
+import { logoutUser } from "../../redux/actions/userActions";
 
 class Sidebar extends Component {
-  state = {
-    open: false
-  };
-  setOpen = value => {
-    this.setState({
-      open: value
-    });
-  };
-  handleDrawerOpen = () => {
-    this.setOpen(true);
-  };
-
-  handleDrawerClose = () => {
-    this.setOpen(false);
-  };
+  handleLogout = () => {
+    this.props.logoutUser();
+  }
   render() {
-    const { classes } = this.props;
+    const { user : { authenticated, credentials } } = this.props;
+    const isManager = credentials.isManager;
+    const authSidebarLinksMarkup = (
+      <Fragment>
+        <li className="sidebar-item">
+          <a href={`/users/${credentials.userId}/tierLists`} className="sidebar-link">
+            <FormatListBulletedIcon />
+            <span className="link-text">Your Tier Lists</span>
+          </a>
+        </li>
+        <li className="sidebar-item">
+          <a href={`/users/${credentials.userId}/likes`} className="sidebar-link">
+            <FavoriteIcon />
+            <span className="link-text">Likes</span>
+          </a>
+        </li>
+      </Fragment>
+    );
+    const logoutLinkMarkup = (
+      <li className="sidebar-item">
+          <a onClick={this.handleLogout} id="logout-link" className="sidebar-link">
+            <ExitToAppIcon />
+            <span className="link-text">Logout</span>
+          </a>
+      </li>
+    );
+    const managerSidebarLinksMarkup = (
+      <Fragment>
+        <li className="sidebar-item">
+          <a href="/tierItems" className="sidebar-link">
+            <ArtTrackIcon />
+            <span className="link-text">Tier Items</span>
+          </a>
+        </li>
+        <li className="sidebar-item">
+          <a href="/categories" className="sidebar-link">
+            <PostAddIcon />
+            <span className="link-text">Categories</span>
+          </a>
+        </li>
+      </Fragment>
+    );
 
     return (
       <nav className="sidebar">
@@ -53,33 +75,34 @@ class Sidebar extends Component {
             </a>
           </li>
           <li className="sidebar-item">
-            <a href="#" className="sidebar-link">
+            <a href="/" className="sidebar-link">
               <HomeIcon />
               <span className="link-text">Home</span>
             </a>
           </li>
           <li className="sidebar-item">
-            <a href="#" className="sidebar-link">
-              <FormatListBulletedIcon />
-              <span className="link-text">Your Tier Lists</span>
+            <a href="/users" className="sidebar-link">
+              <GroupIcon />
+              <span className="link-text">Users</span>
             </a>
           </li>
-          <li className="sidebar-item">
-            <a href="#" className="sidebar-link">
-              <FavoriteIcon />
-              <span className="link-text">Likes</span>
-            </a>
-          </li>
-          <li className="sidebar-item">
-            <a href="#" className="sidebar-link">
-              <ExitToAppIcon />
-              <span className="link-text">Logout</span>
-            </a>
-          </li>
+          <li></li>
+          {authenticated && authSidebarLinksMarkup}
+          {isManager && managerSidebarLinksMarkup}
+          {authenticated && logoutLinkMarkup}
         </ul>
       </nav>
     );
   }
 }
 
-export default Sidebar;
+Sidebar.propTypes = {
+  user: PropTypes.object.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, { logoutUser })(Sidebar);

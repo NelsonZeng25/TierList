@@ -10,17 +10,23 @@ import CardContent from '@material-ui/core/CardContent';
 
 const styles = theme => ({
     card: {
+        backgroundColor: theme.palette.primary.main,
+        position: 'relative',
         display: 'flex',
-        marginBottom: '20px',
+        padding: '15px',
     },
     cardContent: {
-        width: '100%',
-        flexDirection: 'column',
-        padding: '25px',
+        padding: '0 16px 24px 16px',
+        "&:last-child": {
+            paddingBottom: 0
+        }
     },
     cover: {
-        minWidth: '200px',
-        objectFit: 'cover',
+        margin: '0 0 auto 0',
+        display: 'block',
+        width: '60px',
+        height: '60px',
+        borderRadius: '50%',
     },
     userName: {
         width: '60px',
@@ -28,7 +34,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.secondary.main,
         marginBottom: '7px',
     },
-    date: {
+    user: {
         height: '14px',
         width: '100px',
         backgroundColor: 'rgba(0,0,0, 0.3)',
@@ -36,7 +42,7 @@ const styles = theme => ({
     },
     fullLine: {
         height: '15px',
-        width: '90%',
+        width: '200px',
         backgroundColor: 'rgba(0,0,0, 0.6)',
         marginBottom: '10px'
     },
@@ -50,18 +56,17 @@ const styles = theme => ({
 
 const TierListSkeleton = (props) => {
     const { classes } = props;
-    const content = Array.from({ length: 5 }).map((item, index) => (
-        <Card className={classes.card} key={index}>
+    const content = (
+        <Card className={classes.card}>
             <CardMedia className={classes.cover} image={NoImg}></CardMedia>
             <CardContent className={classes.cardContent}>
                 <div className={classes.userName}></div>
-                <div className={classes.date}></div>
+                <div className={classes.user}></div>
+                <div className={classes.user}></div>
                 <div className={classes.fullLine}></div>
-                <div className={classes.fullLine}></div>
-                <div className={classes.halfLine}></div>
             </CardContent>
         </Card>
-    ))
+    );
     return (
         <Fragment>
             {content}

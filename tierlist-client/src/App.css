@@ -87,11 +87,13 @@ body::-webkit-scrollbar-thumb{
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative,
 }
 .sidebar-item{
   width: 100%;
 }
 .sidebar-link{
+  cursor: pointer;
   display: flex;
   align-items: center;
   height: 5rem;
@@ -142,8 +144,10 @@ a{
     display: inline;
     transition: opacity var(--transtition-speed);
   }
-  .sidebar-item:last-child{
-    margin-top: 28.6rem;
+  #logout-link{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
 
   .grid-container {
@@ -169,6 +173,16 @@ a{
   }
   .sidebar-link {
     justify-content: center;
+  }
+  #logout-link{
+    position: relative;
+    bottom: auto;
+  }
+  .sidebar-link svg {
+    min-width: 0.8rem;
+    margin: 0 1rem;
+    font-size: 2rem;
+    color: var(--bg-secondary);
   }
 
   .container {

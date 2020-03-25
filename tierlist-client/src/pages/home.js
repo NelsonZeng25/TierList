@@ -68,7 +68,15 @@ export class home extends Component {
                 </Fragment>
             ))
         ) : (
-            <TierListSkeleton />
+            <Fragment>
+                <Typography variant="h5" className={classes.categoryName}>Category</Typography>
+                <hr className={classes.visibleSeperator}/>
+                {Array.from({ length: 10 }).map((item, index) => (
+                    <Grid className={classes.gridTierList} key={index} item xs={6}>
+                        <TierListSkeleton />
+                    </Grid>
+                ))}
+            </Fragment>
         );
         return (
             <Grid className="grid-container" container spacing={3}>
