@@ -60,7 +60,7 @@ class Sidebar extends Component {
           <li className="sidebar-item">
             <a href="#" className="sidebar-link">
               <FormatListBulletedIcon />
-              <span class="link-text">Your Tier Lists</span>
+              <span className="link-text">Your Tier Lists</span>
             </a>
           </li>
           <li className="sidebar-item">

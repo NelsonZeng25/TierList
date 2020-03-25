@@ -102,7 +102,6 @@ export default {
         width: 200,
         height: 200,
         objectFit: "cover",
-        maxWidth: "100%",
         borderRadius: "50%",
         border: `4px solid ${palette.primary.contrastText}`,
       },

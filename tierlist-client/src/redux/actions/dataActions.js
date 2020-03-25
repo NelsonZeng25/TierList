@@ -1,7 +1,7 @@
 import { 
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
-    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT 
+    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT, UPDATE_TIERLISTS_IMG 
 } from '../types';
 import axios from 'axios';
 
@@ -131,4 +131,11 @@ export const getUserData = (userId) => (dispatch) => {
 // Clear errors
 export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });
+}
+
+export const updateTierListImg = (imageUrl) => (dispatch) => {
+    dispatch({ 
+        type: UPDATE_TIERLISTS_IMG,
+        payload: imageUrl,
+    })
 }

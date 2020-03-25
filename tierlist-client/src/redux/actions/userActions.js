@@ -1,5 +1,6 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, LOADING_USER, SET_UNAUTHENTICATED, MARK_NOTIFICATIONS_READ } from '../types';
+import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, LOADING_USER, SET_UNAUTHENTICATED, MARK_NOTIFICATIONS_READ, UPDATE_TIERLISTS_IMG } from '../types';
 import axios from 'axios';
+import { updateTierListImg, getTierLists } from './dataActions';
 
 const setAuthorizationHeader = (token) => {
     const FBIdToken = `Bearer ${token}`;
@@ -64,6 +65,9 @@ export const uploadImage = (formData) => (dispatch) => {
     axios.post('/user/image', formData)
         .then(() => {
             dispatch(getUserData());
+            setTimeout(function(){
+                dispatch(getTierLists());
+            }, 1000);
         })
         .catch(err => console.log(err))
 }

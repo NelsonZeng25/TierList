@@ -1,5 +1,5 @@
 import { 
-    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
+    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST, UPDATE_TIERLISTS_IMG,
     LOADING_DATA, 
     SUBMIT_COMMENT} from '../types';
 
@@ -50,7 +50,15 @@ export default function(state = initialState, action){
                     action.payload,
                     ...state.tierLists,
                 ]
-            }
+            };
+        case UPDATE_TIERLISTS_IMG:
+            state.tierLists.forEach(tierList => {
+                if (tierList.userId === state.user.credentials.userId)
+                    tierList.userImage = action.payload.imageUrl
+            })
+            return {
+                ...state
+            };
         case SUBMIT_COMMENT:
             index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
             state.tierLists[index].commentCount++;

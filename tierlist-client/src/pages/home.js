@@ -11,11 +11,35 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import { getTierLists } from '../redux/actions/dataActions';
 
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 const styles = theme => ({
     ...theme.spreadThis,
+    gridProfile: {
+        "@media (max-width:1165px)": {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        }
+    },
+    gridTierLists: {
+        "@media (max-width:1165px)": {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        },
+    },
+    gridTierList: {
+        "@media (max-width:900px)": {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        }
+    }
 });
 
 export class home extends Component {
+    state = {
+        profileSize: 3,
+        tierListSize: 9,
+    }
     componentDidMount(){
         this.props.getTierLists();
     }
@@ -24,7 +48,7 @@ export class home extends Component {
         const { tierLists, loading } = this.props.data;
         let recentTierListMarkup = !loading ? (
           tierLists.map(tierList => (
-            <Grid key={tierList.tierListId} item xs={4}>
+            <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
                 <TierList key={tierList.tierListId} tierList={tierList} />
             </Grid>
           ))
@@ -32,13 +56,13 @@ export class home extends Component {
           <TierListSkeleton />
         );
         return (
-            <Grid container spacing={3}>
-                <Grid container item xs={3} spacing={0}>
+            <Grid className="grid-container" container spacing={3}>
+                <Grid className={classes.gridProfile} container item xs={3} spacing={0}>
                     <Grid item xs={12}>
                         <Profile />
                     </Grid>
                 </Grid>
-                <Grid container item xs={9} spacing={3} direction="row" justify="center" alignItems="baseline">
+                <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
                     {recentTierListMarkup}
                 </Grid>
             </Grid>

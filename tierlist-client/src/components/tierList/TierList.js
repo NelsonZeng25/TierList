@@ -31,8 +31,8 @@ const styles = theme => ({
     image: {
         margin: '0 0 auto 0',
         display: 'block',
-        width: '20%',
-        height: '58px',
+        width: '60px',
+        height: '60px',
         borderRadius: '50%',
     },
     content: {
@@ -43,7 +43,12 @@ const styles = theme => ({
     },
     commentButton: {
         padding: '5px 5px 5px 10px',
-    }
+        marginLeft: '15px',
+        // "@media (max-width:900px)": {
+        //     padding: '5px 5px 5px 0px',
+        //     marginLeft: '0px',
+        // }
+    },
 });
 
 class TierList extends Component {
@@ -69,12 +74,19 @@ class TierList extends Component {
                     {deleteButton}
                     <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>
                     <Typography variant="body2" >Category: {category}</Typography>
-                    <LikeButton tierListId={tierListId}></LikeButton>
-                    <span>{likeCount} Likes</span>
-                    <MyButton btnClassName={classes.commentButton} tip="comments">
-                        <ChatIcon color="secondary"></ChatIcon>
-                    </MyButton>
-                    <span>{commentCount} Comments</span>
+                    <Grid className={classes.tierListCount} container>
+                        <Grid item>
+                            <LikeButton tierListId={tierListId}></LikeButton>
+                            <span>{likeCount} Likes</span>
+                        </Grid>
+                        <Grid item>
+                            <MyButton btnClassName={classes.commentButton} tip="comments">
+                                <ChatIcon color="secondary"></ChatIcon>
+                            </MyButton>
+                            <span>{commentCount} Comments</span>
+                        </Grid>
+                    </Grid>
+                    
                     {/* <TierListDialog tierListId={tierListId} userId={userId} openDialog={this.props.openDialog}></TierListDialog> */}
                 </CardContent>
             </Card>
