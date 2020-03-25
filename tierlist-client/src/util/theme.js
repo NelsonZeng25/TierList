@@ -112,8 +112,13 @@ export default {
     paper: {
       background: palette.primary.main,
       maxWidth: '373px',
+      minWidth: '19%',
       padding: '15px',
       margin: '20px auto 0 auto',
+      position: 'fixed',
+      "@media (max-width:1200px)": {
+        position: 'relative',
+      }
     },
     profile: {
       "& .image-wrapper": {
@@ -122,7 +127,7 @@ export default {
         "& button": {
           position: "absolute",
           top: "80%",
-          left: "70%"
+          left: "73%"
         }
       },
       "& .profile-image": {
@@ -134,6 +139,7 @@ export default {
       },
       "& .profile-details": {
         textAlign: "center",
+        maxWidth: '335px',
         "& span": {
           color: palette.primary.contrastText
         },

@@ -15,13 +15,13 @@ import { Typography } from '@material-ui/core';
 const styles = theme => ({
     ...theme.spreadThis,
     gridProfile: {
-        "@media (max-width:1165px)": {
+        "@media (max-width:1200px)": {
             maxWidth: '100%',
             flexBasis: '100%',
         }
     },
     gridTierLists: {
-        "@media (max-width:1165px)": {
+        "@media (max-width:1200px)": {
             maxWidth: '100%',
             flexBasis: '100%',
         },
