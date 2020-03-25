@@ -1,9 +1,46 @@
 import { 
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
-    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT, UPDATE_TIERLISTS_IMG 
+    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS,
 } from '../types';
 import axios from 'axios';
+
+// Get All Categories
+export const getCategories = () => (dispatch) => {
+    dispatch({ type: LOADING_DATA });
+    axios.get('/categories')
+        .then(res => {
+            dispatch({
+                type: SET_CATEGORIES,
+                payload: res.data
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_CATEGORIES,
+                payload: [],
+            })
+        })
+};
+
+// Get All Categories with their associated Tier Lists
+export const getCategoriesWithTierLists = () => (dispatch) => {
+    dispatch({ type: LOADING_DATA });
+    axios.get('/categoriesWithTierLists')
+        .then(res => {
+            dispatch({
+                type: SET_CATEGORIES_WITH_TIERLISTS,
+                payload: res.data
+            })
+        })  
+        .catch(err => {
+            dispatch({
+                type: SET_CATEGORIES_WITH_TIERLISTS,
+                payload: [],
+            })
+        })
+};
 
 // Get All Tier Lists
 export const getTierLists = () => (dispatch) => {
@@ -99,12 +136,12 @@ export const submitComment = (tierListId, commentData) => (dispatch) => {
 }
 
 // Delete a Tier List
-export const deleteTierList = (tierListId) => (dispatch) => {
-    axios.delete(`/tierLists/${tierListId}`)
+export const deleteTierList = (tierList) => (dispatch) => {
+    axios.delete(`/tierLists/${tierList.tierListId}`)
         .then(() => {
             dispatch({ 
                 type: DELETE_TIERLIST,
-                payload: tierListId,
+                payload: tierList,
             });
         })
         .catch(err => console.log(err))
@@ -131,11 +168,4 @@ export const getUserData = (userId) => (dispatch) => {
 // Clear errors
 export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });
-}
-
-export const updateTierListImg = (imageUrl) => (dispatch) => {
-    dispatch({ 
-        type: UPDATE_TIERLISTS_IMG,
-        payload: imageUrl,
-    })
 }

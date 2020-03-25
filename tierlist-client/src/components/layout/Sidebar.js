@@ -16,6 +16,7 @@ import ProfileIcon from '@material-ui/icons/AccountBox';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PolymerIcon from '@material-ui/icons/Polymer';
 
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
@@ -46,7 +47,7 @@ class Sidebar extends Component {
       <nav className="sidebar">
         <ul className="sidebar-nav">
           <li className="sidebar-logo">
-            <a href="#" className="sidebar-link">
+            <a href="#" id="sidebar-logo-link" className="sidebar-link">
               <span id="logo-text" className="link-text">Tier Lists</span>
               <DoubleArrowIcon />
             </a>

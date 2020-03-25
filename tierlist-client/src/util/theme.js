@@ -1,6 +1,7 @@
 const palette = {
   text: {
     primary: "#C5C6C7",
+    primaryStrong: '#FFFFFF',
     secondary: "#000000",
   },
   primary: {
@@ -86,7 +87,9 @@ export default {
     },
     paper: {
       background: palette.primary.main,
-      padding: 20
+      maxWidth: '373px',
+      padding: '15px',
+      margin: '20px auto 0 auto',
     },
     profile: {
       "& .image-wrapper": {

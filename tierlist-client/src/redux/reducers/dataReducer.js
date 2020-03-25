@@ -1,14 +1,18 @@
 import { 
-    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST, UPDATE_TIERLISTS_IMG,
+    SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, 
-    SUBMIT_COMMENT} from '../types';
+    SUBMIT_COMMENT,
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS
+} from '../types';
 
 const initialState = {
     tierLists: [],
     tierList: {},
+    categories: [],
+    categoriesWithTierLists: {},
     loading: false,
 };
-let index;
+let index, selectedTierList;
 export default function(state = initialState, action){
     switch(action.type){
         case LOADING_DATA:
@@ -30,34 +34,33 @@ export default function(state = initialState, action){
             };
         case LIKE_TIERLIST:
         case UNLIKE_TIERLIST:
-            index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            state.tierLists[index] = action.payload;
-            if (state.tierList.tierListId === action.payload.tierListId)
-                state.tierList = action.payload;
+            // index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
+            // state.tierLists[index] = action.payload;
+            // if (state.tierList.tierListId === action.payload.tierListId)
+            //     state.tierList = action.payload;
+            
+            index = state.categoriesWithTierLists[action.payload.category].findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
+            state.categoriesWithTierLists[action.payload.category][index] = action.payload;
             return {
                 ...state,
             };
         case DELETE_TIERLIST:
-            index = state.tierLists.findIndex(tierList => tierList.tierListId === action.payload);
-            state.tierLists.splice(index, 1);
+            //index = state.tierLists.findIndex(tierList => tierList.tierListId === action.payload.tierListId);
+            //state.tierLists.splice(index, 1);
+            
+            index = state.categoriesWithTierLists[action.payload.category].findIndex(tierList => tierList.tierListId === action.payload.tierListId);
+            state.categoriesWithTierLists[action.payload.category].splice(index, 1);
             return {
                 ...state
             };
         case POST_TIERLIST:
+            state.categoriesWithTierLists[action.payload.category].push(action.payload);
             return {
                 ...state,
                 tierLists: [
                     action.payload,
                     ...state.tierLists,
-                ]
-            };
-        case UPDATE_TIERLISTS_IMG:
-            state.tierLists.forEach(tierList => {
-                if (tierList.userId === state.user.credentials.userId)
-                    tierList.userImage = action.payload.imageUrl
-            })
-            return {
-                ...state
+                ],
             };
         case SUBMIT_COMMENT:
             index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
@@ -70,6 +73,18 @@ export default function(state = initialState, action){
                     ...state.tierList,
                     comments: [action.payload, ...state.tierList.comments]
                 }
+            };
+        case SET_CATEGORIES:
+            return {
+                ...state,
+                categories: action.payload,
+                loading: false,
+            };
+        case SET_CATEGORIES_WITH_TIERLISTS:
+            return {
+                ...state,
+                categoriesWithTierLists: action.payload,
+                loading: false,
             }
         default:
             return state;

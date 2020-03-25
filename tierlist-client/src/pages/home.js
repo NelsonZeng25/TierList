@@ -9,9 +9,8 @@ import TierListSkeleton from '../util/TierListSkeleton';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import { connect } from 'react-redux';
-import { getTierLists } from '../redux/actions/dataActions';
-
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { getTierLists, getCategoriesWithTierLists } from '../redux/actions/dataActions';
+import { Typography } from '@material-ui/core';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -32,28 +31,44 @@ const styles = theme => ({
             maxWidth: '100%',
             flexBasis: '100%',
         }
+    },
+    categoryName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
     }
 });
 
 export class home extends Component {
-    state = {
-        profileSize: 3,
-        tierListSize: 9,
-    }
     componentDidMount(){
-        this.props.getTierLists();
+        this.props.getCategoriesWithTierLists();
+        //this.props.getTierLists();
     }
     render() {
         const { classes } = this.props;
-        const { tierLists, loading } = this.props.data;
-        let recentTierListMarkup = !loading ? (
-          tierLists.map(tierList => (
-            <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
-                <TierList key={tierList.tierListId} tierList={tierList} />
+        const { tierLists, categoriesWithTierLists, loading } = this.props.data;
+        
+        const tierListsMarkup = (category) => (
+            categoriesWithTierLists[category].map(tierList => (
+                <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
+                    <TierList key={tierList.tierListId} tierList={tierList} />
+                </Grid>
+        )));
+        const categoryMarkup = (category) => (
+            <Grid item xs={12}>
+                <Typography variant="h5" key={category} className={classes.categoryName}>{category}</Typography>
             </Grid>
-          ))
+        );
+        const categoryWithTierListsMarkup = !loading ? (
+            Object.keys(categoriesWithTierLists).map(category => (
+                <Fragment>
+                    {categoriesWithTierLists[category].length > 0 && categoryMarkup(category)}
+                    {categoriesWithTierLists[category].length > 0 && <hr className={classes.visibleSeperator}/>}
+                    {tierListsMarkup(category)}
+                </Fragment>
+            ))
         ) : (
-          <TierListSkeleton />
+            <TierListSkeleton />
         );
         return (
             <Grid className="grid-container" container spacing={3}>
@@ -63,7 +78,7 @@ export class home extends Component {
                     </Grid>
                 </Grid>
                 <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
-                    {recentTierListMarkup}
+                    {categoryWithTierListsMarkup}
                 </Grid>
             </Grid>
         );
@@ -72,12 +87,18 @@ export class home extends Component {
 
 home.propTypes = {
     getTierLists: PropTypes.func.isRequired,
+    getCategoriesWithTierLists: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     data: state.data
-})
+});
 
-export default connect(mapStateToProps, { getTierLists })(withStyles(styles)(home));
+const mapActionsToProps = {
+    getTierLists,
+    getCategoriesWithTierLists
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(home));

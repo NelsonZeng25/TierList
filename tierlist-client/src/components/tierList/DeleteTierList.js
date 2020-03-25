@@ -15,8 +15,8 @@ import { deleteTierList } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     deleteButton: {
-        left: '86%',
-        top: '6%',
+        right: '0px',
+        top: '0%',
         position: 'absolute',
     }
 });
@@ -32,7 +32,7 @@ class DeleteTierList extends Component {
         this.setState({ open: false });
     }
     deleteTierList1 = () => {
-        this.props.deleteTierList(this.props.tierListId);
+        this.props.deleteTierList(this.props.tierList);
         this.setState({ open: false });
     }
     render() {
@@ -57,7 +57,7 @@ class DeleteTierList extends Component {
 DeleteTierList.propTypes = {
     deleteTierList: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
-    tierListId: PropTypes.string.isRequired
+    tierList: PropTypes.object.isRequired
 }
 
 export default connect(null, { deleteTierList })(withStyles(styles)(DeleteTierList));

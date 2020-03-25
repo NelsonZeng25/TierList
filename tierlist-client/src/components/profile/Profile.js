@@ -119,7 +119,7 @@ class Profile extends Component {
         ) : (
             <Paper className={classes.paper}>
             <Typography style={{color: 'white'}}variant="body2" align="center">
-                No Profile found, please login again
+                No Profile found, login or sign up here!
             </Typography>
             <div className={classes.buttons}>
                 <Button

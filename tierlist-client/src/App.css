@@ -64,9 +64,16 @@ body::-webkit-scrollbar-thumb{
   transform: rotate(0deg);
   transition: transform var(--transtition-speed);
 }
+.sidebar:hover #sidebar-logo-link {
+  filter: grayscale(0%) opacity(1);
+}
+.sidebar:hover .logo-text{
+  color: var(--text-primary-onHover);
+}
 .sidebar:hover .sidebar-logo svg {
   transform: rotate(-180deg);
 }
+
 .sidebar{
   position: fixed;
   background-color: var(--bg-primary-dark);

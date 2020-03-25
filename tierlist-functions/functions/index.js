@@ -14,7 +14,7 @@ const { getAllTierLists, postOneTierList, getTierList,
 
 const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } = require('./handlers/tierItems');
 
-const { getAllCategories, postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
+const { getAllCategories, getAllCategoriesWithTierLists, postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
 
 const { getAllComments, getComment, replyOnComment, deleteComment, likeComment, 
     unlikeComment, updateComment } = require('./handlers/comments');
@@ -46,6 +46,7 @@ app.post("/tierItems/:tierItemId/image", FBAuth, uploadTierItemImage);
 
 // categories routes
 app.get("/categories", getAllCategories);
+app.get('/categoriesWithTierLists', getAllCategoriesWithTierLists);
 app.post("/categories/createCategory", FBAuth, postOneCategory);
 app.get("/categories/:categoryId", getCategory);
 app.delete("/categories/:categoryId", FBAuth, deleteCategory);

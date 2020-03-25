@@ -17,6 +17,37 @@ exports.getAllCategories = (req, res) => {
       .catch(err => console.error(err));
 }
 
+exports.getAllCategoriesWithTierLists = (req, res) => {
+  let categories = {};
+  let tierLists;
+  let tierListData;
+  db.collection("categories")
+      .orderBy("name", "asc")
+      .get()
+      .then(data => {
+        data.forEach(doc => {
+          categories[doc.data().name] = [];
+        });
+        return db.collection('tierLists').get();
+      })
+      .then(data => {
+        data.forEach(doc => {
+          for (var name in categories) {
+            if (doc.data().category === name) {
+              tierListData = doc.data();
+              tierListData.tierListId = doc.id;
+              tierLists = categories[name];
+              tierLists.push(tierListData);
+              categories[name] = tierLists;
+              break;
+            }
+          }
+        });
+        return res.json(categories);
+      })
+      .catch(err => console.error(err))
+}
+
 // Get 1 Category
 exports.getCategory = (req, res) => {
     let categoryData = {};

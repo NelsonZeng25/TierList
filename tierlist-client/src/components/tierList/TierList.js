@@ -44,10 +44,6 @@ const styles = theme => ({
     commentButton: {
         padding: '5px 5px 5px 10px',
         marginLeft: '15px',
-        // "@media (max-width:900px)": {
-        //     padding: '5px 5px 5px 0px',
-        //     marginLeft: '0px',
-        // }
     },
 });
 
@@ -59,7 +55,7 @@ class TierList extends Component {
         } = this.props;
         const id = this.props.user.credentials.userId;
         const deleteButton = authenticated && userId === id ? (
-            <DeleteTierList tierListId={tierListId}/>
+            <DeleteTierList tierList={this.props.tierList}/>
         ) : null
         return (
             <Card className={classes.card}>

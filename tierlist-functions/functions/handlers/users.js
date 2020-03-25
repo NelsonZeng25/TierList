@@ -152,6 +152,7 @@ exports.getAuthenticatedUser = (req, res) => {
     .then(doc => {
       if(doc.exists) {
         userData.credentials = doc.data();
+        userData.credentials.isManager = req.user.isManager;
         return db.collection('likes').where('userId', '==', req.user.uid).get();
       }
     })
