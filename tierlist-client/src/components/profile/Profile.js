@@ -100,7 +100,7 @@ class Profile extends Component {
                 {website && (
                     <Fragment>
                     <LinkIcon color="secondary" />
-                    <a href={website} target="_blank" rel="noopener noreferrer">
+                    <a href={website} className="website" target="_blank" rel="noopener noreferrer">
                         {" "}
                         {website}
                     </a>

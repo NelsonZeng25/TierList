@@ -15,8 +15,8 @@ const styles = theme => ({
     ...theme.spreadThis,
     userName: {
         height: '20px',
-        backgroundColor: theme.palette.primary.main,
-        width: '60px',
+        backgroundColor: theme.palette.text.primary,
+        width: '100px',
         margin: '0 auto 7px auto',
     },
     fullLine: {
@@ -47,12 +47,14 @@ const ProfileSkeleton = (props) => {
                     <hr />
                     <div className={classes.fullLine}></div>
                     <div className={classes.fullLine}></div>
-                    <hr />
                     <LocationOn color="secondary"/> <span>Location</span>
                     <hr />
                     <LinkIcon color="secondary"/> <span>https://website.com</span>
                     <hr />
                     <CalendarToday color="secondary"/> <span>Joined date</span>
+                    <hr />
+                    <hr />
+                    <hr />
                 </div>
             </div>
         </Paper>

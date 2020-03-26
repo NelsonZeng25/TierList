@@ -122,7 +122,7 @@ body::-webkit-scrollbar-thumb{
 }
 
 .nav-container{
-  margin: auto;
+  margin: auto 25% auto auto;
 }
 .nav-container svg{
   color: var(--text-primary);
@@ -131,6 +131,21 @@ a{
   text-decoration: none;
 }
 
+.MuiAutocomplete-popper * {
+  background-color: var(--bg-primary);
+}
+.MuiAutocomplete-popper div {
+  color: var(--text-primary);
+}
+
+
+@media only screen and (max-width: 1200px) {
+  .nav-container {
+    margin: auto;
+  }
+}
+
+/* Big Screens */
 @media only screen and (min-width: 600px) {
   .sidebar {
     top: 0;

@@ -2,7 +2,7 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, 
     SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY
 } from '../types';
 
 const initialState = {
@@ -10,9 +10,11 @@ const initialState = {
     tierList: {},
     categories: [],
     categoriesWithTierLists: {},
+    viewCategory: {},
     loading: false,
 };
-let index, selectedTierList;
+let index;
+let tierListsSelected;
 export default function(state = initialState, action){
     switch(action.type){
         case LOADING_DATA:
@@ -39,8 +41,8 @@ export default function(state = initialState, action){
             // if (state.tierList.tierListId === action.payload.tierListId)
             //     state.tierList = action.payload;
             
-            index = state.categoriesWithTierLists[action.payload.category].findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            state.categoriesWithTierLists[action.payload.category][index] = action.payload;
+            index = state.viewCategory[action.payload.category].findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
+            state.viewCategory[action.payload.category][index] = action.payload;
             return {
                 ...state,
             };
@@ -48,13 +50,13 @@ export default function(state = initialState, action){
             //index = state.tierLists.findIndex(tierList => tierList.tierListId === action.payload.tierListId);
             //state.tierLists.splice(index, 1);
             
-            index = state.categoriesWithTierLists[action.payload.category].findIndex(tierList => tierList.tierListId === action.payload.tierListId);
-            state.categoriesWithTierLists[action.payload.category].splice(index, 1);
+            index = state.viewCategory[action.payload.category].findIndex(tierList => tierList.tierListId === action.payload.tierListId);
+            state.viewCategory[action.payload.category].splice(index, 1);
             return {
                 ...state
             };
         case POST_TIERLIST:
-            state.categoriesWithTierLists[action.payload.category].push(action.payload);
+            state.viewCategory[action.payload.category].push(action.payload);
             return {
                 ...state,
                 tierLists: [
@@ -83,9 +85,24 @@ export default function(state = initialState, action){
         case SET_CATEGORIES_WITH_TIERLISTS:
             return {
                 ...state,
+                viewCategory: action.payload,
                 categoriesWithTierLists: action.payload,
                 loading: false,
-            }
+            };
+        case SET_CATEGORY:
+            tierListsSelected = {};
+            tierListsSelected[action.payload] = state.categoriesWithTierLists[action.payload];
+            state.viewCategory = tierListsSelected
+            return {
+                ...state,
+                loading: false,
+            };
+        case RESET_VIEW_CATEGORY:
+            return {
+                ...state,
+                viewCategory: state.categoriesWithTierLists,
+                loading: false,
+            };
         default:
             return state;
     }

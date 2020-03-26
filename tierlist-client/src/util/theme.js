@@ -146,7 +146,7 @@ export default {
         "& span, svg": {
           verticalAlign: "middle"
         },
-        "& a": {
+        "& .website": {
           color: palette.primary.contrastText
         }
       },

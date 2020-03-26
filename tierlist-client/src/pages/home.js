@@ -9,7 +9,7 @@ import TierListSkeleton from '../util/TierListSkeleton';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import { connect } from 'react-redux';
-import { getTierLists, getCategoriesWithTierLists } from '../redux/actions/dataActions';
+import { getTierLists, getCategories, getCategoriesWithTierLists } from '../redux/actions/dataActions';
 import { Typography } from '@material-ui/core';
 
 const styles = theme => ({
@@ -42,14 +42,14 @@ const styles = theme => ({
 export class home extends Component {
     componentDidMount(){
         this.props.getCategoriesWithTierLists();
-        //this.props.getTierLists();
+        this.props.getCategories();
     }
     render() {
         const { classes } = this.props;
-        const { tierLists, categoriesWithTierLists, loading } = this.props.data;
+        const { tierLists, viewCategory, loading } = this.props.data;
         
         const tierListsMarkup = (category) => (
-            categoriesWithTierLists[category].map(tierList => (
+            viewCategory[category].map(tierList => (
                 <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
                     <TierList key={tierList.tierListId} tierList={tierList} />
                 </Grid>
@@ -60,10 +60,10 @@ export class home extends Component {
             </Grid>
         );
         const categoryWithTierListsMarkup = !loading ? (
-            Object.keys(categoriesWithTierLists).map(category => (
+            Object.keys(viewCategory).map(category => (
                 <Fragment>
-                    {categoriesWithTierLists[category].length > 0 && categoryMarkup(category)}
-                    {categoriesWithTierLists[category].length > 0 && <hr className={classes.visibleSeperator}/>}
+                    {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && categoryMarkup(category)}
+                    {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && <hr className={classes.visibleSeperator}/>}
                     {tierListsMarkup(category)}
                 </Fragment>
             ))
@@ -95,6 +95,7 @@ export class home extends Component {
 
 home.propTypes = {
     getTierLists: PropTypes.func.isRequired,
+    getCategories: PropTypes.func.isRequired,
     getCategoriesWithTierLists: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
@@ -106,6 +107,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     getTierLists,
+    getCategories,
     getCategoriesWithTierLists
 }
 

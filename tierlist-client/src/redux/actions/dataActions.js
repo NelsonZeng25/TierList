@@ -2,7 +2,7 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS,
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY,
 } from '../types';
 import axios from 'axios';
 
@@ -41,6 +41,21 @@ export const getCategoriesWithTierLists = () => (dispatch) => {
             })
         })
 };
+
+// Get All the Tier Lists for 1 category
+export const getTierListsWithOneCategory = (category) => (dispatch) => {
+    dispatch({ type: LOADING_DATA });
+    dispatch({ 
+        type: SET_CATEGORY,
+        payload: category
+    });
+};
+
+// Refresh home page Tier Lists
+export const refreshCategoriesWithTierLists = () => (dispatch) => {
+    dispatch({ type: RESET_VIEW_CATEGORY });
+};
+
 
 // Get All Tier Lists
 export const getTierLists = () => (dispatch) => {
