@@ -48,6 +48,29 @@ exports.getAllCategoriesWithTierLists = (req, res) => {
       .catch(err => console.error(err))
 }
 
+exports.getAllCategoriesWithTierListsForUser = (req, res) => {
+  let categories = {};
+  let tierListData;
+  db.collection('tierLists').where('userId', '==', req.params.userId).get()
+    .then(data => {
+      data.forEach(doc => {
+        tierListData = doc.data();
+        tierListData.tierListId = doc.id;
+        if (!categories.hasOwnProperty(tierListData.category))
+          categories[tierListData.category] = [tierListData];
+        else {
+          categories[tierListData.category].push(tierListData);
+        }
+      });
+      const ordered = {};
+      Object.keys(categories).sort().forEach(function(key) {
+        ordered[key] = categories[key];
+      });
+      return res.json(ordered);
+    })
+    .catch(err => console.error(err))
+}
+
 // Get 1 Category
 exports.getCategory = (req, res) => {
     let categoryData = {};

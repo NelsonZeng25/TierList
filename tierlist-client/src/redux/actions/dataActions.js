@@ -2,7 +2,7 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY,
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES
 } from '../types';
 import axios from 'axios';
 
@@ -54,6 +54,10 @@ export const getTierListsWithOneCategory = (category) => (dispatch) => {
 // Refresh home page Tier Lists
 export const refreshCategoriesWithTierLists = () => (dispatch) => {
     dispatch({ type: RESET_VIEW_CATEGORY });
+};
+
+export const refreshCategories = () => (dispatch) => {
+    dispatch({ type: RESET_CATEGORIES });
 };
 
 
@@ -165,18 +169,20 @@ export const deleteTierList = (tierList) => (dispatch) => {
 // Get the user data for user page
 export const getUserData = (userId) => (dispatch) => {
     dispatch({ type: LOADING_DATA });
-    axios.get(`/users/${userId}`)
+    axios.get(`/categoriesWithTierLists/${userId}`)
         .then(res => {
             dispatch({
-                type: SET_TIERLISTS,
-                payload: res.data.tierLists,
+                type: SET_CATEGORIES_WITH_TIERLISTS,
+                payload: res.data,
             });
+            dispatch(refreshCategories());
         })
         .catch(() => {
             dispatch({
-                type: SET_TIERLIST,
+                type: SET_CATEGORIES_WITH_TIERLISTS,
                 payload: null,
             });
+            dispatch(refreshCategories());
         })
 }
 

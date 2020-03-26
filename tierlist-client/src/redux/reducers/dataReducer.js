@@ -2,7 +2,7 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, 
     SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES
 } from '../types';
 
 const initialState = {
@@ -15,6 +15,7 @@ const initialState = {
 };
 let index;
 let tierListsSelected;
+let newCategories;
 export default function(state = initialState, action){
     switch(action.type){
         case LOADING_DATA:
@@ -103,6 +104,15 @@ export default function(state = initialState, action){
                 viewCategory: state.categoriesWithTierLists,
                 loading: false,
             };
+        case RESET_CATEGORIES:
+            newCategories = [];
+            for (var category in state.categoriesWithTierLists) {
+                newCategories.push({ name: category});
+            }
+            return {
+                ...state,
+                categories: newCategories,
+            }
         default:
             return state;
     }

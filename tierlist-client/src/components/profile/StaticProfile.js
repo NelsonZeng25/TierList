@@ -38,7 +38,7 @@ const StaticProfile = (props) => {
                     @{userName}
                 </MuiLink>
                 <hr />
-                {bio && <Typography style={{color:'white'}} variant="body2">{bio}</Typography>}
+                {bio && <Typography color="textPrimary" variant="body2">{bio}</Typography>}
                 <hr />
                 {location && (
                     <Fragment>
@@ -49,7 +49,7 @@ const StaticProfile = (props) => {
                 {website && (
                     <Fragment>
                     <LinkIcon color="secondary" />
-                    <a href={website} target="_blank" rel="noopener noreferrer">
+                    <a href={website} className="website" target="_blank" rel="noopener noreferrer">
                         {" "}
                         {website}
                     </a>

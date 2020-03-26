@@ -27,7 +27,7 @@ class Sidebar extends Component {
     const authSidebarLinksMarkup = (
       <Fragment>
         <li className="sidebar-item">
-          <a href={`/users/${credentials.userId}/tierLists`} className="sidebar-link">
+          <a href={`/users/${credentials.userId}`} className="sidebar-link">
             <FormatListBulletedIcon />
             <span className="link-text">Your Tier Lists</span>
           </a>
@@ -69,7 +69,7 @@ class Sidebar extends Component {
       <nav className="sidebar">
         <ul className="sidebar-nav">
           <li className="sidebar-logo">
-            <a href="#" id="sidebar-logo-link" className="sidebar-link">
+            <a href="/" id="sidebar-logo-link" className="sidebar-link">
               <span id="logo-text" className="link-text">Tier Lists</span>
               <DoubleArrowIcon />
             </a>
