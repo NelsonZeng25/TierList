@@ -60,7 +60,6 @@ export class tierList extends Component {
         this.props.getTierList(tierListId);
         axios.get(`/tierLists/${tierListId}`)
             .then(res => {
-                console.log(res.data);
                 category = res.data.category;
                 tierItems = res.data.tierItems;
             })

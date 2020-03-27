@@ -3,16 +3,16 @@ import {
     LOADING_DATA, 
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS,
 } from '../types';
 
 const initialState = {
-    tierLists: [],
     tierList: {},
     tierItems: [],
     categories: [],
     categoriesWithTierLists: {},
     viewCategory: {},
+    viewTierItems: [],
     loading: false,
 };
 let index;
@@ -110,7 +110,7 @@ export default function(state = initialState, action){
         case RESET_CATEGORIES:
             newCategories = [];
             for (var category in state.categoriesWithTierLists) {
-                newCategories.push({ name: category});
+                newCategories.push({ name: category });
             }
             return {
                 ...state,
@@ -120,8 +120,20 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 tierItems: action.payload,
+                viewTierItems: action.payload,
                 loading: false
-            }
+            };
+        case SET_USER_TIER_ITEMS:
+            state.viewTierItems = state.tierItems.filter(tierItem => tierItem.userId === action.payload);
+            return {
+                ...state,
+            };
+        case RESET_VIEW_TIER_ITEMS:
+            return {
+                ...state,
+                viewTierItems: state.tierItems,
+                loading: false,
+            };
         default:
             return state;
     }

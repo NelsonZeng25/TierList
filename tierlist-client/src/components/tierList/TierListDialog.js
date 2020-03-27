@@ -17,6 +17,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import AppBar from '@material-ui/core/AppBar';
+
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
 import EditIcon from '@material-ui/icons/Edit';
@@ -25,7 +29,7 @@ import UnfoledMore from '@material-ui/icons/UnfoldMore';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { getTierList, clearErrors } from '../../redux/actions/dataActions';
+import { getUserTierItems, refreshTierItems, clearErrors } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -47,13 +51,11 @@ const styles = theme => ({
     },
     dialogTitle: {
         color: theme.palette.text.primary,
-        maxHeight: '20px',
         fontSize: '20px',
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
     closeButton: {
-        padding: '0px',
         float: 'right',
         color: theme.palette.text.primary
     },
@@ -68,7 +70,7 @@ const styles = theme => ({
         borderLeft: '6px solid',
         borderTop: '6px solid',
         borderColor: theme.palette.text.primary,
-        height: '625px',
+        height: '595px',
         maxHeight: '625px',
         overflow: 'auto',
     },
@@ -78,7 +80,8 @@ const styles = theme => ({
         minHeight: '295px',
         borderRadius: '10px',
         paddingBottom: '6px',
-        border: '2px solid white',
+        border: '2px solid',
+        borderColor: theme.palette.text.primary,
         cursor: 'pointer',
     },
     tierItem: {
@@ -90,7 +93,7 @@ const styles = theme => ({
         border: '2px solid transparent',
         cursor: 'pointer',
         "&:hover": {
-            borderColor: 'white',
+            borderColor: theme.palette.text.primary,
         },
     },
     tierItemImage: {
@@ -126,14 +129,26 @@ const styles = theme => ({
         textAlign: 'center',
         margin: '10px 6px 2px 6px',
     },
+    addButton: {
+        marginLeft: '60px',
+        width: '200px',
+    },
+    nextButton: {
+        marginLeft: '68px',
+        marginTop: '60px',
+        width: '200px',
+    }
 });
 
 class TierListDialog extends Component {
     state = {
         open: false,
+        open2: false,
+        isAddTierItem: false,
         selectedIndex: -1,
         selectedImage: 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media',
-        selectedName: '',
+        selectedName: 'name',
+        selectedTab: 0,
     }
     handleOpen = () => {
         this.setState({ open: true });
@@ -148,17 +163,37 @@ class TierListDialog extends Component {
             selectedName: name,
             selectedImage: imageUrl,
         });
-     }
+    }
+    handleAllTierItemsClick = () => {
+        this.props.refreshTierItems();
+        this.setState({ 
+            isAddTierItem: false,
+            selectedTab: 0 
+        });
+    }
+    handleUserTierItemsClick = (userId) => {
+        this.props.getUserTierItems(userId);
+        this.setState({ 
+            isAddTierItem: false,
+            selectedTab: 1 
+        });
+    }
+    handleAddTierItemClick = () => {
+        this.setState({ 
+            isAddTierItem: true,
+            selectedTab: 2 
+        });
+    }
      
     render(){
-        const { classes, UI: { loading }, data: { tierItems }} = this.props;
+        const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierItems }} = this.props;
         
         const tierItemMarkup = (
-            tierItems.map((tierItem, index) => (
+            viewTierItems.map((tierItem, index) => (
                 <Grid key={index} item xs={3}>
-                    <Paper key={index} onClick={this.handleSelected.bind(this, index, tierItem.name, tierItem.imageUrl)} className={ this.state.selectedIndex === index ? classes.clickTierItem : classes.tierItem}>
-                        <img key={index} src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" />
-                        <Typography key={index} className={classes.tierItemName}>{tierItem.name}</Typography>
+                    <Paper onClick={this.handleSelected.bind(this, index, tierItem.name, tierItem.imageUrl)} className={ this.state.selectedIndex === index ? classes.clickTierItem : classes.tierItem}>
+                        <img src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" />
+                        <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                     </Paper>
                 </Grid>
             ))
@@ -170,29 +205,38 @@ class TierListDialog extends Component {
                 </Button>
                 <Dialog  className={classes.dialog} open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="lg">
                     <DialogTitle className={classes.dialogTitle} >
-                        TIER ITEMS
-                        <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
-                        <CloseIcon></CloseIcon>
-                    </MyButton>
+                        <AppBar position="static">
+                            <Grid container>
+                                <Grid item xs={11}>
+                                <Tabs value={this.state.selectedTab} indicatorColor="secondary" aria-label="simple tabs example">
+                                    <Tab label="Tier Items" onClick={this.handleAllTierItemsClick} value={0}/>
+                                    <Tab label="Your Tier Items" onClick={this.handleUserTierItemsClick.bind(this,userId)} value={1}/>
+                                    <Tab label="Add Tier Items" onClick={this.handleAddTierItemClick} value={2}/>
+                                </Tabs>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
+                                        <CloseIcon></CloseIcon>
+                                    </MyButton>
+                                </Grid>
+                            </Grid>
+                        </AppBar>
                     </DialogTitle>
                     <DialogContent className={classes.dialogContent}>
-                    <Grid container spacing={3}>
-                        <Grid className={classes.selectionContainer} container item xs={9} spacing={3}>
-                            {/* <Grid item xs={3}>
-                                <Paper className={classes.tierItem}>
-                                    <img src="https://img.reelgood.com/content/show/e0056be9-5f20-47e8-9aeb-038e97e5b07b/backdrop-1920.jpg?alt=media" className={classes.tierItemImage} alt="Tier Item Picture" />
-                                    <Typography className={classes.tierItemName}>Katanagatari 1</Typography>
+                        <Grid container spacing={3}>
+                            <Grid className={classes.selectionContainer} container item xs={9} spacing={3}>
+                                {!this.state.isAddTierItem ? (tierItemMarkup) : (
+                                    <Fragment></Fragment>
+                                )}
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Paper className={classes.selectedTierItem}>
+                                    <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item Picture" />
+                                    <Typography className={classes.selectedTierItemName}>{this.state.selectedName}</Typography>
                                 </Paper>
-                            </Grid> */}
-                            {tierItemMarkup}
+                                <Button color="secondary" className={classes.nextButton} variant="contained">Next</Button>
+                            </Grid>  
                         </Grid>
-                        <Grid item xs={3}>
-                            <Paper className={classes.selectedTierItem}>
-                                <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item Picture" />
-                                <Typography className={classes.selectedTierItemName}>{this.state.selectedName}</Typography>
-                            </Paper>
-                        </Grid>  
-                    </Grid>
                     </DialogContent>
                 </Dialog>
             </Fragment>
@@ -204,14 +248,20 @@ TierListDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    getUserTierItems: PropTypes.func.isRequired,
+    refreshTierItems: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
+    user: state.user,
     data: state.data,
     UI: state.UI,
 })
 
 const mapActionsToProps = {
+    getUserTierItems,
+    refreshTierItems,
     clearErrors
 };
 

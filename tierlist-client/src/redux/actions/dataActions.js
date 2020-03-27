@@ -3,7 +3,7 @@ import {
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS,
 } from '../types';
 import axios from 'axios';
 
@@ -77,6 +77,18 @@ export const getTierItemsForOneCategory = (category) => (dispatch) => {
                 payload: []
             })
         })
+}
+
+// Get All Tier Items made by a user
+export const getUserTierItems = (userId) => (dispatch) => {
+    dispatch({
+        type: SET_USER_TIER_ITEMS,
+        payload: userId,
+    });
+}
+
+export const refreshTierItems = () => (dispatch) => {
+    dispatch({ type: RESET_VIEW_TIER_ITEMS });
 }
 
 
