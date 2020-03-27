@@ -15,6 +15,7 @@ import { logoutUser, getUserData } from './redux/actions/userActions';
 
 //Components
 import Navbar from './components/layout/Navbar';
+import Sidebar from './components/layout/Sidebar';
 import AuthRoute from './util/AuthRoute';
 
 // Pages
@@ -22,7 +23,7 @@ import home  from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
 import user from './pages/user';
-import Sidebar from './components/layout/Sidebar';
+import tierList from './pages/tierList';
 
 const theme = createMuiTheme(themeFile);
 
@@ -52,14 +53,13 @@ function App() {
             <div className="container">
               <div className="content-container">
                 <Switch>
-                  <Route exact path='/test' component={Sidebar}></Route>
                   <Route exact path='/' component={home}></Route>
                   <AuthRoute exact path='/login' component={login}></AuthRoute>
                   <AuthRoute exact path='/signup' component={signup}></AuthRoute>
                   <Route exact path='/users/:userId' component={user}></Route>
-                  <Route exact path='/users/:userId/tierList/:tierListId' component={user}></Route>
+                  <Route exact path='/users/:userId/tierLists/:tierListId' component={tierList}></Route>
                 </Switch>
-                </div>
+              </div>
             </div>
         </Router>
       </Provider>

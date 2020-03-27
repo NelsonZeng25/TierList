@@ -42,7 +42,6 @@ const styles = theme => ({
 export class home extends Component {
     componentDidMount(){
         this.props.getCategoriesWithTierLists();
-        this.props.getCategories();
     }
     render() {
         const { classes } = this.props;
@@ -57,13 +56,13 @@ export class home extends Component {
         const categoryMarkup = (category) => (
             <Grid item xs={12}>
                 <Typography variant="h5" key={category} className={classes.categoryName}>{category}</Typography>
+                <hr className={classes.visibleSeperator}/>
             </Grid>
         );
         const categoryWithTierListsMarkup = !loading ? (
             Object.keys(viewCategory).map(category => (
-                <Fragment>
+                <Fragment key={category}>
                     {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && categoryMarkup(category)}
-                    {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && <hr className={classes.visibleSeperator}/>}
                     {tierListsMarkup(category)}
                 </Fragment>
             ))

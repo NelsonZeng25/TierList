@@ -18,7 +18,10 @@ exports.getAllTierLists = (req, res) => {
 }
 
 exports.postOneTierList = (req, res) => {
-    if (req.body.name.trim() === '') return res.status(400).json({ name: 'Must not be empty'});
+    error = {};
+    if (req.body.name.trim() === '') error.name = 'Must not be empty';
+    if (req.body.category.trim() === '') error.category = 'Must not be empty';
+    if (Object.keys(error).length !== 0) return res.status(400).json(error);
 
     const newTierList = {
       name: req.body.name,
@@ -30,18 +33,20 @@ exports.postOneTierList = (req, res) => {
       likeCount: 0,
       commentCount: 0,
     };
-  
-    db.collection("tierLists")
-      .add(newTierList)
+    db.collection('categories').where('name', '==', req.body.category.toUpperCase()).limit(1).get()
+      .then(data => {
+        if (data.empty) db.collection('categories').add({ name: req.body.category.toUpperCase() });
+        return db.collection('tierLists').add(newTierList);
+      })
       .then(doc => {
         const resTierList = newTierList;
         resTierList.tierListId = doc.id;
-        res.json(resTierList);
+        return res.json(resTierList);
       })
       .catch(err => {
-        res.status(500).json({ error: "Something went wrong" });
-        console.log(err);
-      });
+        console.error(err);
+        return res.status(500).json({ error: "Something went wrong" });
+      })
 }
 
 // Get 1 Tier List

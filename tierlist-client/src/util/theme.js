@@ -114,7 +114,7 @@ export default {
       maxWidth: '373px',
       minWidth: '19%',
       padding: '15px',
-      margin: '20px auto 0 auto',
+      margin: '20px auto 0px auto',
       position: 'fixed',
       "@media (max-width:1200px)": {
         position: 'relative',
@@ -139,7 +139,6 @@ export default {
       },
       "& .profile-details": {
         textAlign: "center",
-        maxWidth: '335px',
         "& span": {
           color: palette.primary.contrastText
         },

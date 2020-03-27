@@ -19,9 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 
 const styles = theme => ({
     ...theme.spreadThis,
-    button: {
-        float: 'right'
-    }
+    button: {}
 });
 
 class EditDetails extends Component {
@@ -74,7 +72,7 @@ class EditDetails extends Component {
         const { classes } = this.props;
         return (
             <Fragment>
-                <MyButton tip="Edit details" placement="top" onClick={this.handleOpen} btnClassName={classes.button}>
+                <MyButton tip="Edit details" placement="bottom" onClick={this.handleOpen} btnClassName={classes.button}>
                       <EditIcon color="secondary"/>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">

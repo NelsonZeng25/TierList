@@ -14,7 +14,8 @@ const { getAllTierLists, postOneTierList, getTierList,
 
 const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } = require('./handlers/tierItems');
 
-const { getAllCategories, getAllCategoriesWithTierLists, getAllCategoriesWithTierListsForUser, postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
+const { getAllCategories, getAllCategoriesWithTierLists, getAllCategoriesWithTierListsForUser, getTierItemsForOneCategory,
+    postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
 
 const { getAllComments, getComment, replyOnComment, deleteComment, likeComment, 
     unlikeComment, updateComment } = require('./handlers/comments');
@@ -47,7 +48,8 @@ app.post("/tierItems/:tierItemId/image", FBAuth, uploadTierItemImage);
 // categories routes
 app.get("/categories", getAllCategories);
 app.get('/categoriesWithTierLists', getAllCategoriesWithTierLists);
-app.get('/categoriesWithTierLists/:userId', getAllCategoriesWithTierListsForUser), 
+app.get('/categoriesWithTierLists/:userId', getAllCategoriesWithTierListsForUser),
+app.get('/getTierItemsForOneCategory/:category', FBAuth, getTierItemsForOneCategory);
 app.post("/categories/createCategory", FBAuth, postOneCategory);
 app.get("/categories/:categoryId", getCategory);
 app.delete("/categories/:categoryId", FBAuth, deleteCategory);

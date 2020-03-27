@@ -2,7 +2,8 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
+    SET_TIER_ITEMS,
 } from '../types';
 import axios from 'axios';
 
@@ -56,9 +57,27 @@ export const refreshCategoriesWithTierLists = () => (dispatch) => {
     dispatch({ type: RESET_VIEW_CATEGORY });
 };
 
+// Reset the categories back to default
 export const refreshCategories = () => (dispatch) => {
     dispatch({ type: RESET_CATEGORIES });
 };
+
+// Get All Tier Item for 1 category
+export const getTierItemsForOneCategory = (category) => (dispatch) => {
+    axios.get(`/getTierItemsForOneCategory/${category}`)
+        .then(res => {
+            dispatch({ 
+                type: SET_TIER_ITEMS,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            dispatch({ 
+                type: SET_TIER_ITEMS,
+                payload: []
+            })
+        })
+}
 
 
 // Get All Tier Lists
@@ -100,6 +119,10 @@ export const postTierList = (newTierList) => (dispatch) => {
         .then(res => {
             dispatch({ 
                 type: POST_TIERLIST,
+                payload: res.data,
+            });
+            dispatch({
+                type: SET_TIERLIST,
                 payload: res.data,
             });
             dispatch(clearErrors());

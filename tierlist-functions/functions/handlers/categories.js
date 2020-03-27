@@ -71,6 +71,24 @@ exports.getAllCategoriesWithTierListsForUser = (req, res) => {
     .catch(err => console.error(err))
 }
 
+// Get Tier Items for 1 category
+exports.getTierItemsForOneCategory = (req, res) => {
+  let tierItemData = {};
+  let tierItems = [];
+  db.collection('tierItems').where('category', '==', req.params.category).get()
+    .then(data => {
+      data.forEach(doc => {
+        if (doc.exists) {
+          tierItemData = doc.data();
+          tierItemData.id = doc.id;
+          tierItems.push(tierItemData);
+        }
+      });
+      return res.json(tierItems);
+    })
+    .catch(err => console.error(err))
+}
+
 // Get 1 Category
 exports.getCategory = (req, res) => {
     let categoryData = {};

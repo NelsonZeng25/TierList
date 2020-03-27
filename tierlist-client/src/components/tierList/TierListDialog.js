@@ -10,9 +10,12 @@ import CommentForm from './CommentForm';
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
@@ -32,105 +35,164 @@ const styles = theme => ({
         borderRadius: '50%',
         objectFit: 'cover',
     },
+    dialog: {
+        "& .MuiDialog-paper": {
+            backgroundColor: theme.palette.primary.main,
+            height: 700,
+        }
+    },
     dialogContent: {
-        padding: '20px'
+        margin: '10px 0px 20px 15px',
+        padding: '20px',
+    },
+    dialogTitle: {
+        color: theme.palette.text.primary,
+        maxHeight: '20px',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
     },
     closeButton: {
-        position: 'absolute',
-        top: '3%',
-        left: '90%',
+        padding: '0px',
+        float: 'right',
+        color: theme.palette.text.primary
     },
     expandButton: {
-        position: 'absolute',
-        left: '90%',
+        position: 'fixed',
+        marginLeft: '115px',
+        marginTop: '550px',
     },
-    spinnerDiv: {
+    selectionContainer: {
+        borderRight: '2px solid',
+        borderBottom: '2px solid',
+        borderLeft: '6px solid',
+        borderTop: '6px solid',
+        borderColor: theme.palette.text.primary,
+        height: '625px',
+        maxHeight: '625px',
+        overflow: 'auto',
+    },
+    clickTierItem: {
+        backgroundColor: theme.palette.primary.dark,
+        width: '100%',
+        minHeight: '295px',
+        borderRadius: '10px',
+        paddingBottom: '6px',
+        border: '2px solid white',
+        cursor: 'pointer',
+    },
+    tierItem: {
+        backgroundColor: theme.palette.primary.dark,
+        width: '100%',
+        minHeight: '295px',
+        borderRadius: '10px',
+        paddingBottom: '6px',
+        border: '2px solid transparent',
+        cursor: 'pointer',
+        "&:hover": {
+            borderColor: 'white',
+        },
+    },
+    tierItemImage: {
+        width: '100%',
+        left: '-2px',
+        height: '250px',
+        borderTopRightRadius: '10px',
+        borderTopLeftRadius: '10px',
+        objectFit: 'cover',
+    },
+    tierItemName: {
         textAlign: 'center',
-        marginTop: '50px',
-        marginBottom: '50px',
-    }
+        margin: '10px 6px 2px 6px',
+        overflow: 'hidden',
+    },
+    selectedTierItem: {
+        backgroundColor: theme.palette.primary.dark,
+        width: '280px',
+        minHeight: '395px',
+        marginTop: '15px',
+        marginLeft: '25px',
+        borderRadius: '10px',
+        paddingBottom: '6px',
+    },
+    selectedTierItemImage: {
+        width: '100%',
+        height: '350px',
+        borderTopRightRadius: '10px',
+        borderTopLeftRadius: '10px',
+        objectFit: 'cover',
+    },
+    selectedTierItemName: {
+        textAlign: 'center',
+        margin: '10px 6px 2px 6px',
+    },
 });
 
 class TierListDialog extends Component {
     state = {
         open: false,
-        oldPath: '',
-        newPath: '',
-    }
-    componentDidMount(){
-        if (this.props.openDialog) {
-            this.handleOpen();
-        }
+        selectedIndex: -1,
+        selectedImage: 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media',
+        selectedName: '',
     }
     handleOpen = () => {
-        let oldPath = window.location.pathname;
-
-        const { userId, tierListId } = this.props;
-        const newPath = `/users/${userId}/tierList/${tierListId}`;
-
-        if (oldPath === newPath) oldPath = `/users/${userId}`;
-
-        window.history.pushState(null, null, newPath);
-
-        this.setState({ open: true, oldPath, newPath });
-        this.props.getTierList(this.props.tierListId);
+        this.setState({ open: true });
     }
     handleClose = () => {
-        window.history.pushState(null, null, this.state.oldPath);
         this.setState({ open: false });
         this.props.clearErrors();
     }
-
+    handleSelected(index, name, imageUrl) {
+        this.setState({ 
+            selectedIndex: index,
+            selectedName: name,
+            selectedImage: imageUrl,
+        });
+     }
+     
     render(){
-        const { 
-            classes, 
-            tierList: { tierListId, tierItems, userName, userImage, userId, name, category, comments, commentCount, likeCount },
-            UI: { loading }
-        } = this.props;
-        const dialogMarkup = loading ? (
-            <div className={classes.spinnerDiv}>
-                <CircularProgress size={200} thickness={2}></CircularProgress>
-            </div>
-        ) : (
-            <Grid container spacing={16}>
-                <Grid item sm={5}>
-                    <img src={userImage} alt="profile" className={classes.profileImage}></img>
+        const { classes, UI: { loading }, data: { tierItems }} = this.props;
+        
+        const tierItemMarkup = (
+            tierItems.map((tierItem, index) => (
+                <Grid key={index} item xs={3}>
+                    <Paper key={index} onClick={this.handleSelected.bind(this, index, tierItem.name, tierItem.imageUrl)} className={ this.state.selectedIndex === index ? classes.clickTierItem : classes.tierItem}>
+                        <img key={index} src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" />
+                        <Typography key={index} className={classes.tierItemName}>{tierItem.name}</Typography>
+                    </Paper>
                 </Grid>
-                <Grid item sm={7}>
-                    <Typography component={Link} color="primary" variant="h5" to={`/users/${userId}`}>
-                        @{userName}
-                    </Typography>
-                    <hr className={classes.invisibleSeperator}/>
-                    <Typography variant="body2" color="textSecondary">
-                        {category}
-                    </Typography>
-                    <hr className={classes.invisibleSeperator} />
-                    <Typography variant="body1">
-                        {name}
-                    </Typography>
-                    <LikeButton tierListId={tierListId}></LikeButton>
-                    <span>{likeCount} likes</span>
-                    <MyButton tip="comments">
-                        <ChatIcon color="secondary"></ChatIcon>
-                    </MyButton>
-                    <span>{commentCount} Comments</span>
-                </Grid>
-                <hr className={classes.visibleSeperator} />
-                <CommentForm tierListId={tierListId}/>
-                <Comments comments={comments} />
-            </Grid>
-        )
+            ))
+        );
         return(
             <Fragment>
-                <MyButton btnClassName={classes.expandButton} tip="Expand Tier List" onClick={this.handleOpen}>
-                    <UnfoledMore color="secondary"></UnfoledMore>
-                </MyButton>
-                <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
-                    <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
+                <Button className={classes.expandButton} variant="contained" onClick={this.handleOpen}>
+                    Add stuff!
+                </Button>
+                <Dialog  className={classes.dialog} open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="lg">
+                    <DialogTitle className={classes.dialogTitle} >
+                        TIER ITEMS
+                        <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
                         <CloseIcon></CloseIcon>
                     </MyButton>
+                    </DialogTitle>
                     <DialogContent className={classes.dialogContent}>
-                        {dialogMarkup}
+                    <Grid container spacing={3}>
+                        <Grid className={classes.selectionContainer} container item xs={9} spacing={3}>
+                            {/* <Grid item xs={3}>
+                                <Paper className={classes.tierItem}>
+                                    <img src="https://img.reelgood.com/content/show/e0056be9-5f20-47e8-9aeb-038e97e5b07b/backdrop-1920.jpg?alt=media" className={classes.tierItemImage} alt="Tier Item Picture" />
+                                    <Typography className={classes.tierItemName}>Katanagatari 1</Typography>
+                                </Paper>
+                            </Grid> */}
+                            {tierItemMarkup}
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Paper className={classes.selectedTierItem}>
+                                <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item Picture" />
+                                <Typography className={classes.selectedTierItemName}>{this.state.selectedName}</Typography>
+                            </Paper>
+                        </Grid>  
+                    </Grid>
                     </DialogContent>
                 </Dialog>
             </Fragment>
@@ -139,21 +201,17 @@ class TierListDialog extends Component {
 }
 
 TierListDialog.propTypes = {
-    getTierList: PropTypes.func.isRequired,
     clearErrors: PropTypes.func.isRequired,
-    tierListId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
-    tierList: PropTypes.object.isRequired,
     UI: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    tierList: state.data.tierList,
+    data: state.data,
     UI: state.UI,
 })
 
 const mapActionsToProps = {
-    getTierList,
     clearErrors
 };
 

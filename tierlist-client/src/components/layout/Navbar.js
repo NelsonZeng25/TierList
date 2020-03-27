@@ -4,8 +4,12 @@ import PropTypes from "prop-types";
 import Notifications from "./Notifications";
 import {
   refreshCategoriesWithTierLists,
-  getTierListsWithOneCategory
+  getTierListsWithOneCategory,
+  getCategories,
+  postTierList,
+  clearErrors
 } from "../../redux/actions/dataActions";
+import { Link, withRouter } from 'react-router-dom';
 
 //MUI stuff
 import AppBar from "@material-ui/core/AppBar";
@@ -13,6 +17,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 // Icons
 import HomeIcon from "@material-ui/icons/Home";
@@ -21,38 +31,159 @@ import { withStyles } from "@material-ui/core";
 const styles = theme => ({
   appbar: {
     backgroundColor: theme.palette.primary.dark
+  },
+  button: {
+    marginRight: '20px',
+  },
+  "@media only screen and (max-width: 600px)": {
+    button: {
+      fontSize: '12px',
+    }
+  },
+  dialog: {
+    "& .MuiPaper-root": {
+        backgroundColor: theme.palette.primary.main,
+      }
+  },
+  dialogTitle: {
+    color: theme.palette.text.primaryStrong,
+  },
+  textField: {
+      "& .MuiFormLabel-root": {
+          color: theme.palette.text.primary,
+      },
+      "& .MuiFormLabel-root.Mui-focused": {
+          color: theme.palette.text.primary,
+      },
+      "& .Mui-focused": {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: 'white',
+          }
+      },
+  },
+  submitButton: {
+    margin: '10px 0px'
   }
 });
 
 export class Navbar extends Component {
+  state = {
+    name: '',
+    category: '',
+    open: false,
+    errors: {},
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.UI.errors) {
+        this.setState({
+            errors: nextProps.UI.errors
+        })
+    }
+    if (!nextProps.UI.errors && !nextProps.UI.loading) {
+        this.setState({
+          name: '',
+          category: '',
+          open: false,
+          errors: {},
+        });
+    }
+  }
+  componentDidMount() {
+    this.props.getCategories();
+  }
+  handleChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+  handleCategorySelected = (event, value, reason) => {
+    if (reason === "select-option") {
+      this.setState({ category: value });
+    }
+  }
+  handleOpen = () => {
+    this.setState({
+        open: true,
+    })
+  }
+  handleClose = () => {
+    this.props.clearErrors();
+    this.setState({
+      open: false,
+      errors: {},
+    })
+  }
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.postTierList({
+      name: this.state.name,
+      category: this.state.category,
+    })
+    if (Object.keys(this.state.errors).length === 0) {
+      this.handleClose();
+      setTimeout(() => {
+        this.props.history.push(`/users/${this.props.userId}/tierLists/${this.props.tierList.tierListId}`);
+      }, 1000);
+    }
+  }
   handleInputSelected = (event, value, reason) => {
     if (reason === "select-option") {
-      this.props.getTierListsWithOneCategory(value.name);
+      this.props.getTierListsWithOneCategory(value);
     } else if (reason === "clear") {
       this.props.refreshCategoriesWithTierLists();
     }
   };
   render() {
-    const categories = this.props.data.categories;
-    const { classes, authenticated } = this.props;
+    const { errors } = this.state;
+    const { classes, categories, authenticated, userId, tierList, UI: {loading} } = this.props;
     return (
       <Fragment>
         <AppBar className={classes.appbar}>
           <Toolbar className="nav-container">
+            {authenticated &&
+              <Fragment>
+                <Button className={classes.button} onClick={this.handleOpen} variant="contained" color="secondary">
+                  Create Tier List
+                </Button>
+                <Dialog className={classes.dialog} open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
+                  <DialogTitle className={classes.dialogTitle} >Tier List Information</DialogTitle>
+                  <DialogContent>
+                    <form onSubmit={this.handleSubmit}>
+                      <TextField name="name" type="text" label="Tier List Name"
+                        className={classes.textField} value={this.state.name} autoComplete='off'
+                        onChange={this.handleChange} fullWidth variant="outlined"
+                        error={errors.name ? true:false} helperText={errors.name} 
+                      ></TextField>
+                      <Autocomplete
+                        freeSolo
+                        name="category"
+                        options={categories.map(option => option.name)}
+                        onChange={this.handleCategorySelected}
+                        renderInput={params => (
+                          <TextField {...params} className={classes.textField} onChange={this.handleChange} 
+                          name="category" label="Category" margin="normal" variant="outlined"
+                          error={errors.category ? true:false} helperText={errors.category}  />
+                        )}
+                      />
+                      <Grid container justify="center">
+                        <Button className={classes.submitButton} type="submit" variant="contained" color="secondary" disabled={loading}>Create</Button>
+                      </Grid>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </Fragment>
+            }
             <Autocomplete
               id="search"
               name="search"
-              options={categories}
-              getOptionLabel={option => option.name}
-              classes={{ option: classes.option, select: classes.select }}
+              options={categories.map(option => option.name)}
               style={{ width: 250 }}
               autoHighlight
-              onInputChange={this.handleInputChange}
               onChange={this.handleInputSelected}
               renderInput={params => (
                 <TextField
                   {...params}
-                  placeholder="Search"
+                  placeholder="Search category"
                   variant="outlined"
                 />
               )}
@@ -66,23 +197,36 @@ export class Navbar extends Component {
 }
 
 const mapStateToProps = state => ({
-    data: state.data,
   categories: state.data.categories,
-  authenticated: state.user.authenticated
+  authenticated: state.user.authenticated,
+  userId: state.user.credentials.userId,
+  tierList: state.data.tierList,
+  UI: state.UI, 
 });
 
 Navbar.propTypes = {
   authenticated: PropTypes.bool.isRequired,
+  tierList: PropTypes.object,
+  userId: PropTypes.string,
   categories: PropTypes.array.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
+  getTierListsWithOneCategory: PropTypes.func.isRequired,
+  refreshCategoriesWithTierLists: PropTypes.func.isRequired,
+  getCategories: PropTypes.func.isRequired,
+  postTierList: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
 };
 
 const mapActionsToProps = {
   refreshCategoriesWithTierLists,
-  getTierListsWithOneCategory
+  getTierListsWithOneCategory,
+  getCategories,
+  postTierList,
+  clearErrors,
 };
 
 export default connect(
   mapStateToProps,
   mapActionsToProps
-)(withStyles(styles)(Navbar));
+)(withStyles(styles)(withRouter(Navbar)));

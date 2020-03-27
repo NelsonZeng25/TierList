@@ -88,7 +88,7 @@ export class user extends Component {
             <p>No Tier Lists from this user</p>
         ) : (
             Object.keys(viewCategory).map(category => (
-                <Fragment>
+                <Fragment key={category}>
                     {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && categoryMarkup(category)}
                     {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && <hr className={classes.visibleSeperator}/>}
                     {tierListsMarkup(category)}
@@ -111,10 +111,6 @@ export class user extends Component {
                 <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
                     {categoryWithTierListsMarkup}
                 </Grid>
-
-                {/* <Grid item sm ={8} xs={12}>
-                    {tierListsMarkup}
-                </Grid> */}
             </Grid>
         )
     }

@@ -22,12 +22,7 @@ import { connect } from 'react-redux';
 
 const styles = theme => ({
     ...theme.spreadThis,
-    card: {
-        backgroundColor: theme.palette.primary.main,
-        position: 'relative',
-        display: 'flex',
-        padding: '15px',
-    },
+    
     image: {
         margin: '0 0 auto 0',
         display: 'block',
@@ -51,21 +46,21 @@ class TierList extends Component {
     render() {
         const { classes, 
                 tierList: { name, userId, userImage, userName, category, tierListId, likeCount, commentCount },
-                user : { authenticated },
+                user : { authenticated, credentials: { isManager } },
         } = this.props;
         const id = this.props.user.credentials.userId;
-        const deleteButton = authenticated && userId === id ? (
+        const deleteButton = (authenticated && userId === id) || isManager ? (
             <DeleteTierList tierList={this.props.tierList}/>
         ) : null
         return (
-            <Card className={classes.card}>
+            <Card id="card">
                 <CardMedia 
                 image={userImage}
                 title={"Profile Image"}
                 className={classes.image}/>
                 <CardContent className={classes.content}>
                     <div style={{overflow: "hidden", textOverflow: "ellipsis", width: '13rem'}}> 
-                        <Typography nowrap="true" variant="h5" component={Link} to={`/users/${userId}/tierList/${tierListId}`} color="secondary">{name}</Typography>
+                        <Typography nowrap="true" variant="h5" component={Link} to={`/users/${userId}/tierLists/${tierListId}`} color="secondary">{name}</Typography>
                     </div>
                     {deleteButton}
                     <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>

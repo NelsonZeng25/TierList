@@ -12,9 +12,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Icons
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import QueueIcon from '@material-ui/icons/Queue';
 
 // Redux stuff
 import { connect } from 'react-redux';
@@ -22,6 +22,7 @@ import { postTierList, clearErrors } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
+    button: {},
     submitButton: {
         marginTop: '1rem',
         position: 'relative',
@@ -89,8 +90,8 @@ class PostTierList extends Component {
         const { classes, UI: {loading}} = this.props;
         return (
             <Fragment>
-                <MyButton tip="Post a Tier List" onClick={this.handleOpen} placement="bottom">
-                    <AddIcon color="inherit"></AddIcon>
+                <MyButton btnClassName={classes.button} tip="Create a Tier List" onClick={this.handleOpen} placement="top">
+                    <QueueIcon color="secondary"/>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>

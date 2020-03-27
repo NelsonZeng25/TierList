@@ -2,12 +2,14 @@ import {
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, 
     SUBMIT_COMMENT,
-    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES
+    SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
+    SET_TIER_ITEMS,
 } from '../types';
 
 const initialState = {
     tierLists: [],
     tierList: {},
+    tierItems: [],
     categories: [],
     categoriesWithTierLists: {},
     viewCategory: {},
@@ -57,7 +59,8 @@ export default function(state = initialState, action){
                 ...state
             };
         case POST_TIERLIST:
-            state.viewCategory[action.payload.category].push(action.payload);
+            if (state.viewCategory.hasOwnProperty(action.payload.category)) state.viewCategory[action.payload.category].push(action.payload);
+            else state.viewCategory[action.payload.category] = [action.payload];
             return {
                 ...state,
                 tierLists: [
@@ -112,6 +115,12 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 categories: newCategories,
+            };
+        case SET_TIER_ITEMS:
+            return {
+                ...state,
+                tierItems: action.payload,
+                loading: false
             }
         default:
             return state;

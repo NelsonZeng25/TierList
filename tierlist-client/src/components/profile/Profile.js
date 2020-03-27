@@ -6,14 +6,14 @@ import dayjs from "dayjs";
 import EditDetails from "./EditDetails";
 import MyButton from "../../util/MyButton";
 import ProfileSkeleton from '../../util/ProfileSkeleton';
+import PostTierList from '../tierList/PostTierList';
 
 // MUI Stuff
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import MuiLink from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import Grid from '@material-ui/core/Grid';
 
 // Redux stuff
 import { connect } from "react-redux";
@@ -23,7 +23,6 @@ import { logoutUser, uploadImage } from "../../redux/actions/userActions";
 import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
-import EditIcon from "@material-ui/icons/Edit";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ImageIcon from '@material-ui/icons/Image';
 
@@ -65,56 +64,59 @@ class Profile extends Component {
         let profileMarkup = !loading ? (
         authenticated ? (
             <Paper className={classes.paper}>
-            <div className={classes.profile}>
-                <div className="image-wrapper">
-                    <img className="profile-image" src={imageUrl} alt="profile" />
-                    <input
-                        type="file"
-                        id="imageInput"
-                        hidden="hidden"
-                        onChange={this.handleImageChange}
-                    />
-                    <MyButton tip="Edit Profile picture" placement="top" onClick={this.handleEditPicture} btnClassName="button">
-                      <ImageIcon color="secondary"/>
-                    </MyButton>
-                </div>
-                <hr />
-                <div className="profile-details">
-                <MuiLink
-                    component={Link}
-                    to={`/users/${userId}`}
-                    color="secondary"
-                    variant="h5"
-                >
-                    @{userName}
-                </MuiLink>
-                <hr />
-                {bio && <Typography color="textPrimary" variant="body2">{bio}</Typography>}
-                <hr />
-                {location && (
-                    <Fragment>
-                        <LocationOn color="secondary" /> <span>{location}</span>
-                        <hr />
-                    </Fragment>
-                )}
-                {website && (
-                    <Fragment>
-                    <LinkIcon color="secondary" />
-                    <a href={website} className="website" target="_blank" rel="noopener noreferrer">
-                        {" "}
-                        {website}
-                    </a>
+                <div className={classes.profile}>
+                    <div className="image-wrapper">
+                        <img className="profile-image" src={imageUrl} alt="profile" />
+                        <input
+                            type="file"
+                            id="imageInput"
+                            hidden="hidden"
+                            onChange={this.handleImageChange}
+                        />
+                        <MyButton tip="Edit Profile picture" placement="top" onClick={this.handleEditPicture} btnClassName="button">
+                        <ImageIcon color="secondary"/>
+                        </MyButton>
+                    </div>
                     <hr />
-                    </Fragment>
-                )}
-                <CalendarToday color="secondary" />{" "}
-                <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
+                    <div className="profile-details">
+                        <MuiLink
+                            component={Link}
+                            to={`/users/${userId}`}
+                            color="secondary"
+                            variant="h5"
+                        >
+                            @{userName}
+                        </MuiLink>
+                        <hr />
+                        {bio && <Typography color="textPrimary" variant="body2">{bio}</Typography>}
+                        <hr />
+                        {location && (
+                            <Fragment>
+                                <LocationOn color="secondary" /> <span>{location}</span>
+                                <hr />
+                            </Fragment>
+                        )}
+                        {website && (
+                            <Fragment>
+                            <LinkIcon color="secondary" />
+                            <a href={website} className="website" target="_blank" rel="noopener noreferrer">
+                                {" "}
+                                {website}
+                            </a>
+                            <hr />
+                            </Fragment>
+                        )}
+                        <CalendarToday color="secondary" />{" "}
+                        <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
+                    </div>
+                    <Grid container direction="row" justify="space-between" alignItems="center">
+                        <MyButton tip="Logout" placement="top" onClick={this.handleLogout}>
+                            <ExitToAppIcon color="secondary"/>
+                        </MyButton>
+                        <EditDetails/>
+                        <PostTierList/>
+                    </Grid>
                 </div>
-                <MyButton tip="Logout" placement="top" onClick={this.handleLogout}>
-                      <ExitToAppIcon color="secondary"/>
-                </MyButton>
-                <EditDetails/>
-            </div>
             </Paper>
         ) : (
             <Paper className={classes.paper}>

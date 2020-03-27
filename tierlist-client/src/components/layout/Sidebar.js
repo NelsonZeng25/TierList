@@ -12,6 +12,7 @@ import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import GroupIcon from '@material-ui/icons/Group';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import ListAltIcon from '@material-ui/icons/ListAlt';
 
 // Redux
 import { connect } from 'react-redux';
@@ -58,7 +59,7 @@ class Sidebar extends Component {
         </li>
         <li className="sidebar-item">
           <a href="/categories" className="sidebar-link">
-            <PostAddIcon />
+            <ListAltIcon />
             <span className="link-text">Categories</span>
           </a>
         </li>
