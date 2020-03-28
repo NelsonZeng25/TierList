@@ -28,8 +28,9 @@ const styles = theme => ({
         }
     },
     tierItem: {
-        position: 'absolute',
-        marginLeft: '158px',
+        position: 'relative',
+        zIndex: 2,
+        float: 'right',
         "& svg": {
             color: 'red',
         }
@@ -60,14 +61,13 @@ class DeleteButton extends Component {
     handleClose = () => {
         this.setState({ open: false });
     }
-    deleteClick = (type) => {
-        switch(type) {
+    deleteClick = () => {
+        switch(this.state.type) {
             case 'Tier List':
                 this.props.deleteTierList(this.props.tierList);
                 break;
             case 'Tier Item':
-                this.props.handleTierItemDeleteClick();
-                this.props.deleteTierItem(this.props.tierItem);
+                this.props.handleTierItemDelete();
                 break;
             case 'Reply':
                 this.props.deleteReply(this.props.reply);
@@ -100,7 +100,7 @@ class DeleteButton extends Component {
                     <DialogTitle>Are you sure you want to delete this {this.state.type}?</DialogTitle>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="default">Cancel</Button>
-                        <Button onClick={this.deleteClick.bind(this,this.state.type)} className={classes.deleteButton}>Delete</Button>
+                        <Button onClick={this.deleteClick} className={classes.deleteButton}>Delete</Button>
                     </DialogActions>
                 </Dialog>
             </Fragment>
@@ -110,7 +110,6 @@ class DeleteButton extends Component {
 
 DeleteButton.propTypes = {
     classes: PropTypes.object.isRequired,
-    tierList: PropTypes.object.isRequired,
     deleteTierList: PropTypes.func.isRequired,
     deleteTierItem: PropTypes.func.isRequired,
 }

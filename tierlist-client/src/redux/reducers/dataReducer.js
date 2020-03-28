@@ -3,7 +3,7 @@ import {
     LOADING_DATA, 
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, 
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM
 } from '../types';
 
 const initialState = {
@@ -45,7 +45,7 @@ export default function(state = initialState, action){
             //     state.tierList = action.payload;
             
             index = state.viewCategory[action.payload.category].findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            state.viewCategory[action.payload.category][index] = action.payload;
+            if (index !== -1) state.viewCategory[action.payload.category][index] = action.payload;
             return {
                 ...state,
             };
@@ -54,7 +54,7 @@ export default function(state = initialState, action){
             //state.tierLists.splice(index, 1);
             
             index = state.viewCategory[action.payload.category].findIndex(tierList => tierList.tierListId === action.payload.tierListId);
-            state.viewCategory[action.payload.category].splice(index, 1);
+            if (index !== -1) state.viewCategory[action.payload.category].splice(index, 1);
             return {
                 ...state
             };
@@ -66,7 +66,7 @@ export default function(state = initialState, action){
             };
         case SUBMIT_COMMENT:
             index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            state.tierLists[index].commentCount++;
+            if (index !== -1) state.tierLists[index].commentCount++;
             if (state.tierList.tierListId === action.payload.tierListId)
                 state.tierList.commentCount++;
             return{
@@ -132,7 +132,9 @@ export default function(state = initialState, action){
             };
         case DELETE_TIER_ITEM:
             index = state.viewTierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
-            state.viewTierItems.splice(index, 1);
+            if (index !== -1) state.viewTierItems.splice(index, 1);
+            index = state.tierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
+            if (index !== -1) state.tierItems.splice(index, 1);
             return {
                 ...state,
             };
@@ -148,6 +150,14 @@ export default function(state = initialState, action){
                     ...state.viewTierItems
                 ]
             };
+        case UPDATE_TIER_ITEM:
+            index = state.viewTierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
+            if (index !== -1) state.viewTierItems[index] = action.payload;
+            index = state.tierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
+            if (index !== -1) state.tierItems[index] = action.payload;
+            return {
+                ...state,
+            }
         default:
             return state;
     }

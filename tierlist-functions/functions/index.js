@@ -345,7 +345,7 @@ exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{
                             batch.update(tierList, { tierItems: tierItemData });
                         }
                     });
-                    if (change.before.data().imageUrl !== defaultTierItemImg) {
+                    if (change.before.data().imageUrl !== change.after.data().imageUrl && change.before.data().imageUrl !== defaultTierItemImg) {
                         const bucket = admin.storage().bucket(config.storageBucket);
                         const fileName = change.before.data().imageUrl.split('%2F')[1].split('?')[0];
                         return bucket.file(`tierItemImages/${fileName}`).delete();

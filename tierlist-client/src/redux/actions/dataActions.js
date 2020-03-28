@@ -3,7 +3,7 @@ import {
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM
 } from '../types';
 import axios from 'axios';
 
@@ -64,7 +64,7 @@ export const refreshCategories = () => (dispatch) => {
 
 // Post a Tier Item
 export const postTierItem = (newTierItem) => (dispatch) => {
-    //dispatch({ type: LOADING_UI });
+    dispatch({ type: LOADING_UI });
     axios.post('/tierItems/createTierItem', newTierItem)
         .then(res => {
             dispatch({ 
@@ -108,6 +108,24 @@ export const getUserTierItems = (userId) => (dispatch) => {
 
 export const refreshTierItems = () => (dispatch) => {
     dispatch({ type: RESET_VIEW_TIER_ITEMS });
+}
+
+export const updateTierItem = (tierItem) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
+    axios.put(`/tierItems/${tierItem.tierItemId}`, tierItem)
+        .then(res => {
+            dispatch({
+                type: UPDATE_TIER_ITEM,
+                payload: res.data.tierItem,
+            })
+            dispatch(clearErrors());
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            });
+        })
 }
 
 // Delete Tier Item

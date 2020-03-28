@@ -148,6 +148,7 @@ exports.updateTierItem = (req, res) => {
     imageUrl: req.body.imageUrl,
     userId: req.user.uid
   };
+  if (req.body.name.trim() === '') return res.status(400).json({ name: 'Must not be empty'});
   document
     .get()
     .then(doc => {
@@ -157,11 +158,16 @@ exports.updateTierItem = (req, res) => {
       if (!req.user.isManager && doc.data().userId !== req.user.uid) {
         return res.status(403).json({ error: "Unauthorized" });
       } else {
+        updateTierItem.tierItemId = doc.id;
+        updateTierItem.category = doc.data().category;
         return document.update(updateTierItem);
       }
     })
     .then(() => {
-      return res.json({ message: "Tier Item updated successfully" });
+      return res.json({ 
+        tierItem: updateTierItem,
+        message: "Tier Item updated successfully" 
+      });
     })
     .catch(err => {
       console.error(err);
