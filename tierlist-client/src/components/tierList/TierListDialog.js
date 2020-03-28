@@ -5,6 +5,7 @@ import MyButton from '../../util/MyButton';
 import { Link } from 'react-router-dom';
 import DeleteButton from './DeleteButton';
 import axios from 'axios';
+import TierItemDialog from '../tierItem/TierItemDialog';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -73,43 +74,6 @@ const styles = theme => ({
         borderColor: theme.palette.text.primary,
         height: '595px',
         maxHeight: '625px',
-        overflow: 'auto',
-    },
-    clickTierItem: {
-        backgroundColor: theme.palette.primary.dark,
-        width: '100%',
-        minHeight: '295px',
-        borderRadius: '10px',
-        paddingBottom: '6px',
-        border: '2px solid',
-        borderColor: theme.palette.text.primaryStrong,
-        cursor: 'pointer',
-    },
-    tierItem: {
-        backgroundColor: theme.palette.primary.dark,
-        width: '100%',
-        minHeight: '295px',
-        borderRadius: '10px',
-        paddingBottom: '6px',
-        border: '2px solid transparent',
-        transition: '600ms',
-        cursor: 'pointer',
-        "&:hover": {
-            borderColor: theme.palette.text.primaryStrong,
-        },
-    },
-    tierItemImage: {
-        width: '100%',
-        position: 'relative',
-        marginTop: '-48px',
-        height: '250px',
-        borderTopRightRadius: '7px',
-        borderTopLeftRadius: '7px',
-        objectFit: 'cover',
-    },
-    tierItemName: {
-        textAlign: 'center',
-        margin: '10px 6px 2px 6px',
         overflow: 'auto',
     },
     selectedTierItem: {
@@ -230,18 +194,6 @@ const styles = theme => ({
             flexBasis: '100%',
         },
     },
-    "@media only screen and (max-width: 800px)": {
-        tierItemGrid: {
-            maxWidth: '33.33%',
-            flexBasis: '33.33%',
-        },
-    },
-    "@media only screen and (max-width: 600px)": {
-        tierItemGrid: {
-            maxWidth: '50%',
-            flexBasis: '50%',
-        },
-    },
 });
 
 class TierListDialog extends Component {
@@ -267,6 +219,11 @@ class TierListDialog extends Component {
 
         loading: false,
         error: '',
+        errors: {},
+    }
+    componentWillReceiveProps(nextProps){
+        if (nextProps.UI.errors)
+            this.setState({ errors: nextProps.UI.errors });
     }
     handleOpen = () => {
         this.setState({ 
@@ -317,16 +274,15 @@ class TierListDialog extends Component {
             isAddTierItem: true,
             isUpdateTierItem: false,
             selectedTab: 2,
+            errors: {},
         });
     }
     handleUpdateTierItemClick = () => {
         this.setState({
             isAddTierItem: false,
             isUpdateTierItem: true,
+            errors: {},
         })
-    }
-    handleTierItemDelete = (tierItem) => {
-        this.props.deleteTierItem(tierItem);
     }
     handleNameChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
@@ -348,11 +304,11 @@ class TierListDialog extends Component {
     }
     handleAddTierItem = () => {
         this.setState({ loading: true });
-        if (this.state.addTierItemImage !== this.state.noImg)
-            URL.revokeObjectURL(this.state.addTierItemImage);
         let imageUrl;
 
-        if (this.state.addTierItemImageFile) {
+        if (this.state.addTierItemImageFile && this.state.addTierItemName.trim() !== '') {
+            URL.revokeObjectURL(this.state.addTierItemImage);
+
             const image = this.state.addTierItemImageFile;
             const formData = new FormData();
             formData.append('image', image, image.name);
@@ -378,12 +334,14 @@ class TierListDialog extends Component {
             const category = this.props.data.tierList.category;
             this.props.postTierItem({ name, imageUrl, category });
 
-            this.setState({ 
-                addTierItemName: '', 
-                addTierItemImage: this.state.noImg,
-                addTierItemImageFile: null,
-            });
-            this.handleUserTierItemsClick(this.props.user.credentials.userId);
+            if (this.state.addTierItemName.trim() !== '') {
+                this.setState({ 
+                    addTierItemName: '', 
+                    addTierItemImage: this.state.noImg,
+                    addTierItemImageFile: null,
+                });
+                this.handleUserTierItemsClick(this.props.user.credentials.userId);
+            }
         }
     }
     handleUpdateEditPicture = () => {
@@ -404,7 +362,7 @@ class TierListDialog extends Component {
     handleUpdateTierItem = () => {
         this.setState({ loading: true });
         let imageUrl;
-        if (this.state.updateTierItemImageFile) {
+        if (this.state.updateTierItemImageFile && this.state.updateTierItemName.trim() !== '') {
             const image = this.state.updateTierItemImageFile;
             const formData = new FormData();
             formData.append('image', image, image.name);
@@ -425,9 +383,11 @@ class TierListDialog extends Component {
             const name = this.state.updateTierItemName;
             imageUrl = this.state.updateTierItemImage;
             this.props.updateTierItem({ name, imageUrl, tierItemId: this.state.selectedTierItemId });
-            this.setState({ selectedName: name });
-
-            this.handleUserTierItemsClick(this.props.user.credentials.userId);
+            
+            if (this.state.updateTierItemName.trim() !== '') {
+                this.setState({ selectedName: name });
+                this.handleUserTierItemsClick(this.props.user.credentials.userId);
+            }
         }
     }
     handleNext = () => {
@@ -440,26 +400,20 @@ class TierListDialog extends Component {
     }
 
     render(){
-        const { classes, user: { authenticated, credentials: { userId, isManager }}, UI: { loading }, data: { viewTierItems }} = this.props;
-        
-        const tierItemMarkup = (
+        const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierItems }} = this.props;
+        const { errors } = this.state;
+        const tierItemMarkup = ( !loading ? (
             viewTierItems.map((tierItem, index) => (
-                <Grid className={classes.tierItemGrid} key={index} item xs={3}>
-                    <Paper onClick={this.handleSelected.bind(this, index, tierItem.name, tierItem.imageUrl, tierItem.tierItemId)} className={ this.state.selectedIndex === index ? classes.clickTierItem : classes.tierItem}>
-                        {(authenticated && userId === tierItem.userId) || isManager ? 
-                            (
-                                <Fragment>
-                                    <DeleteButton handleTierItemDelete={this.handleTierItemDelete.bind(this, tierItem)} tierItem={tierItem}/>
-                                    <MyButton tip="Update Tier Item" placement="top" onClick={this.handleUpdateTierItemClick} btnClassName={classes.updateButton}>
-                                        <EditIcon color="secondary" />
-                                    </MyButton>
-                                </Fragment>
-                            ) : null}
-                        <img src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" style={!(authenticated && userId === tierItem.userId) && !isManager ? {marginTop: '0px'} : {}} />
-                        <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
-                    </Paper>
-                </Grid>
-            ))
+                <TierItemDialog tierItem={tierItem} index={index} handleSelected={this.handleSelected} selectedIndex={this.state.selectedIndex} handleUpdateTierItemClick={this.handleUpdateTierItemClick}/>
+            ))) : (
+                <Fragment>
+                    {Array.from({ length: 8 }).map((item, index) => (
+                        <Grid className={classes.tierItemGrid} key={index} item xs={3}>
+                            {/* <TierItemDialogSkeleton /> */}
+                        </Grid>
+                    ))}
+                </Fragment>
+            )
         );
 
         return(
@@ -503,7 +457,7 @@ class TierListDialog extends Component {
                                                 <Typography variant="h4" className={classes.addTierItemTitle}>Update Tier Item</Typography>
                                             </Grid>
                                             <Grid item>
-                                                <TextField className={classes.addNameTextField} variant="outlined" type="text" name="updateTierItemName" label="Name" value={this.state.updateTierItemName} onChange={this.handleNameChange}></TextField>
+                                                <TextField helperText={errors.name} error={errors.name ? true : false} className={classes.addNameTextField} variant="outlined" type="text" name="updateTierItemName" label="Name" value={this.state.updateTierItemName} onChange={this.handleNameChange}></TextField>
                                             </Grid>
                                             <Grid item>
                                                 <Button onClick={this.handleUpdateTierItem} color="secondary" className={classes.addButton} variant="contained">Update</Button>
@@ -524,7 +478,7 @@ class TierListDialog extends Component {
                                                 <Typography variant="h4" className={classes.addTierItemTitle}>Create Tier Item</Typography>
                                             </Grid>
                                             <Grid item>
-                                                <TextField className={classes.addNameTextField} variant="outlined" type="text" name="addTierItemName" label="Name" value={this.state.addTierItemName} onChange={this.handleNameChange}></TextField>
+                                                <TextField helperText={errors.name} error={errors.name ? true : false} className={classes.addNameTextField} variant="outlined" type="text" name="addTierItemName" label="Name" value={this.state.addTierItemName} onChange={this.handleNameChange}></TextField>
                                             </Grid>
                                             <Grid>
                                                 <Button onClick={this.handleAddTierItem} color="secondary" className={classes.addButton} variant="contained">Add</Button>
