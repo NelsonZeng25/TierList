@@ -83,12 +83,14 @@ export const postTierItem = (newTierItem) => (dispatch) => {
 
 // Get All Tier Item for 1 category
 export const getTierItemsForOneCategory = (category) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
     axios.get(`/getTierItemsForOneCategory/${category}`)
         .then(res => {
             dispatch({ 
                 type: SET_TIER_ITEMS,
                 payload: res.data
             });
+            dispatch({ type: STOP_LOADING_UI });
         })
         .catch(err => {
             dispatch({ 
@@ -135,7 +137,7 @@ export const deleteTierItem = (tierItem) => (dispatch) => {
             dispatch({
                 type: DELETE_TIER_ITEM,
                 payload: tierItem,
-            })
+            });
         })
         .catch(err => console.log(err))
 }

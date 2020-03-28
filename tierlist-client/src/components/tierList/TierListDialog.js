@@ -2,10 +2,9 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
-import { Link } from 'react-router-dom';
-import DeleteButton from './DeleteButton';
 import axios from 'axios';
 import TierItemDialog from '../tierItem/TierItemDialog';
+import TierItemDialogSkeleton from '../tierItem/TierItemDialogSkeleton';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -23,13 +22,12 @@ import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 
 // Icons
-import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
-import Delete from '@material-ui/icons/Delete';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { getUserTierItems, refreshTierItems, uploadTierItemImage, postTierItem, updateTierItem, deleteTierItem, clearErrors } from '../../redux/actions/dataActions';
+import { getUserTierItems, refreshTierItems, uploadTierItemImage, postTierItem, 
+    updateTierItem, deleteTierItem, clearErrors, getTierItemsForOneCategory } from '../../redux/actions/dataActions';
 import { TextField } from "@material-ui/core";
 
 const styles = theme => ({
@@ -226,6 +224,8 @@ class TierListDialog extends Component {
             this.setState({ errors: nextProps.UI.errors });
     }
     handleOpen = () => {
+        this.props.getTierItemsForOneCategory(this.props.data.tierList.category);
+        this.handleAllTierItemsClick();
         this.setState({ 
             open: true,
             selectedImage: this.state.noImg,
@@ -408,9 +408,7 @@ class TierListDialog extends Component {
             ))) : (
                 <Fragment>
                     {Array.from({ length: 8 }).map((item, index) => (
-                        <Grid className={classes.tierItemGrid} key={index} item xs={3}>
-                            {/* <TierItemDialogSkeleton /> */}
-                        </Grid>
+                        <TierItemDialogSkeleton key={index} />
                     ))}
                 </Fragment>
             )
@@ -519,7 +517,7 @@ TierListDialog.propTypes = {
     uploadTierItemImage: PropTypes.func.isRequired,
     postTierItem: PropTypes.func.isRequired,
     updateTierItem: PropTypes.func.isRequired,
-    deleteTierItem: PropTypes.func.isRequired,
+    getTierItemsForOneCategory: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -534,7 +532,7 @@ const mapActionsToProps = {
     uploadTierItemImage,
     postTierItem,
     updateTierItem,
-    deleteTierItem,
+    getTierItemsForOneCategory,
     clearErrors
 };
 

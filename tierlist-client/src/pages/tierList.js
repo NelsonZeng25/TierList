@@ -64,9 +64,6 @@ export class tierList extends Component {
                 tierItems = res.data.tierItems;
             })
             .then(() => {
-                // Get all Tier Items for that category
-                this.props.getTierItemsForOneCategory(category);
-
                 // Set up the view
                 let temp = this.state.viewTierList;
                 Object.values(tierItems).forEach(tierItem => {
