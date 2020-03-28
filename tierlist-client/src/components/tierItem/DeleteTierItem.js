@@ -31,7 +31,7 @@ class DeleteTierList extends Component {
     handleClose = () => {
         this.setState({ open: false });
     }
-    deleteTierList1 = () => {
+    deleteTierListClick = () => {
         this.props.deleteTierList(this.props.tierList);
         this.setState({ open: false });
     }
@@ -39,14 +39,14 @@ class DeleteTierList extends Component {
         const { classes } = this.props;
         return (
             <Fragment>
-                <MyButton tip="Delete Tier List" placement="top" onClick={this.handleOpen} btnClassName={classes.deleteButton}>
+                <MyButton tip="Delete Tier Item" placement="top" onClick={this.handleOpen} btnClassName={classes.deleteButton}>
                     <DeleteOutline style={{color:'grey'}}></DeleteOutline>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
-                    <DialogTitle>Are you sure you want to delete this Tier List?</DialogTitle>
+                    <DialogTitle>Are you sure you want to delete this Tier Item?</DialogTitle>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Cancel</Button>
-                        <Button onClick={this.deleteTierList1} style={{color:'red'}}>Delete</Button>
+                        <Button onClick={this.deleteTierListClick} style={{color:'red'}}>Delete</Button>
                     </DialogActions>
                 </Dialog>
             </Fragment>

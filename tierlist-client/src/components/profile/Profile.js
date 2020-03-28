@@ -74,7 +74,7 @@ class Profile extends Component {
                             onChange={this.handleImageChange}
                         />
                         <MyButton tip="Edit Profile picture" placement="top" onClick={this.handleEditPicture} btnClassName="button">
-                        <ImageIcon color="secondary"/>
+                            <ImageIcon color="secondary"/>
                         </MyButton>
                     </div>
                     <hr />

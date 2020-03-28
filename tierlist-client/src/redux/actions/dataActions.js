@@ -3,7 +3,7 @@ import {
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM,
 } from '../types';
 import axios from 'axios';
 
@@ -62,6 +62,25 @@ export const refreshCategories = () => (dispatch) => {
     dispatch({ type: RESET_CATEGORIES });
 };
 
+// Post a Tier Item
+export const postTierItem = (newTierItem) => (dispatch) => {
+    //dispatch({ type: LOADING_UI });
+    axios.post('/tierItems/createTierItem', newTierItem)
+        .then(res => {
+            dispatch({ 
+                type: POST_TIER_ITEM,
+                payload: res.data,
+            });
+            dispatch(clearErrors());
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            });
+        })
+}
+
 // Get All Tier Item for 1 category
 export const getTierItemsForOneCategory = (category) => (dispatch) => {
     axios.get(`/getTierItemsForOneCategory/${category}`)
@@ -89,6 +108,27 @@ export const getUserTierItems = (userId) => (dispatch) => {
 
 export const refreshTierItems = () => (dispatch) => {
     dispatch({ type: RESET_VIEW_TIER_ITEMS });
+}
+
+// Delete Tier Item
+export const deleteTierItem = (tierItem) => (dispatch) => {
+    axios.delete(`/tierItems/${tierItem.tierItemId}`)
+        .then(() => {
+            dispatch({
+                type: DELETE_TIER_ITEM,
+                payload: tierItem,
+            })
+        })
+        .catch(err => console.log(err))
+}
+
+// Upload a Tier Item image
+export const uploadTierItemImage = (formData) => {
+    axios.post(`/tierItems/image`, formData)
+        .then(res => {
+            return res.data.imageUrl;
+        })
+        .catch(err => console.log(err))
 }
 
 

@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
 import { Link } from 'react-router-dom';
-import LikeButton from "./LikeButton";
-import Comments from './Comments';
-import CommentForm from './CommentForm';
+import DeleteButton from './DeleteButton';
+import axios from 'axios';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -22,14 +21,13 @@ import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 
 // Icons
-import ChatIcon from '@material-ui/icons/Chat';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
-import UnfoledMore from '@material-ui/icons/UnfoldMore';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { getUserTierItems, refreshTierItems, clearErrors } from '../../redux/actions/dataActions';
+import { getUserTierItems, refreshTierItems, uploadTierItemImage, postTierItem, clearErrors } from '../../redux/actions/dataActions';
+import { TextField } from "@material-ui/core";
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -64,6 +62,13 @@ const styles = theme => ({
         marginLeft: '115px',
         marginTop: '550px',
     },
+    "@media only screen and (max-width: 1200px)": {
+        expandButton: {
+            position: 'relative',
+            marginTop: '100px',
+            marginLeft: '115px',
+        },
+    },
     selectionContainer: {
         borderRight: '2px solid',
         borderBottom: '2px solid',
@@ -81,7 +86,7 @@ const styles = theme => ({
         borderRadius: '10px',
         paddingBottom: '6px',
         border: '2px solid',
-        borderColor: theme.palette.text.primary,
+        borderColor: theme.palette.text.primaryStrong,
         cursor: 'pointer',
     },
     tierItem: {
@@ -93,7 +98,7 @@ const styles = theme => ({
         border: '2px solid transparent',
         cursor: 'pointer',
         "&:hover": {
-            borderColor: theme.palette.text.primary,
+            borderColor: theme.palette.text.primaryStrong,
         },
     },
     tierItemImage: {
@@ -107,7 +112,7 @@ const styles = theme => ({
     tierItemName: {
         textAlign: 'center',
         margin: '10px 6px 2px 6px',
-        overflow: 'hidden',
+        overflow: 'auto',
     },
     selectedTierItem: {
         backgroundColor: theme.palette.primary.dark,
@@ -128,6 +133,7 @@ const styles = theme => ({
     selectedTierItemName: {
         textAlign: 'center',
         margin: '10px 6px 2px 6px',
+        overflow: 'auto',
     },
     addButton: {
         marginLeft: '60px',
@@ -137,25 +143,78 @@ const styles = theme => ({
         marginLeft: '68px',
         marginTop: '60px',
         width: '200px',
+    },
+    addTierItem: {
+        backgroundColor: theme.palette.primary.dark,
+        width: '280px',
+        minHeight: '395px',
+        margin: '15px auto',
+        borderRadius: '10px',
+        paddingBottom: '6px',
+    },
+    addTierItemImage: {
+        width: '100%',
+        height: '350px',
+        borderTopRightRadius: '10px',
+        borderTopLeftRadius: '10px',
+        objectFit: 'cover',
+        cursor: 'pointer',
+    },
+    addTierItemName: {
+        textAlign: 'center',
+        margin: '10px 6px 2px 6px',
+        overflow: 'auto',
+    },
+    addNameTextField: {
+        margin: '150px auto 0 auto',
+        width: '300px',
+        "& .MuiFormLabel-root": {
+            color: theme.palette.text.primary,
+        },
+        "& .MuiFormLabel-root.Mui-focused": {
+            color: theme.palette.text.primary,
+        },
+        "& .Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: 'white',
+            }
+        },
+    },
+    addButton: {
+        margin: '40px auto 0 50px',
+        width: '200px',
     }
+
 });
 
 class TierListDialog extends Component {
     state = {
+        noImg: 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media',
         open: false,
         open2: false,
         isAddTierItem: false,
         selectedIndex: -1,
-        selectedImage: 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media',
+        selectedImage: '',
         selectedName: 'name',
         selectedTab: 0,
+        addTierItemImage: '',
+        addTierItemImageFile: null,
+        addTierItemName: '',
+        loading: false,
     }
     handleOpen = () => {
-        this.setState({ open: true });
+        this.setState({ 
+            open: true,
+            selectedImage: this.state.noImg,
+            addTierItemImage: this.state.noImg,
+            addTierItemName: '',
+        });
     }
     handleClose = () => {
         this.setState({ open: false });
         this.props.clearErrors();
+        if (this.state.addTierItemImage !== this.state.noImg)
+            URL.revokeObjectURL(this.state.addTierItemImage);
     }
     handleSelected(index, name, imageUrl) {
         this.setState({ 
@@ -181,23 +240,92 @@ class TierListDialog extends Component {
     handleAddTierItemClick = () => {
         this.setState({ 
             isAddTierItem: true,
-            selectedTab: 2 
+            selectedTab: 2,
+            //addTierItemImage: this.state.noImg,
+            //addTierItemName: '',
         });
     }
-     
+    handleTierItemDelete = () => {
+        this.setState({
+            selectedImage: this.state.noImg,
+            selectedName: 'name',
+        });
+    }
+    handleAddNameChange = (event) => {
+        this.setState({ addTierItemName: event.target.value });
+    }
+    handleImageChange = (event) => {
+        if (event.target.files[0]) {
+            const imageUrl = URL.createObjectURL(event.target.files[0]);
+            if (this.state.addTierItemImage !== this.state.noImg)
+                URL.revokeObjectURL(this.state.addTierItemImage);
+            this.setState({ 
+                addTierItemImage: imageUrl,
+                addTierItemImageFile: event.target.files[0],
+            });
+        }
+    }
+    handleEditPicture = () => {
+        const fileInput = document.getElementById('tierItemImageInput');
+        fileInput.click();
+    }
+    handleAddTierItem = () => {
+        this.setState({ loading: true });
+        let imageUrl;
+        if (this.state.addTierItemImageFile) {
+            const image = this.state.addTierItemImageFile;
+            const formData = new FormData();
+            formData.append('image', image, image.name);
+            axios.post(`/tierItems/image`, formData)
+                .then(res => {
+                    this.setState({ addTierItemImage: res.data.imageUrl });
+                    imageUrl = res.data.imageUrl;
+                    const name = this.state.addTierItemName;
+                    const category = this.props.data.tierList.category;
+                    this.props.postTierItem({ name, imageUrl, category });
+
+                    if (this.state.addTierItemImage !== this.state.noImg)
+                        URL.revokeObjectURL(this.state.addTierItemImage);
+                    this.setState({ 
+                        addTierItemName: '', 
+                        addTierItemImage: this.state.noImg,
+                        addTierItemImageFile: null,
+                    });
+                    this.handleUserTierItemsClick(this.props.user.credentials.userId);
+                })
+                .catch(err => console.log(err))
+        } else {
+            const name = this.state.addTierItemName;
+            imageUrl = this.state.noImg;
+            const category = this.props.data.tierList.category;
+            this.props.postTierItem({ name, imageUrl, category });
+
+            if (this.state.addTierItemImage !== this.state.noImg)
+                URL.revokeObjectURL(this.state.addTierItemImage);
+            this.setState({ 
+                addTierItemName: '', 
+                addTierItemImage: this.state.noImg,
+                addTierItemImageFile: null,
+            });
+            this.handleUserTierItemsClick(this.props.user.credentials.userId);
+        }
+    }
+
     render(){
-        const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierItems }} = this.props;
+        const { classes, user: { authenticated, credentials: { userId, isManager }}, UI: { loading }, data: { viewTierItems }} = this.props;
         
         const tierItemMarkup = (
             viewTierItems.map((tierItem, index) => (
                 <Grid key={index} item xs={3}>
                     <Paper onClick={this.handleSelected.bind(this, index, tierItem.name, tierItem.imageUrl)} className={ this.state.selectedIndex === index ? classes.clickTierItem : classes.tierItem}>
+                        {(authenticated && userId === tierItem.userId) || isManager ? (<DeleteButton handleTierItemDeleteClick={this.handleTierItemDelete} tierItem={tierItem}/>) : null}
                         <img src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" />
                         <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                     </Paper>
                 </Grid>
             ))
         );
+
         return(
             <Fragment>
                 <Button className={classes.expandButton} variant="contained" onClick={this.handleOpen}>
@@ -226,7 +354,19 @@ class TierListDialog extends Component {
                         <Grid container spacing={3}>
                             <Grid className={classes.selectionContainer} container item xs={9} spacing={3}>
                                 {!this.state.isAddTierItem ? (tierItemMarkup) : (
-                                    <Fragment></Fragment>
+                                    <Fragment>
+                                        <Grid item xs={6}>
+                                            <Paper className={classes.addTierItem}>
+                                                <img id="tierItemImage" onClick={this.handleEditPicture} src={this.state.addTierItemImage} className={classes.addTierItemImage} alt="Tier Item Picture" />
+                                                <input type="file" id="tierItemImageInput" hidden="hidden" onChange={this.handleImageChange}/>
+                                                <Typography className={classes.addTierItemName}>{this.state.addTierItemName}</Typography>
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <TextField className={classes.addNameTextField} variant="outlined" type="text" name="addName" label="Name" value={this.state.addTierItemName} onChange={this.handleAddNameChange}></TextField>
+                                            <Button onClick={this.handleAddTierItem} color="secondary" className={classes.addButton} variant="contained">Add</Button>
+                                        </Grid>
+                                    </Fragment>
                                 )}
                             </Grid>
                             <Grid item xs={3}>
@@ -251,6 +391,8 @@ TierListDialog.propTypes = {
     user: PropTypes.object.isRequired,
     getUserTierItems: PropTypes.func.isRequired,
     refreshTierItems: PropTypes.func.isRequired,
+    uploadTierItemImage: PropTypes.func.isRequired,
+    postTierItem: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -262,6 +404,8 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     getUserTierItems,
     refreshTierItems,
+    uploadTierItemImage,
+    postTierItem,
     clearErrors
 };
 

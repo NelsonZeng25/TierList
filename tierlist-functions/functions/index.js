@@ -43,7 +43,7 @@ app.post("/tierItems/createTierItem", FBAuth, postOneTierItem);
 app.get("/tierItems/:tierItemId", FBAuth, getTierItem);
 app.delete("/tierItems/:tierItemId", FBAuth, deleteTierItem);
 app.put('/tierItems/:tierItemId', FBAuth, updateTierItem);
-app.post("/tierItems/:tierItemId/image", FBAuth, uploadTierItemImage);
+app.post("/tierItems/image", FBAuth, uploadTierItemImage);
 
 // categories routes
 app.get("/categories", getAllCategories);
@@ -377,6 +377,11 @@ exports.onTierItemDelete = functions.firestore.document("/tierItems/{tierItemId}
                         batch.update(tierList, { tierItems: tierItemData });
                     }
                 });
+                if (snapshot.data().imageUrl !== defaultTierItemImg) {
+                    const bucket = admin.storage().bucket(config.storageBucket);
+                    const fileName = snapshot.data().imageUrl.split('%2F')[1].split('?')[0];
+                    return bucket.file(`tierItemImages/${fileName}`).delete();
+                }
                 return batch.commit();
             })
             .catch(err => console.error(err));

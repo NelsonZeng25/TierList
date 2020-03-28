@@ -3,7 +3,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
-import DeleteTierList from './DeleteTierList';
+import DeleteButton from './DeleteButton';
 import TierListDialog from './TierListDialog';
 import LikeButton from './LikeButton';
 
@@ -50,7 +50,7 @@ class TierList extends Component {
         } = this.props;
         const id = this.props.user.credentials.userId;
         const deleteButton = (authenticated && userId === id) || isManager ? (
-            <DeleteTierList tierList={this.props.tierList}/>
+            <DeleteButton tierList={this.props.tierList}/>
         ) : null
         return (
             <Card id="card">

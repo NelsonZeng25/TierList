@@ -3,7 +3,7 @@ import {
     LOADING_DATA, 
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, 
 } from '../types';
 
 const initialState = {
@@ -63,10 +63,6 @@ export default function(state = initialState, action){
             else state.viewCategory[action.payload.category] = [action.payload];
             return {
                 ...state,
-                tierLists: [
-                    action.payload,
-                    ...state.tierLists,
-                ],
             };
         case SUBMIT_COMMENT:
             index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
@@ -133,6 +129,24 @@ export default function(state = initialState, action){
                 ...state,
                 viewTierItems: state.tierItems,
                 loading: false,
+            };
+        case DELETE_TIER_ITEM:
+            index = state.viewTierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
+            state.viewTierItems.splice(index, 1);
+            return {
+                ...state,
+            };
+        case POST_TIER_ITEM:
+            return {
+                ...state,
+                tierItems: [
+                    action.payload,
+                    ...state.tierItems,
+                ],
+                viewTierItems: [
+                    action.payload,
+                    ...state.viewTierItems
+                ]
             };
         default:
             return state;

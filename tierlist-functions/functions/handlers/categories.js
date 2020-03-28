@@ -51,7 +51,7 @@ exports.getAllCategoriesWithTierLists = (req, res) => {
 exports.getAllCategoriesWithTierListsForUser = (req, res) => {
   let categories = {};
   let tierListData;
-  db.collection('tierLists').where('userId', '==', req.params.userId).get()
+  db.collection('tierLists').orderBy("name", "asc").where('userId', '==', req.params.userId).get()
     .then(data => {
       data.forEach(doc => {
         tierListData = doc.data();
@@ -75,12 +75,12 @@ exports.getAllCategoriesWithTierListsForUser = (req, res) => {
 exports.getTierItemsForOneCategory = (req, res) => {
   let tierItemData = {};
   let tierItems = [];
-  db.collection('tierItems').where('category', '==', req.params.category).get()
+  db.collection('tierItems').orderBy("name", "asc").where('category', '==', req.params.category).get()
     .then(data => {
       data.forEach(doc => {
         if (doc.exists) {
           tierItemData = doc.data();
-          tierItemData.id = doc.id;
+          tierItemData.tierItemId = doc.id;
           tierItems.push(tierItemData);
         }
       });
