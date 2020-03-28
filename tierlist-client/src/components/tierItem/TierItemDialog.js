@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
-import DeleteButton from '../tierList/DeleteButton';
+import DeleteButton from '../../util/DeleteButton';
 
 // MUI stuff
 import Grid from '@material-ui/core/Grid';

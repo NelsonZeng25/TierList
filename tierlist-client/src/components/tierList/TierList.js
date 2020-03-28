@@ -3,8 +3,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
-import DeleteButton from './DeleteButton';
-import TierListDialog from './TierListDialog';
+import DeleteButton from '../../util/DeleteButton';
 import LikeButton from './LikeButton';
 
 // MUI

@@ -140,7 +140,7 @@ export class Navbar extends Component {
       <Fragment>
         <AppBar className={classes.appbar}>
           <Toolbar className="nav-container">
-            {authenticated &&
+            {authenticated ? (
               <Fragment>
                 <Button className={classes.button} onClick={this.handleOpen} variant="contained" color="secondary">
                   Create Tier List
@@ -172,7 +172,16 @@ export class Navbar extends Component {
                   </DialogContent>
                 </Dialog>
               </Fragment>
-            }
+            ) : (
+              <Fragment>
+                <Link to="/login">
+                  <Button className={classes.button} variant="contained" color="secondary">Login</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className={classes.button} variant="contained" color="secondary">Sign up</Button>
+                </Link>
+              </Fragment>
+            )}
             <Autocomplete
               id="search"
               name="search"

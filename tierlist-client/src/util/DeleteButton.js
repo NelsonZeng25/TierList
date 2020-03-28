@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
-import MyButton from '../../util/MyButton';
+import MyButton from './MyButton';
 
 // MUI stuff
 import Button from '@material-ui/core/Button';
@@ -11,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Delete from '@material-ui/icons/Delete';
 
 import { connect } from 'react-redux';
-import { deleteTierList, deleteTierItem } from '../../redux/actions/dataActions';
+import { deleteTierList } from '../redux/actions/dataActions';
 
 const styles = theme => ({
     dialog: {
@@ -111,12 +111,10 @@ class DeleteButton extends Component {
 DeleteButton.propTypes = {
     classes: PropTypes.object.isRequired,
     deleteTierList: PropTypes.func.isRequired,
-    deleteTierItem: PropTypes.func.isRequired,
 }
 
 const mapActionsToProps = {
     deleteTierList,
-    deleteTierItem,
 }
 
 export default connect(null, mapActionsToProps)(withStyles(styles)(DeleteButton));
