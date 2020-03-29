@@ -10,7 +10,7 @@ const cors = require('cors');
 app.use(cors());
 
 const { getAllTierLists, postOneTierList, getTierList, 
-    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList } = require('./handlers/tierLists');
+    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList, deleteTierItemFromTierList } = require('./handlers/tierLists');
 
 const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } = require('./handlers/tierItems');
 
@@ -32,7 +32,9 @@ app.get("/tierLists", getAllTierLists);
 app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
-app.put('/tierLists/:tierListId/:tierItemId', FBAuth, addTierItemToTierList);
+app.post('/tierLists/:tierListId/tierItems/:tierItemId', FBAuth, addTierItemToTierList);
+app.delete('/tierLists/:tierListId/tierItems/:tierItemId', FBAuth, deleteTierItemFromTierList);
+
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
 app.get('/tierLists/:tierListId/unlike', FBAuth, unlikeTierList);
 app.post('/tierLists/:tierListId/comment', FBAuth, commentOnTierList);

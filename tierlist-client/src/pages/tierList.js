@@ -8,6 +8,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import ProfileSkeleton from '../util/ProfileSkeleton';
 import StaticProfile from '../components/profile/StaticProfile';
 import TierListDialog from '../components/tierList/TierListDialog';
+import TierItem from  '../components/tierItem/TierItem';
+import TierItemUpdateDialog from '../components/tierItem/TierItemUpdateDialog';
 
 // MUI Stuff
 import Typography from '@material-ui/core/Typography';
@@ -40,17 +42,48 @@ const styles = theme => ({
             flexBasis: '100%',
         }
     },
-    tierName: {
+    STierName: {
         marginTop: '10px',
         textAlign: 'center',
         color: theme.palette.text.primaryStrong
-    }
+    },
+    ATierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
+    BTierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
+    CTierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
+    DTierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
+    ETierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
+    FTierName: {
+        marginTop: '10px',
+        textAlign: 'center',
+        color: theme.palette.text.primaryStrong
+    },
 });
 
 export class tierList extends Component {
     state = {
         profile: null,
         viewTierList: {'S': [], 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []},
+        open: false,
     }
     componentDidMount() {
         let category = '';
@@ -85,29 +118,30 @@ export class tierList extends Component {
     render() {
         const { classes, user: { credentials: { userId } } } = this.props;
         const { loading } = this.props.data;
+        const { viewTierList } = this.state;
 
         const tierItemsMarkup = (tier) => (
-            this.state.viewTierList[tier].map(tierItem => (
+            viewTierList[tier].map(tierItem => (
                 <Grid className={classes.gridTierList} key={tierItem.tierItemId} item xs={6}>
-                    <TierList key={tierItem.tierItemId} tierItem={tierItem} />
+                    <TierItem key={tierItem.tierItemId} tierItem={tierItem} />
                 </Grid>
         )));
         const tierMarkup = (tier) => (
             <Grid item xs={12}>
-                <Typography variant="h5" key={tier} className={classes.tierName}>{tier} Tier</Typography>
+                <Typography variant="h2" key={tier} className={classes[`${tier}TierName`]}>{tier} TIER</Typography>
                 <hr className={classes.visibleSeperator}/>
             </Grid>
         );
         const tierWithTierItemsMarkup = !loading ? (
-            Object.keys(this.state.viewTierList).map(tier => (
+            Object.keys(viewTierList).map(tier => (
                 <Fragment key={tier}>
-                    {this.state.viewTierList[tier].length > 0 && tierMarkup(tier)}
+                    {viewTierList[tier].length > 0 && tierMarkup(tier)}
                     {tierItemsMarkup(tier)}
                 </Fragment>
             ))
         ) : (
             <Fragment>
-                <Typography variant="h5" className={classes.categoryName}>Tier</Typography>
+                <Typography variant="h5" className={classes.categoryName}>S-Rank</Typography>
                 <hr className={classes.visibleSeperator}/>
                 {Array.from({ length: 10 }).map((item, index) => (
                     <Grid className={classes.gridTierList} key={index} item xs={6}>
@@ -127,7 +161,7 @@ export class tierList extends Component {
                         ) : (
                             <StaticProfile profile={this.state.profile} />
                         ))}
-                        <TierListDialog />
+                        <TierListDialog handleEditTierItem={this.handleEditTierItem}/>
                     </Grid>
                 </Grid>
                 <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">

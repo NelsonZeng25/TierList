@@ -265,3 +265,47 @@ exports.addTierItemToTierList = (req, res) => {
       return res.status(500).json({ error: err.code });
     })
 }
+
+// Remove a edited Tier Item from the Tier List (not from Tier Items in general)
+exports.deleteTierItemFromTierList = (req, res) => {
+  const tierListdocument = db.doc(`/tierLists/${req.params.tierListId}`);
+  const tierItemdocument = db.doc(`/tierItems/${req.params.tierItemId}`);
+  
+  let tierItemData, category;
+  let updateTierItems;
+
+  tierItemdocument.get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Tier Item not found'})
+      } else {
+        tierItemData = doc.data();
+        tierItemData.tierItemId = doc.id;
+        category = doc.data().category;
+        return tierListdocument.get()
+      }
+    })
+    .then(doc => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: 'Tier List not found'})
+      }
+      if (doc.data().userId !== req.user.uid) {
+        return res.status(403).json({ error: 'Unauthorized'});
+      } 
+      if (category !== doc.data().category) {
+        return res.status(400).json({ error: "Categories aren't matching" });
+      } else {
+        updateTierItems = doc.data().tierItems;
+        delete updateTierItems[req.params.tierItemId];
+        tierListdocument.update({ tierItems: updateTierItems });
+        return res.json({ 
+          tierItem: tierItemData,
+          message: 'Tier Item has been removed from Tier List successfully'
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    })
+}

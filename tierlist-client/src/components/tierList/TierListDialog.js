@@ -5,6 +5,7 @@ import MyButton from '../../util/MyButton';
 import axios from 'axios';
 import TierItemDialog from '../tierItem/TierItemDialog';
 import TierItemDialogSkeleton from '../tierItem/TierItemDialogSkeleton';
+import TierItemUpdateDialog from '../tierItem/TierItemUpdateDialog';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -214,7 +215,8 @@ class TierListDialog extends Component {
         updateTierItemImageFile: null,
         updateTierItemName: '',
 
-        loading: false,
+        isAddTierItemDetails: false,
+
         error: '',
         errors: {},
     }
@@ -394,8 +396,13 @@ class TierListDialog extends Component {
             this.setState({ error: 'No Item Selected'});
         else if (this.props.data.tierItems.findIndex((tierItem) => tierItem.tierItemId === this.state.selectedTierItemId) === -1)
             this.setState({ error: 'Item not found'});
-        else
-            this.setState({ error: ''});
+        else {
+            this.setState({ error: '', isAddTierItemDetails: true });
+            this.handleClose();
+        }
+    }
+    handleCloseAddTierItemDetails = () => {
+        this.setState({ isAddTierItemDetails: false });
     }
 
     render(){
