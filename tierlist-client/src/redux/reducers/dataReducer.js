@@ -3,7 +3,7 @@ import {
     LOADING_DATA, 
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
 } from '../types';
 
 const initialState = {
@@ -13,6 +13,7 @@ const initialState = {
     categoriesWithTierLists: {},
     viewCategory: {},
     viewTierItems: [],
+    viewTierList: {'S': [], 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []},
     loading: false,
 };
 let index;
@@ -32,6 +33,12 @@ export default function(state = initialState, action){
                 loading: false,
             };
         case SET_TIERLIST:
+            let temp;
+            for (const [id, tierItem] of Object.entries(action.payload.tierItems)) {
+                temp = tierItem;
+                temp.tierItemId = id;
+                state.viewTierList[tierItem.tier].push(temp);
+            }
             return {
                 ...state,
                 tierList: action.payload,

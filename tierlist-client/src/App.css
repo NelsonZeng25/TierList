@@ -131,6 +131,9 @@ a{
   text-decoration: none;
 }
 
+.MuiPopover-paper ul {
+  background-color: var(--bg-primary-light);
+}
 .MuiAutocomplete-popper * {
   background-color: var(--bg-primary-light);
 }

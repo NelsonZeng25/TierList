@@ -3,7 +3,7 @@ import {
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
 } from '../types';
 import axios from 'axios';
 
@@ -61,6 +61,7 @@ export const refreshCategoriesWithTierLists = () => (dispatch) => {
 export const refreshCategories = () => (dispatch) => {
     dispatch({ type: RESET_CATEGORIES });
 };
+
 
 // Post a Tier Item
 export const postTierItem = (newTierItem) => (dispatch) => {

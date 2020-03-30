@@ -82,29 +82,29 @@ const styles = theme => ({
 export class tierList extends Component {
     state = {
         profile: null,
-        viewTierList: {'S': [], 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []},
         open: false,
     }
     componentDidMount() {
-        let category = '';
-        let tierItems = {};
+        // let category = '';
+        // let tierItems = {};
+        
         // Get the Tier List
         const tierListId = this.props.match.params.tierListId;
         this.props.getTierList(tierListId);
-        axios.get(`/tierLists/${tierListId}`)
-            .then(res => {
-                category = res.data.category;
-                tierItems = res.data.tierItems;
-            })
-            .then(() => {
-                // Set up the view
-                let temp = this.state.viewTierList;
-                Object.values(tierItems).forEach(tierItem => {
-                    temp[tierItem.tier].push(tierItem);
-                });
-                this.setState({ viewTierList: temp });
-            })
-            .catch(err => console.log(err))
+        // axios.get(`/tierLists/${tierListId}`)
+        //     .then(res => {
+        //         category = res.data.category;
+        //         tierItems = res.data.tierItems;
+        //     })
+        //     .then(() => {
+        //         // Set up the view
+        //         let temp = this.state.viewTierList;
+        //         Object.values(tierItems).forEach(tierItem => {
+        //             temp[tierItem.tier].push(tierItem);
+        //         });
+        //         this.setState({ viewTierList: temp });
+        //     })
+        //     .catch(err => console.log(err))
 
         // Get the user associated to Tier List
         const userId = this.props.match.params.userId;
@@ -116,9 +116,8 @@ export class tierList extends Component {
         
     }
     render() {
-        const { classes, user: { credentials: { userId } } } = this.props;
+        const { classes, user: { credentials: { userId } }, data: { viewTierList } } = this.props;
         const { loading } = this.props.data;
-        const { viewTierList } = this.state;
 
         const tierItemsMarkup = (tier) => (
             viewTierList[tier].map(tierItem => (

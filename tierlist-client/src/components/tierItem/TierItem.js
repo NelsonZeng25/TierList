@@ -128,7 +128,6 @@ class TierItem extends Component {
 TierItem.propTypes = {
     user: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    tierList: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     openDialog: PropTypes.bool,
 }
