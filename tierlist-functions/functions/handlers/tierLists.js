@@ -228,6 +228,7 @@ exports.addTierItemToTierList = (req, res) => {
     cons: req.body.cons,
     thoughts: req.body.thoughts,
     tier: req.body.tier,
+    tierItemId: req.body.tierItemId,
   }
   let tierItemData, category;
   let temp = {};
@@ -257,7 +258,10 @@ exports.addTierItemToTierList = (req, res) => {
         temp[req.params.tierItemId] = updateTierItem;
         Object.assign(tierItemData, temp);
         tierListdocument.update({ tierItems: tierItemData });
-        return res.json({ message: 'Tier Item has been added in Tier List successfully'});
+        return res.json({ 
+          tierItem: updateTierItem,
+          message: 'Tier Item has been added in Tier List successfully',
+        });
       }
     })
     .catch(err => {

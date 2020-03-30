@@ -32,9 +32,8 @@ app.get("/tierLists", getAllTierLists);
 app.post("/tierLists/createTierList", FBAuth, postOneTierList);
 app.get("/tierLists/:tierListId", getTierList);
 app.delete("/tierLists/:tierListId", FBAuth, deleteTierList);
-app.post('/tierLists/:tierListId/tierItems/:tierItemId', FBAuth, addTierItemToTierList);
+app.put('/tierLists/:tierListId/tierItems/:tierItemId', FBAuth, addTierItemToTierList);
 app.delete('/tierLists/:tierListId/tierItems/:tierItemId', FBAuth, deleteTierItemFromTierList);
-
 app.get('/tierLists/:tierListId/like', FBAuth, likeTierList);
 app.get('/tierLists/:tierListId/unlike', FBAuth, unlikeTierList);
 app.post('/tierLists/:tierListId/comment', FBAuth, commentOnTierList);

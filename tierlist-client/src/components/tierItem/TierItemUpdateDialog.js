@@ -2,9 +2,6 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
-import axios from 'axios';
-import TierItemDialog from '../tierItem/TierItemDialog';
-import TierItemDialogSkeleton from '../tierItem/TierItemDialogSkeleton';
 
 // MUI stuff
 import TextField from "@material-ui/core/TextField";
@@ -29,7 +26,7 @@ import Delete from '@material-ui/icons/Delete';
 
 // Redux stuff
 import { connect } from 'react-redux';
-import { clearErrors, } from '../../redux/actions/dataActions';
+import { clearErrors, addTierItemToTierList } from '../../redux/actions/dataActions';
 
 
 const styles = theme => ({
@@ -58,7 +55,15 @@ const styles = theme => ({
         maxHeight: '50px',
     },
     topContainer: {
-        height: '420px'
+        height: '420px',
+        "& .MuiInputBase-colorSecondary": {
+            fontSize: '30px', 
+            width: '200px', 
+            marginLeft: '20px',
+            "& div": { 
+                padding: '10px 14px', 
+        }
+        }
     },
     bottomContainer: {
         minHeight: '280px',
@@ -79,12 +84,13 @@ const styles = theme => ({
         marginTop: '15px',
     },
     ratingItem: {
-        marginLeft: '20px',
+        marginLeft: '30px',
         "& .MuiRating-iconEmpty": {
             color: 'dimgrey',
         }
     },
     score: {
+        marginLeft: '35px',
         textAlign: 'center',
     },
     proconGrid: {
@@ -134,11 +140,6 @@ const styles = theme => ({
             }
         },
     },
-    tierSelect: {
-        fontSize: '30px',
-        width: '160px',
-        marginLeft: '40px',
-    },
     tierItem: {
         marginTop: '20px',
         backgroundColor: theme.palette.primary.dark,
@@ -172,8 +173,10 @@ const styles = theme => ({
         marginTop: '30px',
     },
     thoughtsTextfield: {
-        height: '150px',
-        //alignItems: 'baseline',
+        "& div": {
+            minHeight: '150px',
+            alignItems: 'baseline',
+        },
         "& .MuiFormLabel-root": {
             color: theme.palette.text.primary,
         },
@@ -186,6 +189,18 @@ const styles = theme => ({
             }
         },
     },
+    updateButton: {
+        margin: '20px auto',
+        width: '250px',
+    },
+    closeButton: {
+        position: 'absolute',
+        right: '1%',
+        top: '1%',
+        "& svg": {
+            color: theme.palette.text.primary,
+        }
+    }
 });
 
 class TierItemUpdateDialog extends Component {
@@ -197,7 +212,7 @@ class TierItemUpdateDialog extends Component {
         open: false,
         score: 0,
         scoreDisplay: 0,
-        tier: '',
+        tier: 'C',
         pros: ['', '', ''],
         cons: ['', '', ''],
         thoughts: '',
@@ -285,6 +300,18 @@ class TierItemUpdateDialog extends Component {
     handleThoughtsChange = (event) => {
         this.setState({ [event.target.name] : event.target.value });
     }
+    handleUpdateClick = () => {
+        let tierItem = {
+            score: this.state.score,
+            pros: this.state.pros,
+            cons: this.state.cons,
+            thoughts: this.state.thoughts,
+            tier: this.state.tier,
+            tierItemId: this.props.tierItem.tierItemId,
+        }
+        this.props.addTierItemToTierList(this.props.data.tierList.tierListId, tierItem);
+        this.handleClose();
+    }
     render(){
         const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierList }} = this.props;
         const { errors } = this.state;
@@ -315,7 +342,7 @@ class TierItemUpdateDialog extends Component {
                     <EditIcon color="secondary" />
                 </MyButton>
                 <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm"
-                    // TransitionComponent={Transition}
+                    // TransitionComponent={<Slide direction="up"/>}
                 >
                     <DialogContent>
                         <Grid container direction="column" justify="flex-start" alignItems="center" spacing={2}>
@@ -326,9 +353,8 @@ class TierItemUpdateDialog extends Component {
                                         value={this.state.tier}
                                         onChange={this.handleTierChange}
                                         variant="outlined"
-                                        className={classes.tierSelect}
+                                        className={classes[this.state.tier]}
                                         color="secondary"
-                                        
                                         >
                                         <MenuItem className={classes.S} value={'S'}>S TIER</MenuItem>
                                         <MenuItem className={classes.A} value={'A'}>A TIER</MenuItem>
@@ -346,6 +372,9 @@ class TierItemUpdateDialog extends Component {
                                 <Grid item xs={7} >
                                     <Grid item>
                                         <Typography className={classes.score} variant="h4">{this.state.scoreDisplay !== -1 ? (this.state.scoreDisplay):(this.state.score)} stars</Typography>
+                                        <MyButton tip="Close" placement="top" btnClassName={classes.closeButton} onClick={this.handleClose}>
+                                            <CloseIcon />
+                                        </MyButton>
                                     </Grid>
                                     <Grid item className={classes.ratingGrid} container justify="center">
                                         <Grid className={classes.ratingItem} item>
@@ -374,7 +403,7 @@ class TierItemUpdateDialog extends Component {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item container direction="column"className={classes.bottomContainer}>
+                            <Grid item container direction="column" className={classes.bottomContainer}>
                                 <Typography className={classes.thoughtsTitle} variant="h5">Detailed Thoughts</Typography>
                                 <hr className={classes.visibleSeperator}/>
                                 <TextField 
@@ -383,8 +412,8 @@ class TierItemUpdateDialog extends Component {
                                     inputProps={{
                                         ref: this.input,
                                     }}
-                                    
                                 />
+                                <Button className={classes.updateButton} onClick={this.handleUpdateClick} variant="contained" color="secondary">Update</Button>
                             </Grid>
                         </Grid>
                     </DialogContent>
@@ -396,6 +425,7 @@ class TierItemUpdateDialog extends Component {
 
 TierItemUpdateDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired,
+    addTierItemToTierList: PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
@@ -409,6 +439,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     clearErrors,
+    addTierItemToTierList,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(TierItemUpdateDialog));

@@ -4,6 +4,7 @@ import {
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
+    SET_VIEW_TIER_LIST,
 } from '../types';
 
 const initialState = {
@@ -162,6 +163,13 @@ export default function(state = initialState, action){
             if (index !== -1) state.viewTierItems[index] = action.payload;
             index = state.tierItems.findIndex(tierItem => tierItem.tierItemId === action.payload.tierItemId);
             if (index !== -1) state.tierItems[index] = action.payload;
+            return {
+                ...state,
+            }
+        case SET_VIEW_TIER_LIST:
+            let updateTierItem = action.payload;
+            index = state.viewTierList[updateTierItem.tier].findIndex(tierItem => tierItem.tierItemId === updateTierItem.tierItemId);
+            if (index !== -1) Object.assign(state.viewTierList[updateTierItem.tier][index], updateTierItem);
             return {
                 ...state,
             }
