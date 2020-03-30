@@ -89,7 +89,13 @@ const styles = theme => ({
     },
     proconGrid: {
         marginTop: '30px',
+        marginLeft: '15px',
+    },
+    addProsButton: {
         marginLeft: '25px',
+    },
+    addConsButton: {
+        marginLeft: '15px',
     },
     add: {
         color: 'lawngreen',
@@ -160,10 +166,33 @@ const styles = theme => ({
         "& svg": {
             color: 'grey'
         }
-    }
+    },
+    thoughtsTitle: {
+        textAlign: 'center',
+        marginTop: '30px',
+    },
+    thoughtsTextfield: {
+        height: '150px',
+        //alignItems: 'baseline',
+        "& .MuiFormLabel-root": {
+            color: theme.palette.text.primary,
+        },
+        "& .MuiFormLabel-root.Mui-focused": {
+            color: theme.palette.text.primary,
+        },
+        "& .Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.text.primaryStrong,
+            }
+        },
+    },
 });
 
 class TierItemUpdateDialog extends Component {
+    constructor(props){
+        super(props);
+        this.input = React.createRef();
+    }
     state = {
         open: false,
         score: 0,
@@ -171,6 +200,7 @@ class TierItemUpdateDialog extends Component {
         tier: '',
         pros: ['', '', ''],
         cons: ['', '', ''],
+        thoughts: '',
         loading: false,
         error: '',
         errors: {},
@@ -183,6 +213,7 @@ class TierItemUpdateDialog extends Component {
             tier: this.props.tierItem.tier,
             pros: this.props.tierItem.pros,
             cons: this.props.tierItem.cons,
+            thoughts: this.props.tierItem.thoughts,
         });
     }
     handleClose = () => {
@@ -202,14 +233,14 @@ class TierItemUpdateDialog extends Component {
     }
     handleProsClicked = () => {
         if (this.state.pros.length + this.state.cons.length < 6) {
-            let temp = this.state.pros;
+            let temp = this.state.pros.slice();
             temp.push('');
             this.setState({ pros: temp});
         }
     }
     handleConsClicked = () => {
         if (this.state.pros.length + this.state.cons.length < 6) {
-            let temp = this.state.cons;
+            let temp = this.state.cons.slice();
             temp.push('');
             this.setState({ cons: temp});
         }
@@ -235,6 +266,24 @@ class TierItemUpdateDialog extends Component {
             temp[index] = event.target.value;
             this.setState({ cons: temp });
         }
+    }
+    handleKeyDown = (event) => {
+        // https://stackoverflow.com/questions/38385936/change-the-cursor-position-in-a-textarea-with-react/38386230
+        if (event.keyCode === 9) { // tab was pressed
+            event.preventDefault();
+            var val = this.state.thoughts,
+            start = event.target.selectionStart,
+            end = event.target.selectionEnd;
+            this.setState({
+                    thoughts : val.substring(0, start) + '\t' + val.substring(end)
+                },() => {
+                    // https://reactjs.org/docs/refs-and-the-dom.html
+                    this.input.current.selectionStart = this.input.current.selectionEnd = start + 1
+                });
+        }
+    }
+    handleThoughtsChange = (event) => {
+        this.setState({ [event.target.name] : event.target.value });
     }
     render(){
         const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierList }} = this.props;
@@ -300,17 +349,17 @@ class TierItemUpdateDialog extends Component {
                                     </Grid>
                                     <Grid item className={classes.ratingGrid} container justify="center">
                                         <Grid className={classes.ratingItem} item>
-                                            <Rating precision={0.5} value={this.state.score} defaultValue={tierItem.score} max={10} size="large"
+                                            <Rating name="score" precision={0.5} value={this.state.score} defaultValue={tierItem.score} max={10} size="large"
                                                 onChange={this.handleRatingChange}
                                                 onChangeActive={this.handleRatingHover} />
                                         </Grid>
                                     </Grid>
                                     <Grid className={classes.proconGrid}item container>
                                         <Grid item xs={6}>
-                                            <Button onClick={this.handleProsClicked} variant="outlined" color="secondary">Add Pros</Button>
+                                            <Button className={classes.addProsButton} onClick={this.handleProsClicked} variant="outlined" color="secondary">Add Pros</Button>
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Button onClick={this.handleConsClicked} variant="outlined" color="secondary">Add Cons</Button>
+                                            <Button className={classes.addConsButton} onClick={this.handleConsClicked} variant="outlined" color="secondary">Add Cons</Button>
                                         </Grid>
                                         {Array.from({ length: this.state.pros.length }).map((item, index) => (
                                             <Fragment>
@@ -326,7 +375,16 @@ class TierItemUpdateDialog extends Component {
                                 </Grid>
                             </Grid>
                             <Grid item container direction="column"className={classes.bottomContainer}>
-                                <h1>Hello</h1>
+                                <Typography className={classes.thoughtsTitle} variant="h5">Detailed Thoughts</Typography>
+                                <hr className={classes.visibleSeperator}/>
+                                <TextField 
+                                    name="thoughts" className={classes.thoughtsTextfield} value={this.state.thoughts} onChange={this.handleThoughtsChange} 
+                                    onKeyDown={this.handleKeyDown.bind(this)} multiline variant="outlined"
+                                    inputProps={{
+                                        ref: this.input,
+                                    }}
+                                    
+                                />
                             </Grid>
                         </Grid>
                     </DialogContent>

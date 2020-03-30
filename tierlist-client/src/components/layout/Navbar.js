@@ -57,7 +57,7 @@ const styles = theme => ({
       },
       "& .Mui-focused": {
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: 'white',
+            borderColor: theme.palette.primaryStrong,
           }
       },
   },
