@@ -16,6 +16,7 @@ import CardContent from '@material-ui/core/CardContent';
 // Icons
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import StarIcon from '@material-ui/icons/Star';
 
 // Redux
 import { connect } from 'react-redux';
@@ -48,6 +49,8 @@ const styles = theme => ({
         objectFit: 'cover',
     },
     tierItemName: {
+        maxWidth: '233px',
+        overflow: 'auto',
         textAlign: 'center',
         color: theme.palette.text.primaryStrong,
     },
@@ -69,6 +72,13 @@ const styles = theme => ({
     updateButton: {
         position: 'absolute',
         zIndex: 3,
+    },
+    scoreWrapper: {
+        float: 'right',
+        marginLeft: '10px',
+        "& span, svg": {
+            verticalAlign: 'middle',
+        }
     }
 });
 
@@ -107,17 +117,25 @@ class TierItem extends Component {
                     title={"Profile Image"}
                     className={classes.tierItemImage}/>
                     <CardContent className={classes.content}>
+                        <div className={classes.scoreWrapper}>
+                            <span style={{fontSize: '25px'}}>{score}   </span>
+                            <StarIcon style={{color: '#ffb400'}}/>
+                        </div>
                         <Typography className={classes.tierItemName} nowrap="true" variant="h5">{name}</Typography>
                         {/* THIS IS WHERE YOU PUT THE SCORE */}
                         {/* {deleteButton} */}
-                        <Typography variant="body1" >Pros:</Typography>
-                            {detailGrid('Good Animation', true)}
-                            {detailGrid('Cool Style', true)}
-                            {detailGrid('Amazing Character Development', true)}
-                        <Typography variant="body1" >Cons:</Typography>
-                            {detailGrid('Bad Pacing', false)}
-                            {detailGrid('Bad Plot', false)}
-                            {detailGrid('Fight scenes are boring af', false)}
+                        {pros.length > 0 && <Typography variant="body1" >Pros:</Typography>}
+                            {Array.from({ length: pros.length }).map((item, index) => (
+                                <Fragment>
+                                    {detailGrid( pros[index], true)}
+                                </Fragment>
+                            ))}
+                        {cons.length > 0 && <Typography variant="body1" >Cons:</Typography>}
+                            {Array.from({ length: cons.length }).map((item, index) => (
+                                <Fragment>
+                                    {detailGrid( cons[index], false)}
+                                </Fragment>
+                            ))}
                     </CardContent>
                 </Card>
             </Fragment>

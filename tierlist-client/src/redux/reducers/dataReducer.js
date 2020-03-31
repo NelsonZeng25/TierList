@@ -4,7 +4,7 @@ import {
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
-    SET_VIEW_TIER_LIST,
+    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST,
 } from '../types';
 
 const initialState = {
@@ -170,6 +170,21 @@ export default function(state = initialState, action){
             let updateTierItem = action.payload;
             index = state.viewTierList[updateTierItem.tier].findIndex(tierItem => tierItem.tierItemId === updateTierItem.tierItemId);
             if (index !== -1) Object.assign(state.viewTierList[updateTierItem.tier][index], updateTierItem);
+            return {
+                ...state,
+            }
+        case ADD_TO_VIEW_TIER_LIST:
+            let foundTier;
+            let addTierItem = action.payload;
+            for (var tier in state.viewTierList) {
+                index = state.viewTierList[tier].findIndex(tierItem => tierItem.tierItemId === addTierItem.tierItemId);
+                if (index !== -1) {
+                    foundTier = tier;
+                    break;
+                }
+            }
+            if (index !== -1) state.viewTierList[foundTier].splice(index, 1);
+            state.viewTierList[addTierItem.tier].push(action.payload);
             return {
                 ...state,
             }

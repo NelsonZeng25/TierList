@@ -149,11 +149,6 @@ const styles = theme => ({
         marginTop: '20px',
         marginLeft: '40px',
     },
-    nextButton: {
-        marginLeft: '35px',
-        marginTop: '10px',
-        width: '200px',
-    },
     "@media only screen and (max-width: 1200px)": {
         expandButton: {
             position: 'relative',
@@ -181,10 +176,6 @@ const styles = theme => ({
             marginTop: '5px',
             marginLeft: '0px',
         },
-        nextButton: {
-            marginTop: '10px',
-            marginLeft: '0px',
-        }
     },
     "@media only screen and (max-width: 750px)": {
         editGrid: {
@@ -234,11 +225,11 @@ class TierListDialog extends Component {
             addTierItemName: '',
             selectedName: 'name',
             selectedTierItemId: '',
+            error: '',
         });
     }
     handleClose = () => {
         this.setState({ open: false });
-        this.props.clearErrors();
         if (this.state.addTierItemImage !== this.state.noImg)
             URL.revokeObjectURL(this.state.addTierItemImage);
     }
@@ -392,13 +383,16 @@ class TierListDialog extends Component {
         }
     }
     handleNext = () => {
-        if (this.state.selectedTierItemId === '')
+        if (this.state.selectedTierItemId === '') {
             this.setState({ error: 'No Item Selected'});
-        else if (this.props.data.tierItems.findIndex((tierItem) => tierItem.tierItemId === this.state.selectedTierItemId) === -1)
+            return false;
+        } else if (this.props.data.tierItems.findIndex((tierItem) => tierItem.tierItemId === this.state.selectedTierItemId) === -1) {
             this.setState({ error: 'Item not found'});
-        else {
-            this.setState({ error: '', isAddTierItemDetails: true });
-            this.handleClose();
+            return false;
+        } else {
+            //this.handleClose();
+            this.setState({ error: '' });
+            return true;
         }
     }
     handleCloseAddTierItemDetails = () => {
@@ -410,7 +404,7 @@ class TierListDialog extends Component {
         const { errors } = this.state;
         const tierItemMarkup = ( !loading ? (
             viewTierItems.map((tierItem, index) => (
-                <TierItemDialog tierItem={tierItem} index={index} handleSelected={this.handleSelected} selectedIndex={this.state.selectedIndex} handleUpdateTierItemClick={this.handleUpdateTierItemClick}/>
+                <TierItemDialog key={index} tierItem={tierItem} index={index} handleSelected={this.handleSelected} selectedIndex={this.state.selectedIndex} handleUpdateTierItemClick={this.handleUpdateTierItemClick}/>
             ))) : (
                 <Fragment>
                     {Array.from({ length: 8 }).map((item, index) => (
@@ -502,7 +496,19 @@ class TierListDialog extends Component {
                                     <Typography variant="body1" color="error" className={classes.errorMessage}>{this.state.error}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Button color="secondary" className={classes.nextButton} variant="contained" onClick={this.handleNext}>Next</Button>
+                                    <TierItemUpdateDialog handleNext={this.handleNext} handleAddClose={this.handleClose} ok={this.state.isAddTierItemDetails}
+                                        tierItem={{
+                                            name: this.state.selectedName, 
+                                            imageUrl: this.state.selectedImage,
+                                            score: 5,
+                                            pros: [],
+                                            cons: [],
+                                            thoughts: '',
+                                            tier: 'C',
+                                            tierItemId: this.state.selectedTierItemId,
+                                        }}
+                                    />
+                                    {/* <Button color="secondary" className={classes.nextButton} variant="contained" onClick={this.handleNext}>Next</Button> */}
                                 </Grid>
                             </Grid>  
                         </Grid>
