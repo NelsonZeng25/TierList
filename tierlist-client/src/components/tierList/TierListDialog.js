@@ -496,7 +496,7 @@ class TierListDialog extends Component {
                                     <Typography variant="body1" color="error" className={classes.errorMessage}>{this.state.error}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <TierItemUpdateDialog handleNext={this.handleNext} handleAddClose={this.handleClose} ok={this.state.isAddTierItemDetails}
+                                    <TierItemUpdateDialog handleNext={this.handleNext}
                                         tierItem={{
                                             name: this.state.selectedName, 
                                             imageUrl: this.state.selectedImage,

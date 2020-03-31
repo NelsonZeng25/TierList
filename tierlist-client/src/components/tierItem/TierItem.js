@@ -110,12 +110,14 @@ class TierItem extends Component {
         );
         return (
             <Fragment>
-                <TierItemUpdateDialog tierItem={this.props.tierItem} updateButton={classes.updateButton} />
                 <Card className={classes.tierItem}>
+                    
                     <CardMedia 
                     image={imageUrl}
                     title={"Profile Image"}
-                    className={classes.tierItemImage}/>
+                    className={classes.tierItemImage}>
+                        <TierItemUpdateDialog tierItem={this.props.tierItem} updateButton={classes.updateButton} />
+                    </CardMedia>
                     <CardContent className={classes.content}>
                         <div className={classes.scoreWrapper}>
                             <span style={{fontSize: '25px'}}>{score}   </span>

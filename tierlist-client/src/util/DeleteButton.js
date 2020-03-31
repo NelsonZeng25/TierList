@@ -11,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Delete from '@material-ui/icons/Delete';
 
 import { connect } from 'react-redux';
-import { deleteTierList } from '../redux/actions/dataActions';
+import { deleteTierList, deleteTierItemFromTierList } from '../redux/actions/dataActions';
 
 const styles = theme => ({
     dialog: {
@@ -35,6 +35,13 @@ const styles = theme => ({
             color: 'red',
         }
     },
+    tierItemInTierList: {
+        zIndex: 2,
+        float: 'right',
+        "& svg": {
+            color: 'red',
+        }
+    },
     deleteButton: {
         color: 'red',
     }
@@ -49,6 +56,7 @@ class DeleteButton extends Component {
     componentDidMount() {
         if (this.props.tierList) this.setState({ type: 'Tier List', class: 'tierList' });
         else if (this.props.tierItem) this.setState({ type: 'Tier Item', class: 'tierItem' });
+        else if (this.props.tierItemInTierList) this.setState({ type: 'Tier Item', class: 'tierItemInTierList' });
         else if (this.props.reply) this.setState({ type: 'Reply', class: 'reply' });
         else if (this.props.comment) this.setState({ type: 'Comment', class: 'comment' });
         else if (this.props.category) this.setState({ type: 'Category', class: 'category' });
@@ -62,26 +70,29 @@ class DeleteButton extends Component {
         this.setState({ open: false });
     }
     deleteClick = () => {
-        switch(this.state.type) {
-            case 'Tier List':
+        switch(this.state.class) {
+            case 'tierList':
                 this.props.deleteTierList(this.props.tierList);
                 break;
-            case 'Tier Item':
+            case 'tierItem':
                 this.props.handleTierItemDelete();
                 break;
-            case 'Reply':
+            case 'tierItemInTierList':
+                this.props.deleteTierItemFromTierList(this.props.currentTierList.tierListId, this.props.tierItemInTierList);
+                break;
+            case 'reply':
                 this.props.deleteReply(this.props.reply);
                 break;
-            case 'Comment':
+            case 'comment':
                 this.props.deleteComment(this.props.comment);
                 break;
-            case 'Category':
+            case 'category':
                 this.props.deleteCategory(this.props.category);
                 break;
-            case 'Manager':
+            case 'manager':
                 this.props.deleteManager(this.props.manager);
                 break;
-            case 'User':
+            case 'user':
                 this.props.deleteUser(this.props.user);
                 break;
             default:
@@ -111,10 +122,13 @@ class DeleteButton extends Component {
 DeleteButton.propTypes = {
     classes: PropTypes.object.isRequired,
     deleteTierList: PropTypes.func.isRequired,
+    deleteTierItemFromTierList: PropTypes.func.isRequired,
 }
+
 
 const mapActionsToProps = {
     deleteTierList,
+    deleteTierItemFromTierList,
 }
 
 export default connect(null, mapActionsToProps)(withStyles(styles)(DeleteButton));

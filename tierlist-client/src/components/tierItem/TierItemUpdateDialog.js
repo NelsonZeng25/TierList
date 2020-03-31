@@ -27,6 +27,7 @@ import Delete from '@material-ui/icons/Delete';
 // Redux stuff
 import { connect } from 'react-redux';
 import { clearErrors, addTierItemToTierList, updateTierItemFromTierList } from '../../redux/actions/dataActions';
+import DeleteButton from "../../util/DeleteButton";
 
 
 const styles = theme => ({
@@ -218,6 +219,7 @@ class TierItemUpdateDialog extends Component {
         score: 0,
         scoreDisplay: 0,
         tier: 'C',
+        initialTier: 'C',
         pros: ['', '', ''],
         cons: ['', '', ''],
         thoughts: '',
@@ -231,6 +233,7 @@ class TierItemUpdateDialog extends Component {
             score: this.props.tierItem.score,
             scoreDisplay: this.props.tierItem.score,
             tier: this.props.tierItem.tier,
+            initialTier: this.props.tierItem.tier,
             pros: this.props.tierItem.pros,
             cons: this.props.tierItem.cons,
             thoughts: this.props.tierItem.thoughts,
@@ -314,8 +317,10 @@ class TierItemUpdateDialog extends Component {
             tier: this.state.tier,
             tierItemId: this.props.tierItem.tierItemId,
         }
-        this.props.updateTierItemFromTierList(this.props.data.tierList.tierListId, tierItem);
-        if (this.props.handleAddClose !== undefined) this.props.handleAddClose();
+        if (this.state.initialTier === this.state.tier)
+            this.props.updateTierItemFromTierList(this.props.data.tierList.tierListId, tierItem);
+        else 
+            this.props.addTierItemToTierList(this.props.data.tierList.tierListId, tierItem);
         this.handleClose();
     }
     handleAddClick = () => {
@@ -337,8 +342,7 @@ class TierItemUpdateDialog extends Component {
         }
     }
     render(){
-        const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierList }} = this.props;
-        const { errors } = this.state;
+        const { classes, UI: { loading }} = this.props;
         const { tierItem } = this.props;
 
         const input = (isPros, index) => (
@@ -363,11 +367,14 @@ class TierItemUpdateDialog extends Component {
         return(
             <Fragment>
                 {this.props.handleNext !== undefined ? (
-                    <Button color="secondary" className={classes.nextButton} variant="contained" onClick={this.handleNextOpen.bind(this, this.props.ok)}>Next</Button>
+                    <Button color="secondary" className={classes.nextButton} variant="contained" onClick={this.handleNextOpen}>Next</Button>
                 ):(
-                    <MyButton tip="Update Tier Item" placement="top" onClick={this.handleOpen} btnClassName={this.props.updateButton}>
-                        <EditIcon color="secondary" />
-                    </MyButton>
+                    <Fragment>
+                        <MyButton tip="Update Tier Item" placement="top" onClick={this.handleOpen} btnClassName={this.props.updateButton}>
+                            <EditIcon color="secondary" />
+                        </MyButton>
+                        <DeleteButton tierItemInTierList={tierItem} currentTierList={this.props.data.tierList}/>
+                    </Fragment>
                 )}
                 <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm"
                     // TransitionComponent={<Slide direction="up"/>}

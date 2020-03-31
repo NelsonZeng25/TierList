@@ -4,7 +4,7 @@ import {
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
-    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST,
+    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST
 } from '../types';
 import axios from 'axios';
 
@@ -191,6 +191,18 @@ export const updateTierItemFromTierList = (tierListId, tierItem) => (dispatch) =
             dispatch({
                 type: SET_VIEW_TIER_LIST,
                 payload: res.data.tierItem,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Add a Tier Item to a Tier List
+export const deleteTierItemFromTierList = (tierListId, tierItem) => (dispatch) => {
+    axios.delete(`/tierLists/${tierListId}/tierItems/${tierItem.tierItemId}`)
+        .then(res => {
+            dispatch({
+                type: DELETE_FROM_VIEW_TIER_LIST,
+                payload: tierItem,
             });
         })
         .catch(err => console.log(err))
