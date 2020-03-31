@@ -59,11 +59,11 @@ const styles = theme => ({
         height: '420px',
         "& .MuiInputBase-colorSecondary": {
             fontSize: '30px', 
-            width: '200px', 
-            marginLeft: '20px',
+            width: '100%', 
+            textAlign: 'center',
             "& div": { 
                 padding: '10px 14px', 
-        }
+            }
         }
     },
     bottomContainer: {
@@ -73,8 +73,8 @@ const styles = theme => ({
         width: '230px',
         height: '280px',
         objectFit: 'cover',
-        borderTopRightRadius: '7px',
-        borderTopLeftRadius: '7px',
+        // borderTopRightRadius: '7px',
+        // borderTopLeftRadius: '7px',
     },
     tierItemName: {
         color: theme.palette.text.primaryStrong,
@@ -142,10 +142,10 @@ const styles = theme => ({
         },
     },
     tierItem: {
-        marginTop: '20px',
+        marginTop: '10px',
         backgroundColor: theme.palette.primary.dark,
         width: '100%',
-        minHeight: '295px',
+        minHeight: '340px',
         borderRadius: '10px',
         paddingBottom: '6px',
         border: '3px solid transparent',
@@ -384,22 +384,22 @@ class TierItemUpdateDialog extends Component {
                             <Grid item container className={classes.topContainer}>
                                 <Grid item xs={5}>
                                     {/* <Typography className={classes.tierItemName} variant="h3">A Tier</Typography> */}
-                                    <Select
-                                        value={this.state.tier}
-                                        onChange={this.handleTierChange}
-                                        variant="outlined"
-                                        className={classes[this.state.tier]}
-                                        color="secondary"
-                                        >
-                                        <MenuItem className={classes.S} value={'S'}>S TIER</MenuItem>
-                                        <MenuItem className={classes.A} value={'A'}>A TIER</MenuItem>
-                                        <MenuItem className={classes.B} value={'B'}>B TIER</MenuItem>
-                                        <MenuItem className={classes.C} value={'C'}>C TIER</MenuItem>
-                                        <MenuItem className={classes.D} value={'D'}>D TIER</MenuItem>
-                                        <MenuItem className={classes.E} value={'E'}>E TIER</MenuItem>
-                                        <MenuItem className={classes.F} value={'F'}>F TIER</MenuItem>
-                                    </Select>
                                     <Paper className={classes.tierItem}>
+                                        <Select
+                                            value={this.state.tier}
+                                            onChange={this.handleTierChange}
+                                            variant="outlined"
+                                            className={classes[this.state.tier]}
+                                            color="secondary"
+                                            >
+                                            <MenuItem className={classes.S} value={'S'}>S TIER</MenuItem>
+                                            <MenuItem className={classes.A} value={'A'}>A TIER</MenuItem>
+                                            <MenuItem className={classes.B} value={'B'}>B TIER</MenuItem>
+                                            <MenuItem className={classes.C} value={'C'}>C TIER</MenuItem>
+                                            <MenuItem className={classes.D} value={'D'}>D TIER</MenuItem>
+                                            <MenuItem className={classes.E} value={'E'}>E TIER</MenuItem>
+                                            <MenuItem className={classes.F} value={'F'}>F TIER</MenuItem>
+                                        </Select>
                                         <img className={classes.image} src={tierItem.imageUrl} alt="Tier Item Picture" />
                                         <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                                     </Paper>

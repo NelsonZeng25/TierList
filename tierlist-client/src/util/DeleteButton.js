@@ -56,7 +56,7 @@ class DeleteButton extends Component {
     componentDidMount() {
         if (this.props.tierList) this.setState({ type: 'Tier List', class: 'tierList' });
         else if (this.props.tierItem) this.setState({ type: 'Tier Item', class: 'tierItem' });
-        else if (this.props.tierItemInTierList) this.setState({ type: 'Tier Item', class: 'tierItemInTierList' });
+        else if (this.props.tierItemInTierList) this.setState({ type: 'Tier Item from your Tier List', class: 'tierItemInTierList' });
         else if (this.props.reply) this.setState({ type: 'Reply', class: 'reply' });
         else if (this.props.comment) this.setState({ type: 'Comment', class: 'comment' });
         else if (this.props.category) this.setState({ type: 'Category', class: 'category' });

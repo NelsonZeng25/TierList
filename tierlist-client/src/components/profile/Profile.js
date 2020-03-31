@@ -110,11 +110,14 @@ class Profile extends Component {
                         <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
                     </div>
                     <Grid container direction="row" justify="space-between" alignItems="center">
-                        <MyButton tip="Logout" placement="top" onClick={this.handleLogout}>
+                        {/* <MyButton tip="Logout" placement="top" onClick={this.handleLogout}>
                             <ExitToAppIcon color="secondary"/>
-                        </MyButton>
-                        <EditDetails/>
-                        <PostTierList/>
+                        </MyButton> */}
+                        <Grid item xs={5} />
+                        <Grid item xs={2}> 
+                            <EditDetails/>
+                        </Grid>
+                        <Grid item xs={5} />
                     </Grid>
                 </div>
             </Paper>

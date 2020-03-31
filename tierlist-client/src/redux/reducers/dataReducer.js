@@ -4,7 +4,7 @@ import {
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
-    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST
+    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST
 } from '../types';
 
 const initialState = {
@@ -192,6 +192,19 @@ export default function(state = initialState, action){
             let selectedTierItem = action.payload;
             index = state.viewTierList[selectedTierItem.tier].findIndex(tierItem => tierItem.tierItemId === selectedTierItem.tierItemId);
             if (index !== -1) state.viewTierList[selectedTierItem.tier].splice(index, 1);
+            return {
+                ...state,
+            }
+        case SORT_VIEW_TIER_LIST:
+            // https://stackoverflow.com/questions/8900732/sort-objects-in-an-array-alphabetically-on-one-property-of-the-array
+            var nameA, nameB;
+            for (var tier in state.viewTierList) {
+                state.viewTierList[tier].sort(function(a,b) {
+                    nameA = a.name.toUpperCase();
+                    nameB = b.name.toUpperCase();
+                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+                });
+            }
             return {
                 ...state,
             }

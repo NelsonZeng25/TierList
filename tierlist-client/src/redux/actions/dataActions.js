@@ -4,7 +4,7 @@ import {
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
-    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST
+    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
 } from '../types';
 import axios from 'axios';
 
@@ -180,6 +180,7 @@ export const addTierItemToTierList = (tierListId, tierItem) => (dispatch) => {
                 type: ADD_TO_VIEW_TIER_LIST,
                 payload: res.data.tierItem,
             });
+            dispatch({ type: SORT_VIEW_TIER_LIST });
         })
         .catch(err => console.log(err))
 }
@@ -192,6 +193,7 @@ export const updateTierItemFromTierList = (tierListId, tierItem) => (dispatch) =
                 type: SET_VIEW_TIER_LIST,
                 payload: res.data.tierItem,
             });
+            dispatch({ type: SORT_VIEW_TIER_LIST });
         })
         .catch(err => console.log(err))
 }
@@ -217,6 +219,7 @@ export const getTierList = (tierListId) => (dispatch) => {
                 type: SET_TIERLIST,
                 payload: res.data
             });
+            dispatch({ type: SORT_VIEW_TIER_LIST });
             dispatch({ type: STOP_LOADING_UI });
         })
         .catch(err => console.log(err))
