@@ -41,7 +41,7 @@ const styles = theme => ({
     dialog: {
         "& .MuiDialog-paper": {
             backgroundColor: theme.palette.primary.main,
-            minHeight: 700,
+            minHeight: 620,
         },
     },
     dialogContent: {
@@ -197,17 +197,9 @@ const styles = theme => ({
 });
 
 class TierItemDisplayDialog extends Component {
-    state = {
-        score: this.props.tierItem.score,
-        scoreDisplay: this.props.tierItem.score,
-        tier: this.props.tierItem.tier,
-        pros: this.props.tierItem.pros,
-        cons: this.props.tierItem.cons,
-        thoughts: this.props.tierItem.thoughts,
-    }
     render(){
         const { classes, UI: { loading }} = this.props;
-        const { tierItem } = this.props;
+        const { tierItem: { name, imageUrl, score, pros, cons, tier, thoughts } } = this.props;
 
         const input = (isPros, index) => (
                 <Grid className={classes.wrapper} container justify="center" spacing={0}>
@@ -215,7 +207,7 @@ class TierItemDisplayDialog extends Component {
                         {isPros ? (<AddIcon className={classes.add} />) : (<RemoveIcon className={classes.remove}/>)}
                     </Grid>
                     <Grid item xs={8}>
-                        <Typography variant="body1">{isPros ? (this.state.pros[index]):(this.state.cons[index])}</Typography>
+                        <Typography variant="body1">{isPros ? (pros[index]):(cons[index])}</Typography>
                         {/* <TextField value={isPros ? (this.state.pros[index]):(this.state.cons[index])} className={classes.textField} variant="outlined"></TextField> */}
                     </Grid>
                 </Grid>
@@ -234,30 +226,30 @@ class TierItemDisplayDialog extends Component {
                             <Grid item container className={classes.topContainer}>
                                 <Grid item xs={5}>
                                     <Paper className={classes.tierItem}>
-                                        <Typography className={classes[this.state.tier]} variant="h4">{this.state.tier} TIER</Typography>
-                                        <img className={classes.image} src={tierItem.imageUrl} alt="Tier Item Picture" />
-                                        <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
+                                        <Typography className={classes[tier]} variant="h4">{tier} TIER</Typography>
+                                        <img className={classes.image} src={imageUrl} alt="Tier Item Picture" />
+                                        <Typography className={classes.tierItemName}>{name}</Typography>
                                     </Paper>
                                 </Grid>
                                 <Grid className={classes.rightContainer} item xs={7} >
                                     <Grid item>
-                                        <Typography className={classes.score} variant="h4">{this.state.score} stars</Typography>
+                                        <Typography className={classes.score} variant="h4">{score} stars</Typography>
                                         <MyButton tip="Close" placement="top" btnClassName={classes.closeButton} onClick={this.handleClose}>
                                             <CloseIcon />
                                         </MyButton>
                                     </Grid>
                                     <Grid item className={classes.ratingGrid} container justify="center">
                                         <Grid className={classes.ratingItem} item>
-                                            <Rating readOnly name="score" precision={0.5} value={this.state.score} max={10} size="large"/>
+                                            <Rating readOnly name="score" precision={0.5} value={score} max={10} size="large"/>
                                         </Grid>
                                     </Grid>
                                     <Grid className={classes.proconGrid} item container>
-                                        {Array.from({ length: this.state.pros.length }).map((item, index) => (
+                                        {Array.from({ length: pros.length }).map((item, index) => (
                                             <Fragment key={index}>
                                                 {input(true, index)}
                                             </Fragment>
                                         ))}
-                                        {Array.from({ length: this.state.cons.length }).map((item, index) => (
+                                        {Array.from({ length: cons.length }).map((item, index) => (
                                             <Fragment key={index}>
                                                 {input(false, index)}
                                             </Fragment>
@@ -268,7 +260,7 @@ class TierItemDisplayDialog extends Component {
                             <Grid item container direction="column" className={classes.bottomContainer}>
                                 <Typography className={classes.thoughtsTitle} variant="h5">Detailed Thoughts</Typography>
                                 <hr className={classes.visibleSeperator}/>
-                                <Typography  className={classes.thoughts} variant="body1">{this.state.thoughts}</Typography>
+                                <Typography  className={classes.thoughts} variant="body1">{thoughts}</Typography>
                                 {/* <TextField name="thoughts" className={classes.thoughtsTextfield} value={this.state.thoughts} multiline variant="outlined"/> */}
                             </Grid>
                         </Grid>

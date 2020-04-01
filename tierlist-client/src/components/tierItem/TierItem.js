@@ -89,8 +89,10 @@ class TierItem extends Component {
     state = {
         open: false,
     }
-    handleOpen = (event) => {
-        this.setState({ open: true });
+    handleOpen = () => {
+        this.setState({ 
+            open: true,
+        });
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -139,13 +141,13 @@ class TierItem extends Component {
                         <Typography className={classes.tierItemName} nowrap="true" variant="h5">{name}</Typography>
                         {pros.length > 0 && <Typography variant="body1" >Pros:</Typography>}
                             {Array.from({ length: pros.length }).map((item, index) => (
-                                <Fragment>
+                                <Fragment key={index}>
                                     {detailGrid( pros[index], true)}
                                 </Fragment>
                             ))}
                         {cons.length > 0 && <Typography variant="body1" >Cons:</Typography>}
                             {Array.from({ length: cons.length }).map((item, index) => (
-                                <Fragment>
+                                <Fragment key={index}>
                                     {detailGrid( cons[index], false)}
                                 </Fragment>
                             ))}

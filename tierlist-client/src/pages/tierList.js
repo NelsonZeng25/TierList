@@ -42,41 +42,20 @@ const styles = theme => ({
             flexBasis: '100%',
         }
     },
-    STierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
+    tierWrapper: {
+        "& h2": {
+            marginTop: '10px',
+            textAlign: 'center',
+            //color: theme.palette.text.primaryStrong
+        }
     },
-    ATierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
-    BTierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
-    CTierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
-    DTierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
-    ETierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
-    FTierName: {
-        marginTop: '10px',
-        textAlign: 'center',
-        color: theme.palette.text.primaryStrong
-    },
+    S: { color: 'gold' },
+    A: { color: 'red' },
+    B: { color: 'orange' },
+    C: { color: 'lawngreen' },
+    D: { color: 'deepskyblue' },
+    E: { color: 'mediumpurple' },
+    F: { color: 'hotpink' },
 });
 
 export class tierList extends Component {
@@ -126,8 +105,8 @@ export class tierList extends Component {
                 </Grid>
         )));
         const tierMarkup = (tier) => (
-            <Grid item xs={12}>
-                <Typography variant="h2" key={tier} className={classes[`${tier}TierName`]}>{tier} TIER</Typography>
+            <Grid className={classes.tierWrapper} item xs={12}>
+                <Typography variant="h2" key={tier} className={classes[tier]}>{tier} TIER</Typography>
                 <hr className={classes.visibleSeperator}/>
             </Grid>
         );
