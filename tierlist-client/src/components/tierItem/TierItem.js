@@ -73,6 +73,7 @@ const styles = theme => ({
     },
     updateButton: {
         position: 'absolute',
+        marginTop: '5px',
         zIndex: 3,
     },
     scoreWrapper: {
@@ -129,7 +130,7 @@ class TierItem extends Component {
                     className={classes.tierItemImage}
                     onClick={this.handleOpen}
                     ></CardMedia>
-                    <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList}/>
+                    {authenticated && userId === id && <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList}/>}
                     <CardContent onClick={this.handleOpen} className={classes.content}>
                         <div className={classes.scoreWrapper}>
                             <span style={{fontSize: '25px'}}>{score}   </span>

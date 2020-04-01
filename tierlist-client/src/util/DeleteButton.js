@@ -38,7 +38,7 @@ const styles = theme => ({
     tierItemInTierList: {
         zIndex: 2,
         marginLeft: '-42px',
-        marginBottom: '230px',
+        height: '50px',
         "& svg": {
             color: 'red',
         }
