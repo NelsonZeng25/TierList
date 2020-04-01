@@ -35,10 +35,14 @@ export default function(state = initialState, action){
             };
         case SET_TIERLIST:
             let temp;
-            for (const [id, tierItem] of Object.entries(action.payload.tierItems)) {
-                temp = tierItem;
-                temp.tierItemId = id;
-                state.viewTierList[tierItem.tier].push(temp);
+            if (state.viewTierList['S'].length === 0 && state.viewTierList['A'].length === 0 && state.viewTierList['B'].length === 0 &&
+                state.viewTierList['C'].length === 0 && state.viewTierList['D'].length === 0 && state.viewTierList['E'].length === 0 && 
+                state.viewTierList['F'].length === 0) {
+                for (const [id, tierItem] of Object.entries(action.payload.tierItems)) {
+                    temp = tierItem;
+                    temp.tierItemId = id;
+                    state.viewTierList[tierItem.tier].push(temp);
+                }
             }
             return {
                 ...state,

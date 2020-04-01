@@ -373,7 +373,7 @@ class TierItemUpdateDialog extends Component {
                         <MyButton tip="Update Tier Item" placement="top" onClick={this.handleOpen} btnClassName={this.props.updateButton}>
                             <EditIcon color="secondary" />
                         </MyButton>
-                        <DeleteButton tierItemInTierList={tierItem} currentTierList={this.props.data.tierList}/>
+                        
                     </Fragment>
                 )}
                 <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm"

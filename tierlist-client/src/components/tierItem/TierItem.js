@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
 import TierItemUpdateDialog from './TierItemUpdateDialog';
+import TierItemDisplayDialog from './TierItemDisplayDialog';
 
 // MUI
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -42,6 +42,7 @@ const styles = theme => ({
         margin: '0',
         display: 'block',
         width: '225px',
+        minWidth: '180px',
         minHeight: '280px',
         position: 'relative',
         borderBottomLeftRadius: '7px',
@@ -49,6 +50,7 @@ const styles = theme => ({
         objectFit: 'cover',
     },
     tierItemName: {
+        marginBottom: '10px',
         maxWidth: '233px',
         overflow: 'auto',
         textAlign: 'center',
@@ -83,6 +85,15 @@ const styles = theme => ({
 });
 
 class TierItem extends Component {
+    state = {
+        open: false,
+    }
+    handleOpen = (event) => {
+        this.setState({ open: true });
+    }
+    handleClose = () => {
+        this.setState({ open: false });
+    }
     render() {
         const { 
             classes,
@@ -110,22 +121,21 @@ class TierItem extends Component {
         );
         return (
             <Fragment>
-                <Card className={classes.tierItem}>
-                    
+                {authenticated && userId === id && <TierItemUpdateDialog tierItem={this.props.tierItem} updateButton={classes.updateButton} />}
+                <Card  className={classes.tierItem}>
                     <CardMedia 
                     image={imageUrl}
                     title={"Profile Image"}
-                    className={classes.tierItemImage}>
-                        <TierItemUpdateDialog tierItem={this.props.tierItem} updateButton={classes.updateButton} />
-                    </CardMedia>
-                    <CardContent className={classes.content}>
+                    className={classes.tierItemImage}
+                    onClick={this.handleOpen}
+                    ></CardMedia>
+                    <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList}/>
+                    <CardContent onClick={this.handleOpen} className={classes.content}>
                         <div className={classes.scoreWrapper}>
                             <span style={{fontSize: '25px'}}>{score}   </span>
                             <StarIcon style={{color: '#ffb400'}}/>
                         </div>
                         <Typography className={classes.tierItemName} nowrap="true" variant="h5">{name}</Typography>
-                        {/* THIS IS WHERE YOU PUT THE SCORE */}
-                        {/* {deleteButton} */}
                         {pros.length > 0 && <Typography variant="body1" >Pros:</Typography>}
                             {Array.from({ length: pros.length }).map((item, index) => (
                                 <Fragment>
@@ -140,6 +150,7 @@ class TierItem extends Component {
                             ))}
                     </CardContent>
                 </Card>
+                <TierItemDisplayDialog open={this.state.open} handleClose={this.handleClose} tierItem={this.props.tierItem} />
             </Fragment>
         )
     }
