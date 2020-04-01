@@ -3,7 +3,7 @@ import {
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
     SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
 } from '../types';
 import axios from 'axios';
@@ -110,10 +110,26 @@ export const getUserTierItems = (userId) => (dispatch) => {
     });
 }
 
+// Get All Tier Items made by a user
+export const getSearchTierItems = (search, isUser) => (dispatch) => {
+    if (isUser)
+        dispatch({
+            type: SET_SEARCH_USER_TIER_ITEMS,
+            payload: search,
+        });
+    else 
+        dispatch({
+            type: SET_SEARCH_TIER_ITEMS,
+            payload: search,
+        });
+}
+
+// Refresh Tier Items back to all tier items
 export const refreshTierItems = () => (dispatch) => {
     dispatch({ type: RESET_VIEW_TIER_ITEMS });
 }
 
+// Update the tier item
 export const updateTierItem = (tierItem) => (dispatch) => {
     dispatch({ type: LOADING_UI });
     axios.put(`/tierItems/${tierItem.tierItemId}`, tierItem)

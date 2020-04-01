@@ -46,11 +46,10 @@ const styles = theme => ({
         "& h2": {
             marginTop: '10px',
             textAlign: 'center',
-            //color: theme.palette.text.primaryStrong
         }
     },
     S: { color: 'gold' },
-    A: { color: 'red' },
+    A: { color: '#fa2a2a' },
     B: { color: 'orange' },
     C: { color: 'lawngreen' },
     D: { color: 'deepskyblue' },

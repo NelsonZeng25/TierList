@@ -128,7 +128,7 @@ class TierItem extends Component {
                 <Card  className={classes.tierItem}>
                     <CardMedia 
                     image={imageUrl}
-                    title={"Profile Image"}
+                    title={"Tier Item Image"}
                     className={classes.tierItemImage}
                     onClick={this.handleOpen}
                     ></CardMedia>

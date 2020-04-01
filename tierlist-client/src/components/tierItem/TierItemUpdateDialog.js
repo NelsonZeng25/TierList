@@ -56,7 +56,7 @@ const styles = theme => ({
         maxHeight: '50px',
     },
     topContainer: {
-        height: '420px',
+        minHeight: '420px',
         "& .MuiInputBase-colorSecondary": {
             fontSize: '30px', 
             width: '100%', 
@@ -156,7 +156,7 @@ const styles = theme => ({
         overflow: 'auto',
     },
     S: { color: 'gold' },
-    A: { color: 'red' },
+    A: { color: '#fa2a2a' },
     B: { color: 'orange' },
     C: { color: 'lawngreen' },
     D: { color: 'deepskyblue' },
@@ -203,10 +203,49 @@ const styles = theme => ({
         }
     },
     nextButton: {
-        //marginLeft: '35px',
+        marginLeft: '50px',
         marginTop: '10px',
         width: '200px',
+        "@media (max-width:1200px)": {
+            marginLeft: '0px',
+        }
     },
+    "@media (max-width:700px)": {
+        topContainer: {
+            justifyContent: 'center',
+        },
+        leftContainer: {
+            maxWidth: '80%',
+            flexBasis: '80%',
+        },
+        image: {
+            width: '310px',
+            height: '350px',
+        },
+        rightContainer: {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        },
+        score: {
+            marginTop: '10px',
+            marginLeft: '0px',
+        },
+        ratingItem: {
+            marginLeft: '0px',
+        },
+        proconGrid: {
+            marginLeft: '0px',
+        },
+        addProsButton: {
+            marginLeft: '60px',
+        },
+        addConsButton: {
+            marginLeft: '20px',
+        },
+        wrapper: {
+            marginLeft: '20px',
+        }
+    }
 });
 
 class TierItemUpdateDialog extends Component {
@@ -382,7 +421,7 @@ class TierItemUpdateDialog extends Component {
                     <DialogContent>
                         <Grid container direction="column" justify="flex-start" alignItems="center" spacing={2}>
                             <Grid item container className={classes.topContainer}>
-                                <Grid item xs={5}>
+                                <Grid className={classes.leftContainer} item xs={5}>
                                     {/* <Typography className={classes.tierItemName} variant="h3">A Tier</Typography> */}
                                     <Paper className={classes.tierItem}>
                                         <Select
@@ -404,7 +443,7 @@ class TierItemUpdateDialog extends Component {
                                         <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={7} >
+                                <Grid className={classes.rightContainer} item xs={7} >
                                     <Grid item>
                                         <Typography className={classes.score} variant="h4">{this.state.scoreDisplay !== -1 ? (this.state.scoreDisplay):(this.state.score)} stars</Typography>
                                         <MyButton tip="Close" placement="top" btnClassName={classes.closeButton} onClick={this.handleClose}>

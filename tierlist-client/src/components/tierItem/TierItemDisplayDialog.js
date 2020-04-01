@@ -148,7 +148,7 @@ const styles = theme => ({
         overflow: 'auto',
     },
     S: { color: 'gold' },
-    A: { color: 'red' },
+    A: { color: '#fa2a2a' },
     B: { color: 'orange' },
     C: { color: 'lawngreen' },
     D: { color: 'deepskyblue' },
@@ -193,6 +193,32 @@ const styles = theme => ({
         whiteSpace: 'pre-wrap',
         letterSpacing: 0,
         marginBottom: '20px',
+    },
+    "@media (max-width:700px)": {
+        topContainer: {
+            justifyContent: 'center',
+        },
+        leftContainer: {
+            maxWidth: '80%',
+            flexBasis: '80%',
+        },
+        image: {
+            width: '310px',
+            height: '350px',
+        },
+        rightContainer: {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        },
+        score: {
+            marginLeft: '0px',
+        },
+        ratingItem: {
+            marginLeft: '0px',
+        },
+        proconGrid: {
+            marginLeft: '35px',
+        }
     }
 });
 
@@ -224,7 +250,7 @@ class TierItemDisplayDialog extends Component {
                     <DialogContent>
                         <Grid container direction="column" justify="flex-start" alignItems="center" spacing={2}>
                             <Grid item container className={classes.topContainer}>
-                                <Grid item xs={5}>
+                                <Grid className={classes.leftContainer} item xs={5}>
                                     <Paper className={classes.tierItem}>
                                         <Typography className={classes[tier]} variant="h4">{tier} TIER</Typography>
                                         <img className={classes.image} src={imageUrl} alt="Tier Item Picture" />
@@ -234,7 +260,7 @@ class TierItemDisplayDialog extends Component {
                                 <Grid className={classes.rightContainer} item xs={7} >
                                     <Grid item>
                                         <Typography className={classes.score} variant="h4">{score} stars</Typography>
-                                        <MyButton tip="Close" placement="top" btnClassName={classes.closeButton} onClick={this.handleClose}>
+                                        <MyButton tip="Close" placement="top" btnClassName={classes.closeButton} onClick={this.props.handleClose}>
                                             <CloseIcon />
                                         </MyButton>
                                     </Grid>

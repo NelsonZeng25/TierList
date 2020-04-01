@@ -27,7 +27,7 @@ import CloseIcon from '@material-ui/icons/Close';
 // Redux stuff
 import { connect } from 'react-redux';
 import { getUserTierItems, refreshTierItems, uploadTierItemImage, postTierItem, 
-    updateTierItem, clearErrors, getTierItemsForOneCategory } from '../../redux/actions/dataActions';
+    updateTierItem, clearErrors, getTierItemsForOneCategory, getSearchTierItems } from '../../redux/actions/dataActions';
 import { TextField } from "@material-ui/core";
 
 const styles = theme => ({
@@ -183,6 +183,25 @@ const styles = theme => ({
             flexBasis: '100%',
         },
     },
+    search: {
+        "& div": {
+            height: '40px',
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: theme.palette.text.primary,
+        },
+        "& .MuiFormLabel-root": {
+            color: theme.palette.text.primary,
+        },
+        "& .MuiFormLabel-root.Mui-focused": {
+            color: theme.palette.text.primary,
+        },
+        "& .Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.text.primaryStrong,
+            }
+        },
+    }
 });
 
 class TierListDialog extends Component {
@@ -207,6 +226,8 @@ class TierListDialog extends Component {
         updateTierItemName: '',
 
         isAddTierItemDetails: false,
+
+        search: '',
 
         error: '',
         errors: {},
@@ -317,7 +338,8 @@ class TierListDialog extends Component {
                         addTierItemImage: this.state.noImg,
                         addTierItemImageFile: null,
                     });
-                    this.handleUserTierItemsClick(this.props.user.credentials.userId);
+                    if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
+                    else this.handleUserTierItemsClick(this.props.user.credentials.userId);
                 })
                 .catch(err => console.log(err))
         } else {
@@ -332,7 +354,8 @@ class TierListDialog extends Component {
                     addTierItemImage: this.state.noImg,
                     addTierItemImageFile: null,
                 });
-                this.handleUserTierItemsClick(this.props.user.credentials.userId);
+                if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
+                else this.handleUserTierItemsClick(this.props.user.credentials.userId);
             }
         }
     }
@@ -368,7 +391,8 @@ class TierListDialog extends Component {
                         selectedName: name,
                     });
 
-                    this.handleUserTierItemsClick(this.props.user.credentials.userId);
+                    if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
+                    else this.handleUserTierItemsClick(this.props.user.credentials.userId);
                 })
                 .catch(err => console.log(err))
         } else {
@@ -378,7 +402,8 @@ class TierListDialog extends Component {
             
             if (this.state.updateTierItemName.trim() !== '') {
                 this.setState({ selectedName: name });
-                this.handleUserTierItemsClick(this.props.user.credentials.userId);
+                if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
+                else this.handleUserTierItemsClick(this.props.user.credentials.userId);
             }
         }
     }
@@ -394,6 +419,13 @@ class TierListDialog extends Component {
             this.setState({ error: '' });
             return true;
         }
+    }
+    handleSearchChange = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+        if (event.target.value.length > 0 && this.state.selectedTab === 0) this.props.getSearchTierItems(event.target.value, false);
+        else if (event.target.value.length > 0 && this.state.selectedTab === 1) this.props.getSearchTierItems(event.target.value, true);
+        else if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
+        else this.handleUserTierItemsClick(this.props.user.credentials.userId);
     }
 
     render(){
@@ -438,6 +470,9 @@ class TierListDialog extends Component {
                     <DialogContent className={classes.dialogContent}>
                         <Grid className={classes.contentContainer} container spacing={3}>
                             <Grid className={classes.selectionContainer} container item xs={9} spacing={3}>
+                                <Grid item container justify="center" xs={12}>
+                                    {!this.state.isAddTierItem && !this.state.isUpdateTierItem && <TextField name="search" type="text" className={classes.search} autoComplete='off' onChange={this.handleSearchChange} value={this.state.search} variant="outlined" placeholder="Search Item"/>}
+                                </Grid>
                                 {!this.state.isAddTierItem ? (!this.state.isUpdateTierItem ? (tierItemMarkup): (
                                     <Fragment>
                                         <Grid className={classes.editGrid} item xs={6}>
@@ -482,8 +517,8 @@ class TierListDialog extends Component {
                                     </Fragment>
                                 )}
                             </Grid>
-                            <Grid className={classes.selectionGrid} container justify="center" alignItems="center" direction="column" item xs={3}>
-                                <Grid item>
+                            <Grid className={classes.selectionGrid} container justify="center" alignItems="center" item xs={3}>
+                                <Grid item xs={12}>
                                     <Paper className={classes.selectedTierItem}>
                                         <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item Picture" />
                                         <Typography className={classes.selectedTierItemName}>{this.state.selectedName}</Typography>
@@ -492,7 +527,7 @@ class TierListDialog extends Component {
                                 <Grid item>
                                     <Typography variant="body1" color="error" className={classes.errorMessage}>{this.state.error}</Typography>
                                 </Grid>
-                                <Grid item>
+                                <Grid container justify="space-around" item xs={12}>
                                     <TierItemUpdateDialog handleNext={this.handleNext} handleAddClose={this.handleClose}
                                         tierItem={{
                                             name: this.state.selectedName, 
@@ -505,7 +540,6 @@ class TierListDialog extends Component {
                                             tierItemId: this.state.selectedTierItemId,
                                         }}
                                     />
-                                    {/* <Button color="secondary" className={classes.nextButton} variant="contained" onClick={this.handleNext}>Next</Button> */}
                                 </Grid>
                             </Grid>  
                         </Grid>
@@ -527,6 +561,7 @@ TierListDialog.propTypes = {
     postTierItem: PropTypes.func.isRequired,
     updateTierItem: PropTypes.func.isRequired,
     getTierItemsForOneCategory: PropTypes.func.isRequired,
+    getSearchTierItems: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -542,6 +577,7 @@ const mapActionsToProps = {
     postTierItem,
     updateTierItem,
     getTierItemsForOneCategory,
+    getSearchTierItems,
     clearErrors
 };
 

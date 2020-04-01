@@ -3,7 +3,7 @@ import {
     LOADING_DATA, 
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
-    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM,
+    SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST
 } from '../types';
 
@@ -14,6 +14,7 @@ const initialState = {
     categoriesWithTierLists: {},
     viewCategory: {},
     viewTierItems: [],
+    userTierItems: [],
     viewTierList: {'S': [], 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []},
     loading: false,
 };
@@ -34,15 +35,12 @@ export default function(state = initialState, action){
                 loading: false,
             };
         case SET_TIERLIST:
+            state.viewTierList = {'S': [], 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []};
             let temp;
-            if (state.viewTierList['S'].length === 0 && state.viewTierList['A'].length === 0 && state.viewTierList['B'].length === 0 &&
-                state.viewTierList['C'].length === 0 && state.viewTierList['D'].length === 0 && state.viewTierList['E'].length === 0 && 
-                state.viewTierList['F'].length === 0) {
-                for (const [id, tierItem] of Object.entries(action.payload.tierItems)) {
-                    temp = tierItem;
-                    temp.tierItemId = id;
-                    state.viewTierList[tierItem.tier].push(temp);
-                }
+            for (const [id, tierItem] of Object.entries(action.payload.tierItems)) {
+                temp = tierItem;
+                temp.tierItemId = id;
+                state.viewTierList[tierItem.tier].push(temp);
             }
             return {
                 ...state,
@@ -133,6 +131,17 @@ export default function(state = initialState, action){
             };
         case SET_USER_TIER_ITEMS:
             state.viewTierItems = state.tierItems.filter(tierItem => tierItem.userId === action.payload);
+            state.userTierItems = state.viewTierItems;
+            return {
+                ...state,
+            };
+        case SET_SEARCH_TIER_ITEMS:
+            state.viewTierItems = state.tierItems.filter(tierItem => tierItem.name.toUpperCase().includes(action.payload.toUpperCase()));
+            return {
+                ...state,
+            };
+        case SET_SEARCH_USER_TIER_ITEMS:
+            state.viewTierItems = state.userTierItems.filter(tierItem => tierItem.name.toUpperCase().includes(action.payload.toUpperCase()));
             return {
                 ...state,
             };
