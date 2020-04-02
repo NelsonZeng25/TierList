@@ -113,6 +113,7 @@ export default {
       textAlign: 'center',
       overflowWrap: 'break-word',
       maxWidth: '380px',
+      marginTop: '20px',
       color: palette.text.primaryStrong,
     },
     paper: {

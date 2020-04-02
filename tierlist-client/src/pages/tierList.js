@@ -62,9 +62,13 @@ const styles = theme => ({
         marginBottom: '20px',
         marginTop: '100px',
     },
+    commentInputGrid: {
+        "@media (max-width: 1355px)": {
+            maxWidth: '82%',
+        }
+    },
     commentInput: {
         width: '100%',
-        marginLeft: '-20px',
         marginTop: '12px',
         // '& .MuiInputBase-input': {
         //     color: '#fff', // Text color
@@ -82,6 +86,7 @@ const styles = theme => ({
     commentAvatar: {
         width: '55px',
         height: '55px',
+        marginRight: '20px',
     },
     commentCancelButton: {
         marginRight: '10px',
@@ -118,7 +123,7 @@ export class tierList extends Component {
         this.setState({ commentInput: ''});
     }
     render() {
-        const { classes, user: { credentials: { userId, imageUrl, userName } }, data: { viewTierList, tierList: {comments}} } = this.props;
+        const { classes, user: { authenticated, credentials: { userId, imageUrl, userName } }, data: { viewTierList, tierList: {comments}} } = this.props;
         const { loading } = this.props.data;
 
         const tierItemsMarkup = (tier) => (
@@ -173,18 +178,18 @@ export class tierList extends Component {
                     <Grid item xs={12}>
                         <Typography variant="h5" color="textPrimary">{comments ? (comments.length) : 0} Comments</Typography>
                     </Grid>
-                    <Grid container item xs={12}>
-                        <Grid item xs={1}>
+                    {authenticated && <Grid container item xs={12}>
+                        <Grid item>
                             <Avatar className={classes.commentAvatar} alt={userName} src={imageUrl} />
                         </Grid>
-                        <Grid item xs={11}>
-                            <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment" name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
+                        <Grid className={classes.commentInputGrid} item xs={11}>
+                            <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment..." name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
                         </Grid>
                         <Grid container justify="flex-end" item={2}>
                             <Button className={classes.commentCancelButton} onClick={this.handleCancelComment}>Cancel</Button>
                             <Button className={classes.commentCommentButton} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Comment</Button>
                         </Grid>
-                    </Grid>
+                    </Grid>}
                 </Grid>
             </Grid>
         );
