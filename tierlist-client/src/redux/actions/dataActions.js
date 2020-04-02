@@ -169,25 +169,6 @@ export const uploadTierItemImage = (formData) => {
         .catch(err => console.log(err))
 }
 
-
-// Get All Tier Lists
-export const getTierLists = () => (dispatch) => {
-    dispatch({ type: LOADING_DATA });
-    axios.get('/tierLists')
-        .then(res => {
-            dispatch({ 
-                type: SET_TIERLISTS,
-                payload: res.data
-            });
-        })
-        .catch(err => {
-            dispatch({ 
-                type: SET_TIERLISTS,
-                payload: []
-            })
-        })
-}
-
 // Add a Tier Item to a Tier List
 export const addTierItemToTierList = (tierListId, tierItem) => (dispatch) => {
     axios.put(`/tierLists/${tierListId}/tierItems/${tierItem.tierItemId}`, tierItem)
@@ -224,6 +205,24 @@ export const deleteTierItemFromTierList = (tierListId, tierItem) => (dispatch) =
             });
         })
         .catch(err => console.log(err))
+}
+
+// Get All Tier Lists
+export const getTierLists = () => (dispatch) => {
+    dispatch({ type: LOADING_DATA });
+    axios.get('/tierLists')
+        .then(res => {
+            dispatch({ 
+                type: SET_TIERLISTS,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            dispatch({ 
+                type: SET_TIERLISTS,
+                payload: []
+            })
+        })
 }
 
 // Get a single Tier List

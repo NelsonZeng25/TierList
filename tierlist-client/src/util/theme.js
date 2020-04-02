@@ -109,13 +109,19 @@ export default {
       borderBottom: '1px solid rgb(0,0,0, 0.1)',
       marginBottom: '20px',
     },
+    pageName: {
+      textAlign: 'center',
+      overflowWrap: 'break-word',
+      maxWidth: '380px',
+      color: palette.text.primaryStrong,
+    },
     paper: {
       background: palette.primary.main,
       maxWidth: '373px',
       minWidth: '19%',
       padding: '15px',
       margin: '20px auto 0px auto',
-      position: 'fixed',
+      position: 'relative',
       "@media (max-width:1200px)": {
         position: 'relative',
       }

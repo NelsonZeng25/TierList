@@ -72,6 +72,7 @@ export class user extends Component {
         const categoryMarkup = (category) => (
             <Grid item xs={12}>
                 <Typography variant="h5" key={category} className={classes.categoryName}>{category}</Typography>
+                <hr className={classes.visibleSeperator}/>
             </Grid>
         );
         const categoryWithTierListsMarkup = loading ? (
@@ -90,15 +91,16 @@ export class user extends Component {
             Object.keys(viewCategory).map(category => (
                 <Fragment key={category}>
                     {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && categoryMarkup(category)}
-                    {viewCategory.hasOwnProperty(category) && viewCategory[category].length > 0 && <hr className={classes.visibleSeperator}/>}
                     {tierListsMarkup(category)}
                 </Fragment>
             ))
         ));
         return (
             <Grid className="grid-container" container spacing={3}>
-                <Grid className={classes.gridProfile} container item xs={3} spacing={0}>
-                    <Grid item xs={12}>
+                <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
+                    <Typography variant="h3" className={classes.pageName}>USER: </Typography>
+                    <Typography variant="h4" className={classes.pageName}>{this.props.user.credentials.userName}</Typography>
+                    <Grid item>
                         {this.state.profile === null ? (
                             <ProfileSkeleton/>
                         ): ( this.state.profile.userId === userId ? (

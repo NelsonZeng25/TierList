@@ -90,7 +90,6 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 categories: action.payload,
-                loading: false,
             };
         case SET_CATEGORIES_WITH_TIERLISTS:
             return {

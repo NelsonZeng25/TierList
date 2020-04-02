@@ -62,7 +62,7 @@ const styles = theme => ({
     expandButton: {
         position: 'fixed',
         marginLeft: '115px',
-        marginTop: '550px',
+        marginTop: '100px',
     },
     selectionContainer: {
         borderRight: '2px solid',
