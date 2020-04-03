@@ -9,6 +9,7 @@ import DeleteButton from '../../util/DeleteButton';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 // Mui Stuff
 import Grid from '@material-ui/core/Grid';
@@ -19,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 
 // Redux Stuff
 import { connect } from 'react-redux';
-// import {  } from '../redux/actions/dataActions';
+import { getComment } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -107,6 +108,9 @@ class Comment extends Component {
     handleReplyInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
     }
+    handleViewReplies = () => {
+        this.props.getComment(this.props.comment.commentId);
+    }
     render() {
         const { classes, user: {authenticated, credentials: {isManager}} ,comment: { userName, userImage, userId, body, createdAt, likeCount, replyCount, commentId }} = this.props;
 
@@ -150,6 +154,10 @@ class Comment extends Component {
                             <Button className={classes.replyReplyButton} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
                         </Grid>
                     </Grid>}
+                    {replyCount > 0 && <Grid onClick={this.handleViewReplies} style={{marginTop:'5px',cursor: 'pointer'}} container>
+                        <ArrowDropDownIcon color="secondary"/>
+                        <Typography color="secondary" variant="body1">View {replyCount} {replyCount > 1 ? 'replies' : 'reply'}</Typography>
+                    </Grid>}
                 </Grid>
             </Grid>
         )
@@ -160,6 +168,7 @@ class Comment extends Component {
 Comment.propTypes = {
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    getComment: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -167,6 +176,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
+    getComment
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Comment));

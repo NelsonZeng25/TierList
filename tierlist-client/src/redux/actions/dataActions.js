@@ -5,7 +5,7 @@ import {
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
-    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY,
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT,
 } from '../types';
 import axios from 'axios';
 
@@ -236,6 +236,20 @@ export const getTierList = (tierListId) => (dispatch) => {
                 payload: res.data
             });
             dispatch({ type: SORT_VIEW_TIER_LIST });
+            dispatch({ type: STOP_LOADING_UI });
+        })
+        .catch(err => console.log(err))
+}
+
+// Get a single Comment
+export const getComment = (commentId) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
+    axios.get(`/comments/${commentId}`)
+        .then(res => {
+            dispatch({
+                type: SET_COMMENT,
+                payload: res.data
+            });
             dispatch({ type: STOP_LOADING_UI });
         })
         .catch(err => console.log(err))

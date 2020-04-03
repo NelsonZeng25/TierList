@@ -44,3 +44,4 @@ export const LIKE_REPLY = 'LIKE_REPLY';
 export const UNLIKE_REPLY = 'UNLIKE_REPLY';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const DELETE_REPLY = 'DELETE_REPLY';
+export const SET_COMMENT = 'SET_COMMENT';

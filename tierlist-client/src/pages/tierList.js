@@ -9,6 +9,9 @@ import StaticProfile from '../components/profile/StaticProfile';
 import TierListDialog from '../components/tierList/TierListDialog';
 import TierItem from  '../components/tierItem/TierItem';
 import Comment from '../components/tierList/Comment';
+import LikeButton from '../components/tierList/LikeButton';
+
+import ChatIcon from '@material-ui/icons/Chat';
 
 // MUI Stuff
 import Typography from '@material-ui/core/Typography';
@@ -90,6 +93,21 @@ const styles = theme => ({
         height: '55px',
         marginRight: '20px',
     },
+    commentCancelButton: {
+        marginRight: '10px',
+    },
+    commentCommentButton: {
+    },
+    likeCommentGrid: {
+        "& svg": {
+            marginTop: '-5px',
+        }
+    },
+    chatIcon: {
+        marginLeft: '30px', 
+        marginRight: '10px',
+        marginTop: '0px !important',
+    },
 });
 
 export class tierList extends Component {
@@ -159,8 +177,8 @@ export class tierList extends Component {
         return (
             <Grid className="grid-container" container spacing={3}>
                 <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                    <Typography variant="h3" className={classes.pageName}>TIER LIST:</Typography>
-                    <Typography variant="h4" className={classes.pageName}>{this.props.data.tierList.name}</Typography>
+                    <Typography variant="h3" className={classes.pageName}>TIER LIST</Typography>
+                    <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.data.tierList.name}</Typography>
                     <Grid item>
                         {this.state.profile === null ? (
                             <ProfileSkeleton/>
@@ -175,8 +193,19 @@ export class tierList extends Component {
                 <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
                     {tierWithTierItemsMarkup}
                     <hr className={classes.commentSeperator} />
-                    <Grid item xs={12}>
-                        <Typography variant="h5" color="textPrimary">{commentCount} Comments</Typography>
+                    <Grid className={classes.likeCommentGrid} item xs={12} container>
+                        <Grid item>
+                            <LikeButton fontSize="large" tierListId={tierListId} placement="top" />
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="h5" color="textPrimary">{likeCount} Likes</Typography>
+                        </Grid>
+                        <Grid item>
+                            <ChatIcon className={classes.chatIcon} fontSize="large" color="secondary" />
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="h5" color="textPrimary">{commentCount} Comments</Typography>
+                        </Grid>
                     </Grid>
                     {authenticated && <Grid container item xs={12}>
                         <Grid item>
@@ -193,44 +222,6 @@ export class tierList extends Component {
                     {comments !== undefined && comments.map(comment => (
                         <Comment key={comment.commentId} comment={comment}/>
                     ))}
-
-                    {/* <Grid container item xs={12}>
-                        <Grid item>
-                            <Avatar className={classes.commentAvatar} alt={userName} src={imageUrl} />
-                        </Grid>
-                        <Grid item className={classes.commentInputGrid} container xs={11}>
-                            <Grid item xs={12}>
-                                <Typography color="secondary" className={classes.commentUserName} variant="body1">{userName}   <text className={classes.commentCreatedAt}>1 day ago</text></Typography> 
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography className={classes.commentContent} variant="body1">WOW amazing shit broooooo</Typography>
-                            </Grid>
-                            <Grid className={classes.tierListCount} container>
-                                <Grid item>
-                                    <LikeButton tierListId={tierListId}></LikeButton>
-                                    <span>{likeCount} Likes</span>
-                                </Grid>
-                                <Grid item>
-                                    <MyButton btnClassName={classes.commentButton} tip="Reply to comment">
-                                        <ChatIcon color="secondary"></ChatIcon>
-                                    </MyButton>
-                                    <span>{commentCount} Replies</span>
-                                </Grid>
-                            </Grid>
-                            <Grid container item xs={12}>
-                                <Grid item>
-                                    <Avatar className={classes.replyAvatar} alt={userName} src={imageUrl} />
-                                </Grid>
-                                <Grid className={classes.replyInputGrid} item xs={11}>
-                                    <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment..." name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
-                                </Grid>
-                                <Grid container justify="flex-end" style={{marginTop: '10px', marginLeft:'50px', width:'86%', }} item>
-                                    <Button className={classes.replyCancelButton} onClick={this.handleCancelComment}>Cancel</Button>
-                                    <Button className={classes.replyReplyButton} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid> */}
                 </Grid>
             </Grid>
         );

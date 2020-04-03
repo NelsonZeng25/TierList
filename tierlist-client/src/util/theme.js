@@ -115,6 +115,7 @@ export default {
     },
     pageName: {
       textAlign: 'center',
+      textDecoration: 'underline',
       overflowWrap: 'break-word',
       maxWidth: '380px',
       marginTop: '20px',

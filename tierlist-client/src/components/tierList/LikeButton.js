@@ -23,6 +23,9 @@ export class LikeButton extends Component {
         class: '',
     }
     componentDidMount() {
+        this.checkClass();
+    }
+    checkClass = () => {
         if (this.props.tierListId) this.setState({ class: 'tierList' });
         else if (this.props.replyId) this.setState({ class: 'reply' });
         else if (this.props.commentId) this.setState({ class: 'comment' });
@@ -35,9 +38,12 @@ export class LikeButton extends Component {
                 return this.props.user.likes && this.props.user.likes.find(like => like.commentId === this.props.commentId);
             case 'reply':
                 return this.props.user.likes && this.props.user.likes.find(like => like.replyId === this.props.replyId);
+            default:
+                return this.props.user.likes && this.props.user.likes.find(like => like.tierListId === this.props.tierListId);
         }
     }
     likeClick = () => {
+        this.checkClass();
         switch(this.state.class) {
             case 'tierList':
                 this.props.likeTierList(this.props.tierListId);
@@ -51,6 +57,7 @@ export class LikeButton extends Component {
         }
     }
     unlikeClick = () => {
+        this.checkClass();
         switch(this.state.class) {
             case 'tierList':
                 this.props.unlikeTierList(this.props.tierListId);
@@ -69,17 +76,17 @@ export class LikeButton extends Component {
         const likeButton = !authenticated ? (
             <Link to="/login">
                 <MyButton btnClassName={classes.likeButton} tip="Like" placement={this.props.placement}>
-                        <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
+                        <FavoriteBorder fontSize={this.props.fontSize ? (this.props.fontSize) : 'default'} style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             </Link>
         ) : (
             this.likedItem() ? (
                 <MyButton btnClassName={classes.likeButton} tip="Undo Like" onClick={this.unlikeClick} placement={this.props.placement}>
-                    <FavoriteIcon style={{color:'red'}}></FavoriteIcon>
+                    <FavoriteIcon fontSize={this.props.fontSize ? (this.props.fontSize) : 'default'} style={{color:'red'}}></FavoriteIcon>
                 </MyButton>
             ) : (
                 <MyButton btnClassName={classes.likeButton} tip="Like" onClick={this.likeClick} placement={this.props.placement}>
-                    <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
+                    <FavoriteBorder fontSize={this.props.fontSize ? (this.props.fontSize) : 'default'} style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             )
         );

@@ -98,8 +98,8 @@ export class user extends Component {
         return (
             <Grid className="grid-container" container spacing={3}>
                 <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                    <Typography variant="h3" className={classes.pageName}>USER: </Typography>
-                    <Typography variant="h4" className={classes.pageName}>{this.props.user.credentials.userName}</Typography>
+                    <Typography variant="h3" className={classes.pageName}>USER</Typography>
+                    <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.user.credentials.userName}</Typography>
                     <Grid item>
                         {this.state.profile === null ? (
                             <ProfileSkeleton/>
