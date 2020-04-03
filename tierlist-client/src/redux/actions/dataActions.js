@@ -5,6 +5,7 @@ import {
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY,
 } from '../types';
 import axios from 'axios';
 
@@ -287,6 +288,54 @@ export const unlikeTierList = (tierListId) => (dispatch) => {
         .catch(err => console.log(err))
 }
 
+// Like a Comment
+export const likeComment = (commentId) => (dispatch) => {
+    axios.get(`/comments/${commentId}/like`)
+        .then(res => {
+            dispatch({ 
+                type: LIKE_COMMENT,
+                payload: res.data,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Unlike a Comment
+export const unlikeComment = (commentId) => (dispatch) => {
+    axios.get(`/comments/${commentId}/unlike`)
+        .then(res => {
+            dispatch({ 
+                type: UNLIKE_COMMENT,
+                payload: res.data,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Like a Reply
+export const likeReply = (replyId) => (dispatch) => {
+    axios.get(`/replies/${replyId}/like`)
+        .then(res => {
+            dispatch({ 
+                type: LIKE_REPLY,
+                payload: res.data,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Unlike a Reply
+export const unlikeReply = (replyId) => (dispatch) => {
+    axios.get(`/replies/${replyId}/unlike`)
+        .then(res => {
+            dispatch({ 
+                type: UNLIKE_REPLY,
+                payload: res.data,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
 // Submit a Comment
 export const submitComment = (tierListId, commentData) => (dispatch) => {
     axios.post(`/tierLists/${tierListId}/comment`, commentData)
@@ -295,7 +344,6 @@ export const submitComment = (tierListId, commentData) => (dispatch) => {
                 type: SUBMIT_COMMENT,
                 payload: res.data,
             });
-            dispatch(clearErrors());
         })
         .catch(err => {
             dispatch({
@@ -312,6 +360,30 @@ export const deleteTierList = (tierList) => (dispatch) => {
             dispatch({ 
                 type: DELETE_TIERLIST,
                 payload: tierList,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Delete a Comment
+export const deleteComment = (comment) => (dispatch) => {
+    axios.delete(`/comments/${comment.commentId}`)
+        .then(() => {
+            dispatch({ 
+                type: DELETE_COMMENT,
+                payload: comment,
+            });
+        })
+        .catch(err => console.log(err))
+}
+
+// Delete a Reply
+export const deleteReply = (reply) => (dispatch) => {
+    axios.delete(`/replies/${reply.replyId}`)
+        .then(() => {
+            dispatch({ 
+                type: DELETE_REPLY,
+                payload: reply,
             });
         })
         .catch(err => console.log(err))

@@ -11,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Delete from '@material-ui/icons/Delete';
 
 import { connect } from 'react-redux';
-import { deleteTierList, deleteTierItemFromTierList } from '../redux/actions/dataActions';
+import { deleteTierList, deleteTierItemFromTierList, deleteComment, deleteReply } from '../redux/actions/dataActions';
 
 const styles = theme => ({
     dialog: {
@@ -39,6 +39,13 @@ const styles = theme => ({
         zIndex: 2,
         marginLeft: '-42px',
         height: '50px',
+        "& svg": {
+            color: 'red',
+        }
+    },
+    comment: {
+        float: 'right',
+        padding: '0 12px 0 0',
         "& svg": {
             color: 'red',
         }
@@ -124,12 +131,16 @@ DeleteButton.propTypes = {
     classes: PropTypes.object.isRequired,
     deleteTierList: PropTypes.func.isRequired,
     deleteTierItemFromTierList: PropTypes.func.isRequired,
+    deleteComment: PropTypes.func.isRequired,
+    deleteReply: PropTypes.func.isRequired,
 }
 
 
 const mapActionsToProps = {
     deleteTierList,
     deleteTierItemFromTierList,
+    deleteComment,
+    deleteReply,
 }
 
 export default connect(null, mapActionsToProps)(withStyles(styles)(DeleteButton));

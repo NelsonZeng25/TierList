@@ -109,6 +109,10 @@ export default {
       borderBottom: '1px solid rgb(0,0,0, 0.1)',
       marginBottom: '20px',
     },
+    commentButton: {
+      padding: '5px 5px 5px 10px',
+      marginLeft: '15px',
+    },
     pageName: {
       textAlign: 'center',
       overflowWrap: 'break-word',

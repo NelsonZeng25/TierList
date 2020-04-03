@@ -9,7 +9,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 // Redux
 import { connect } from  'react-redux';
-import { likeTierList, unlikeTierList } from '../../redux/actions/dataActions';
+import { likeTierList, unlikeTierList, likeComment, unlikeComment, likeReply, unlikeReply } from '../../redux/actions/dataActions';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
@@ -19,34 +19,66 @@ const styles = theme => ({
 })
 
 export class LikeButton extends Component {
-    likedTierList = () => {
-        if (this.props.user.likes && this.props.user.likes.find(like => like.tierListId === this.props.tierListId))
-            return true;
-        else
-            return false;
+    state = {
+        class: '',
     }
-    likeTierList = () => {
-        this.props.likeTierList(this.props.tierListId);
+    componentDidMount() {
+        if (this.props.tierListId) this.setState({ class: 'tierList' });
+        else if (this.props.replyId) this.setState({ class: 'reply' });
+        else if (this.props.commentId) this.setState({ class: 'comment' });
     }
-    unlikeTierList = () => {
-        this.props.unlikeTierList(this.props.tierListId);
+    likedItem = () => {
+        switch(this.state.class) {
+            case 'tierList':
+                return this.props.user.likes && this.props.user.likes.find(like => like.tierListId === this.props.tierListId);
+            case 'comment':
+                return this.props.user.likes && this.props.user.likes.find(like => like.commentId === this.props.commentId);
+            case 'reply':
+                return this.props.user.likes && this.props.user.likes.find(like => like.replyId === this.props.replyId);
+        }
+    }
+    likeClick = () => {
+        switch(this.state.class) {
+            case 'tierList':
+                this.props.likeTierList(this.props.tierListId);
+                break;
+            case 'comment':
+                this.props.likeComment(this.props.commentId);
+                break;
+            case 'reply':
+                this.props.likeReply(this.props.replyId);
+                break;
+        }
+    }
+    unlikeClick = () => {
+        switch(this.state.class) {
+            case 'tierList':
+                this.props.unlikeTierList(this.props.tierListId);
+                break;
+            case 'comment':
+                this.props.unlikeComment(this.props.commentId);
+                break;
+            case 'reply':
+                this.props.unlikeReply(this.props.replyId);
+                break;
+        }
     }
     render() {
         const { classes } = this.props;
         const { authenticated } = this.props.user;
         const likeButton = !authenticated ? (
             <Link to="/login">
-                <MyButton btnClassName={classes.likeButton} tip="Like">
+                <MyButton btnClassName={classes.likeButton} tip="Like" placement={this.props.placement}>
                         <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             </Link>
         ) : (
-            this.likedTierList() ? (
-                <MyButton btnClassName={classes.likeButton} tip="Undo Like" onClick={this.unlikeTierList}>
+            this.likedItem() ? (
+                <MyButton btnClassName={classes.likeButton} tip="Undo Like" onClick={this.unlikeClick} placement={this.props.placement}>
                     <FavoriteIcon style={{color:'red'}}></FavoriteIcon>
                 </MyButton>
             ) : (
-                <MyButton btnClassName={classes.likeButton} tip="Like" onClick={this.likeTierList}>
+                <MyButton btnClassName={classes.likeButton} tip="Like" onClick={this.likeClick} placement={this.props.placement}>
                     <FavoriteBorder style={{color:'red'}}></FavoriteBorder>
                 </MyButton>
             )
@@ -56,11 +88,14 @@ export class LikeButton extends Component {
 }
 
 LikeButton.propTypes = {
+    classes: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    tierListId: PropTypes.string.isRequired,
     likeTierList: PropTypes.func.isRequired,
     unlikeTierList: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
+    likeComment: PropTypes.func.isRequired,
+    unlikeComment: PropTypes.func.isRequired,
+    likeReply: PropTypes.func.isRequired,
+    unlikeReply: PropTypes.func.isRequired, 
 }
 
 const mapStateToProps = (state) => ({
@@ -70,6 +105,10 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     likeTierList,
     unlikeTierList,
+    likeComment,
+    unlikeComment,
+    likeReply,
+    unlikeReply,
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(LikeButton));

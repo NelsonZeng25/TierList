@@ -4,7 +4,8 @@ import {
     SUBMIT_COMMENT,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
-    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST
+    SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY
 } from '../types';
 
 const initialState = {
@@ -49,25 +50,49 @@ export default function(state = initialState, action){
             };
         case LIKE_TIERLIST:
         case UNLIKE_TIERLIST:
-            // index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            // state.tierLists[index] = action.payload;
-            // if (state.tierList.tierListId === action.payload.tierListId)
-            //     state.tierList = action.payload;
-            
             index = state.viewCategory[action.payload.category].findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
             if (index !== -1) state.viewCategory[action.payload.category][index] = action.payload;
             return {
                 ...state,
             };
-        case DELETE_TIERLIST:
-            //index = state.tierLists.findIndex(tierList => tierList.tierListId === action.payload.tierListId);
-            //state.tierLists.splice(index, 1);
-            
+        case LIKE_COMMENT:
+        case UNLIKE_COMMENT:
+            index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+            if (index !== -1) state.tierList.comments[index] = action.payload;
+            return {
+                ...state,
+            };
+        // case LIKE_REPLY:
+        // case UNLIKE_REPLY:
+        //     index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+        //     if (index !== -1) state.tierList.comments[index] = action.payload;
+        //     return {
+        //         ...state,
+        //     };
+        case DELETE_TIERLIST:        
             index = state.viewCategory[action.payload.category].findIndex(tierList => tierList.tierListId === action.payload.tierListId);
             if (index !== -1) state.viewCategory[action.payload.category].splice(index, 1);
             return {
                 ...state
             };
+        case DELETE_COMMENT:        
+            index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+            if (index !== -1) {
+                state.tierList.comments.splice(index, 1);
+                state.tierList.commentCount--;
+            }
+            return {
+                ...state
+            };
+        // case DELETE_REPLY:        
+        //     index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+        //     if (index !== -1) {
+        //         state.tierList.comments.splice(index, 1);
+        //         state.tierList.commentCount--;
+        //     }
+        //     return {
+        //         ...state
+        //     };
         case POST_TIERLIST:
             if (state.viewCategory.hasOwnProperty(action.payload.category)) state.viewCategory[action.payload.category].push(action.payload);
             else state.viewCategory[action.payload.category] = [action.payload];
@@ -75,10 +100,7 @@ export default function(state = initialState, action){
                 ...state,
             };
         case SUBMIT_COMMENT:
-            index = state.tierLists.findIndex((tierList) => tierList.tierListId === action.payload.tierListId);
-            if (index !== -1) state.tierLists[index].commentCount++;
-            if (state.tierList.tierListId === action.payload.tierListId)
-                state.tierList.commentCount++;
+            if (state.tierList.tierListId === action.payload.tierListId) state.tierList.commentCount++;
             return{
                 ...state,
                 tierList: {

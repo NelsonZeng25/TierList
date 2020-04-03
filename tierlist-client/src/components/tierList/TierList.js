@@ -35,10 +35,6 @@ const styles = theme => ({
             paddingBottom: 0
         }
     },
-    commentButton: {
-        padding: '5px 5px 5px 10px',
-        marginLeft: '15px',
-    },
 });
 
 class TierList extends Component {
@@ -66,7 +62,7 @@ class TierList extends Component {
                     <Typography variant="body2" >Category: {category}</Typography>
                     <Grid className={classes.tierListCount} container>
                         <Grid item>
-                            <LikeButton tierListId={tierListId}></LikeButton>
+                            <LikeButton tierListId={tierListId} placement="bottom"></LikeButton>
                             <span>{likeCount} Likes</span>
                         </Grid>
                         <Grid item>
