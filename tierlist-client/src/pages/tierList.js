@@ -202,7 +202,7 @@ export class tierList extends Component {
                             <LikeButton fontSize="large" tierListId={tierListId} placement="top" />
                         </Grid>
                         <Grid item>
-                            <Typography variant="h5" color="textPrimary">{likeCount} Likes</Typography>
+                            <Typography variant="h5" color="textPrimary">{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</Typography>
                         </Grid>
                         <Grid item>
                             <ChatIcon className={classes.chatIcon} fontSize="large" color="secondary" />

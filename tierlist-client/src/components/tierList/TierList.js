@@ -63,7 +63,7 @@ class TierList extends Component {
                     <Grid className={classes.tierListCount} container>
                         <Grid item>
                             <LikeButton tierListId={tierListId} placement="bottom"></LikeButton>
-                            <span>{likeCount} Likes</span>
+                            <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
                         </Grid>
                         <Grid item>
                             <MyButton btnClassName={classes.commentButton} tip="comments">

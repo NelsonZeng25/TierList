@@ -26,25 +26,17 @@ const styles = theme => ({
         marginTop: '12px',
         maxWidth: '86%',
     },
-    commentAvatar: {
-        width: '55px',
-        height: '55px',
-        marginRight: '20px',
-    },
-    commentCancelButton: {
-        marginRight: '10px',
-    },
-    commentCommentButton: {
-    },
-    commentUserName: {
+    replyUserName: {
+        overflow: 'auto',
         fontWeight: 'bold',
     },
-    commentCreatedAt: {
+    replyCreatedAt: {
         fontWeight: '100',
         marginLeft: '10px',
         color: theme.palette.text.primary
     },
-    commentContent: {
+    replyContent: {
+        overflow: 'auto',
         whiteSpace: 'pre-wrap',
         color: theme.palette.text.primaryStrong,
         marginTop: '5px',
@@ -87,20 +79,20 @@ class Reply extends Component {
                 </Grid>
                 <Grid item className={classes.replyInputGrid} container xs={12}>
                     <Grid item xs={11}>
-                        <Typography color="secondary" className={classes.commentUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{reply.userName}</Typography>
-                        <span className={classes.commentCreatedAt}>{dayjs(reply.createdAt).fromNow()}</span>
+                        <Typography color="secondary" className={classes.replyUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{reply.userName}</Typography>
+                        <span className={classes.replyCreatedAt}>{dayjs(reply.createdAt).fromNow()}</span>
                     </Grid>
                     {authenticated && (reply.userId === userId || isManager) && 
                     <Grid item xs={1}>
                         <DeleteButton handleViewClose={this.props.handleViewClose} reply={reply}/>
                     </Grid>}
                     <Grid item xs={12}>
-                        <Typography className={classes.commentContent} variant="body1">{reply.body}</Typography>
+                        <Typography className={classes.replyContent} variant="body1">{reply.body}</Typography>
                     </Grid>
                     <Grid className={classes.tierListCount} container>
                         <Grid item>
                             <LikeButton replyId={reply.replyId} placement="top"></LikeButton>
-                            <span>{reply.likeCount} Likes</span>
+                            <span>{reply.likeCount} {reply.likeCount === 1 ? 'Like' : 'Likes'}</span>
                         </Grid>
                     </Grid>
                 </Grid>

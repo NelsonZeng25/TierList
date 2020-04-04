@@ -57,6 +57,7 @@ const styles = theme => ({
     commentCommentButton: {
     },
     commentUserName: {
+        overflow: 'auto',
         fontWeight: 'bold',
     },
     commentCreatedAt: {
@@ -65,6 +66,7 @@ const styles = theme => ({
         color: theme.palette.text.primary
     },
     commentContent: {
+        overflow: 'auto',
         whiteSpace: 'pre-wrap',
         color: theme.palette.text.primaryStrong,
         marginTop: '5px',
@@ -140,7 +142,7 @@ class Comment extends Component {
                     <Grid className={classes.tierListCount} container>
                         <Grid item>
                             <LikeButton commentId={commentId} placement="top"></LikeButton>
-                            <span>{likeCount} Likes</span>
+                            <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
                         </Grid>
                         <Grid item>
                             <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
