@@ -115,6 +115,7 @@ export class tierList extends Component {
         profile: null,
         open: false,
         commentInput: '',
+        commentIndexClicked: -1,
     }
     componentDidMount() {
         // Get the Tier List
@@ -139,6 +140,9 @@ export class tierList extends Component {
     handleSubmitComment = (tierListId, commentData) => {
         this.props.submitComment(tierListId, commentData);
         this.handleCancelComment();
+    }
+    handleCommentClick = (index) => {
+        this.setState({ commentIndexClicked: index });
     }
     render() {
         const { classes, user: { authenticated, credentials: { userId, imageUrl, userName } }, data: { viewTierList, tierList: {tierListId, comments, commentCount, likeCount}} } = this.props;
@@ -219,8 +223,8 @@ export class tierList extends Component {
                             <Button className={classes.commentCommentButton} onClick={this.handleSubmitComment.bind(this, tierListId, {body: this.state.commentInput})} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Comment</Button>
                         </Grid>
                     </Grid>}
-                    {comments !== undefined && comments.map(comment => (
-                        <Comment key={comment.commentId} comment={comment}/>
+                    {comments !== undefined && comments.map((comment, index) => (
+                        <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment}/>
                     ))}
                 </Grid>
             </Grid>

@@ -6,10 +6,10 @@ import dayjs from 'dayjs';
 import LikeButton from './LikeButton';
 import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
+import Reply from  './Reply';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 // Mui Stuff
 import Grid from '@material-ui/core/Grid';
@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 
 // Redux Stuff
 import { connect } from 'react-redux';
-import { getComment } from '../../redux/actions/dataActions';
+import { getComment, submitReply } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -95,24 +95,31 @@ class Comment extends Component {
     state = {
         replyInput: '',
         replyOpen: false,
+        viewOpen: false,
     }
-    hanldeReplyOpen = () => {
+    handleReplyOpen = () => {
         this.setState({ replyOpen: !this.state.replyOpen });
     }
-    hanldeReplyClose = () => {
+    handleReplyClose = () => {
         this.setState({ 
             replyInput: '',
             replyOpen: false,
         });
     }
+    handleViewClose = () => {
+        this.setState({ viewOpen: false });
+    }
     handleReplyInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
     }
-    handleViewReplies = () => {
-        this.props.getComment(this.props.comment.commentId);
+    handleSubmitReply = (commentId, replyData) => {
+        this.props.handleCommentClick();
+        this.props.submitReply(commentId, replyData);
+        this.setState({ viewOpen: true });
+        this.handleReplyClose();
     }
     render() {
-        const { classes, user: {authenticated, credentials: {isManager}} ,comment: { userName, userImage, userId, body, createdAt, likeCount, replyCount, commentId }} = this.props;
+        const { classes, user: {authenticated, credentials: {isManager, imageUrl}} ,comment: { userName, userImage, userId, body, createdAt, likeCount, replyCount, commentId }} = this.props;
 
         return (
             <Grid container item xs={12}>
@@ -136,7 +143,7 @@ class Comment extends Component {
                             <span>{likeCount} Likes</span>
                         </Grid>
                         <Grid item>
-                            <MyButton onClick={this.hanldeReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
+                            <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
                                 <ChatIcon color="secondary"></ChatIcon>
                             </MyButton>
                             <span>{replyCount} Replies</span>
@@ -144,20 +151,17 @@ class Comment extends Component {
                     </Grid>
                     {this.state.replyOpen && <Grid container item xs={12}>
                         <Grid item>
-                            <Avatar className={classes.replyAvatar} alt={userName} src={userImage} />
+                            <Avatar className={classes.replyAvatar} alt={userName} src={imageUrl} />
                         </Grid>
                         <Grid className={classes.replyInputGrid} item xs={11}>
                             <TextField color="secondary" className={classes.commentInput} multiline placeholder="Reply..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
                         </Grid>
                         <Grid container justify="flex-end" style={{ marginTop: '10px', marginLeft: '50px', width: '86%', }} item>
-                            <Button className={classes.replyCancelButton} onClick={this.hanldeReplyClose}>Cancel</Button>
-                            <Button className={classes.replyReplyButton} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
+                            <Button className={classes.replyCancelButton} onClick={this.handleReplyClose}>Cancel</Button>
+                            <Button className={classes.replyReplyButton} onClick={this.handleSubmitReply.bind(this, commentId, {body: this.state.replyInput})} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
                         </Grid>
                     </Grid>}
-                    {replyCount > 0 && <Grid onClick={this.handleViewReplies} style={{marginTop:'5px',cursor: 'pointer'}} container>
-                        <ArrowDropDownIcon color="secondary"/>
-                        <Typography color="secondary" variant="body1">View {replyCount} {replyCount > 1 ? 'replies' : 'reply'}</Typography>
-                    </Grid>}
+                    {(replyCount > 0 || this.state.viewOpen) && <Reply handleCommentClick={this.props.handleCommentClick} commentIndexClicked={this.props.commentIndexClicked} index={this.props.index} handleViewClose={this.handleViewClose} comment={this.props.comment}/>}
                 </Grid>
             </Grid>
         )
@@ -169,6 +173,7 @@ Comment.propTypes = {
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getComment: PropTypes.func.isRequired,
+    submitReply: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -176,7 +181,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
-    getComment
+    getComment,
+    submitReply
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Comment));

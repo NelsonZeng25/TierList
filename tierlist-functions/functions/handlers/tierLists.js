@@ -69,6 +69,7 @@ exports.getTierList = (req, res) => {
         tierListData.comments.push({
           ...doc.data(),
           commentId: doc.id,
+          replies: [],
         });
       });
       return res.json(tierListData);

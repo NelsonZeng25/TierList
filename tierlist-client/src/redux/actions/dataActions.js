@@ -1,11 +1,11 @@
 import { 
     SET_TIERLISTS, SET_TIERLIST, LIKE_TIERLIST, UNLIKE_TIERLIST, DELETE_TIERLIST, POST_TIERLIST,
     LOADING_DATA, LOADING_UI, STOP_LOADING_UI, 
-    SET_ERRORS, CLEAR_ERRORS, SUBMIT_COMMENT,
+    SET_ERRORS, CLEAR_ERRORS,
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
-    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT,
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY
 } from '../types';
 import axios from 'axios';
 
@@ -367,6 +367,26 @@ export const submitComment = (tierListId, commentData) => (dispatch) => {
         })
 }
 
+// Submit a Reply
+export const submitReply = (commentId, replyData) => (dispatch) => {
+    axios.post(`/comments/${commentId}/reply`, replyData)
+        .then(res => {
+            dispatch({
+                type: SUBMIT_REPLY,
+                payload: res.data,
+            });
+        })
+        .then(() => {
+            dispatch(getComment(commentId));
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data,
+            })
+        })
+}
+
 // Delete a Tier List
 export const deleteTierList = (tierList) => (dispatch) => {
     axios.delete(`/tierLists/${tierList.tierListId}`)
@@ -399,6 +419,7 @@ export const deleteReply = (reply) => (dispatch) => {
                 type: DELETE_REPLY,
                 payload: reply,
             });
+            dispatch(getComment(reply.commentId));
         })
         .catch(err => console.log(err))
 }

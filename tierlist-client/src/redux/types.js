@@ -45,3 +45,4 @@ export const UNLIKE_REPLY = 'UNLIKE_REPLY';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const DELETE_REPLY = 'DELETE_REPLY';
 export const SET_COMMENT = 'SET_COMMENT';
+export const SUBMIT_REPLY = 'SUBMIT_REPLY';

@@ -316,7 +316,6 @@ class TierListDialog extends Component {
         fileInput.click();
     }
     handleAddTierItem = () => {
-        this.setState({ loading: true });
         let imageUrl;
 
         if (this.state.addTierItemImageFile && this.state.addTierItemName.trim() !== '') {
@@ -375,7 +374,6 @@ class TierListDialog extends Component {
         }
     }
     handleUpdateTierItem = () => {
-        this.setState({ loading: true });
         let imageUrl;
         if (this.state.updateTierItemImageFile && this.state.updateTierItemName.trim() !== '') {
             const image = this.state.updateTierItemImageFile;
