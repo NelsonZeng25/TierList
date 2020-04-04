@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import LikeButton from './LikeButton';
 import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
@@ -121,6 +122,7 @@ class Comment extends Component {
         this.handleReplyClose();
     }
     render() {
+        dayjs.extend(relativeTime);
         const { classes, user: {authenticated, credentials: {isManager, imageUrl}} ,comment: { userName, userImage, userId, body, createdAt, likeCount, replyCount, commentId }} = this.props;
 
         return (
@@ -131,7 +133,7 @@ class Comment extends Component {
                 <Grid item className={classes.commentInputGrid} container xs={11}>
                     <Grid item xs={11}>
                         <Typography color="secondary" className={classes.commentUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{userName}</Typography>
-                        <span className={classes.commentCreatedAt}>{dayjs(createdAt).fromNow()}</span>
+                            <span className={classes.commentCreatedAt}>{dayjs(createdAt).fromNow()}</span>
                     </Grid>
                     {authenticated && (userId === this.props.user.credentials.userId || isManager) && <Grid item xs={1}>
                         <DeleteButton comment={this.props.comment}/>

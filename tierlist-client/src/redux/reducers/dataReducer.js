@@ -113,7 +113,7 @@ export default function(state = initialState, action){
                 ...state,
                 tierList: {
                     ...state.tierList,
-                    comments: [action.payload, ...state.tierList.comments]
+                    comments: [{...action.payload, replies: []}, ...state.tierList.comments]
                 }
             };
         case SUBMIT_REPLY:

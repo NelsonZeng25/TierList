@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import LikeButton from './LikeButton';
-import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
 
 // Icons
@@ -69,6 +69,7 @@ class Reply extends Component {
         this.setState({ viewReplies: !this.state.viewReplies });
     }
     render() {
+        dayjs.extend(relativeTime);
         const { classes, UI: {loading}, user: {authenticated, credentials: { userId, isManager}}, comment: {replyCount, replies}} = this.props;
         const verb = this.state.viewReplies ? 'Hide' : 'View';
 
