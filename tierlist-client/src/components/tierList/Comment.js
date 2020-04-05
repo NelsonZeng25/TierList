@@ -48,6 +48,19 @@ const styles = theme => ({
             borderBottomColor: theme.palette.text.primaryStrong, // Solid underline on focus
         },
     },
+    replyInput: {
+        width: '100%',
+        marginTop: '12px',
+        '& .MuiInput-underline:before': {
+            borderBottomColor: theme.palette.text.primary, // Semi-transparent underline
+        },
+        '& .MuiInput-underline:hover:before': {
+            borderBottomColor: theme.palette.text.primaryStrong, // Solid underline on hover
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: theme.palette.text.primaryStrong, // Solid underline on focus
+        },
+    },
     commentAvatar: {
         width: '55px',
         height: '55px',
@@ -230,7 +243,7 @@ class Comment extends Component {
                                 <Avatar className={classes.replyAvatar} alt={userName} src={imageUrl} />
                             </Grid>
                             <Grid className={classes.replyInputGrid} item xs={11}>
-                                <TextField color="secondary" className={classes.commentInput} multiline placeholder="Reply..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
+                                <TextField color="secondary" className={classes.replyInput} multiline placeholder="Reply to comment..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
                             </Grid>
                             <Grid container justify="flex-end" style={{ marginTop: '10px', marginLeft: '50px', width: '86%', }} item>
                                 <Button className={classes.replyCancelButton} onClick={this.handleReplyClose}>Cancel</Button>
