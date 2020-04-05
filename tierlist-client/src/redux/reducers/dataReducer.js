@@ -4,7 +4,7 @@ import {
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
-    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY,
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY, UPDATE_COMMENT, UPDATE_REPLY
 } from '../types';
 
 const initialState = {
@@ -120,6 +120,19 @@ export default function(state = initialState, action){
             return {
                 ...state,
             }
+        case UPDATE_COMMENT:
+            index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+            if (index !== -1) Object.assign(state.tierList.comments[index], action.payload);
+            return {
+                ...state
+            };
+        case UPDATE_REPLY:
+            index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
+            index2 = state.tierList.comments[index].replies.findIndex(reply => reply.replyId === action.payload.replyId);
+            if (index !== -1 && index2 !== -1) Object.assign(state.tierList.comments[index].replies[index2], action.payload);
+            return {
+                ...state
+            };
         case SET_CATEGORIES:
             return {
                 ...state,

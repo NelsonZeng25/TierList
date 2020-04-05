@@ -5,7 +5,7 @@ import {
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
-    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY, UPDATE_COMMENT, UPDATE_REPLY
 } from '../types';
 import axios from 'axios';
 
@@ -422,6 +422,40 @@ export const deleteReply = (reply) => (dispatch) => {
             dispatch(getComment(reply.commentId));
         })
         .catch(err => console.log(err))
+}
+
+// Update a comment
+export const updateComment = (comment, commentData) => (dispatch) => {
+    axios.put(`/comments/${comment.commentId}`, commentData)
+        .then(() => {
+            dispatch({
+                type: UPDATE_COMMENT,
+                payload: {...comment, body: commentData.body},
+            });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data,
+            })
+        })
+}
+
+// Update a reply
+export const updateReply = (reply, replyData) => (dispatch) => {
+    axios.put(`/replies/${reply.replyId}`, replyData)
+        .then(() => {
+            dispatch({
+                type: UPDATE_REPLY,
+                payload: {...reply, body: replyData.body},
+            });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data,
+            })
+        })
 }
 
 // Get the user data for user page

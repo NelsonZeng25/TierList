@@ -46,7 +46,7 @@ const styles = theme => ({
     },
     comment: {
         float: 'right',
-        padding: '0 12px 0 0',
+        padding: '0',
         "& svg": {
             color: 'red',
         }

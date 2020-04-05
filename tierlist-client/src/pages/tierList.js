@@ -178,7 +178,7 @@ export class tierList extends Component {
     handleCommentUpdateAlertOpen = () => {this.setState({ updateCommentAlertOpen: true });}
     handleCommentUpdateAlertClose = (event, reason) => {
         if (reason === 'clickaway') return;
-        this.setState({ deleteCommentAlertOpen: false });
+        this.setState({ updateCommentAlertOpen: false });
     }
     handleCommentDeleteAlertOpen = () => {this.setState({ deleteCommentAlertOpen: true });}
     handleCommentDeleteAlertClose = (event, reason) => {
@@ -265,7 +265,7 @@ export class tierList extends Component {
                             </Grid>
                         </Grid>}
                         {comments !== undefined && comments.map((comment, index) => (
-                            <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment} handleCommentDeleteAlertOpen={this.handleCommentDeleteAlertOpen}/>
+                            <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment} handleCommentDeleteAlertOpen={this.handleCommentDeleteAlertOpen} handleCommentUpdateAlertOpen={this.handleCommentUpdateAlertOpen}/>
                         ))}
                     </Grid>
                 </Grid>
@@ -277,6 +277,7 @@ export class tierList extends Component {
                 <SnackbarAlert 
                     comment={true}
                     add={true} addAlertOpen={this.state.addCommentAlertOpen} handleAddAlertClose={this.handleCommentAddAlertClose}
+                    update={true} updateAlertOpen={this.state.updateCommentAlertOpen} handleUpdateAlertClose={this.handleCommentUpdateAlertClose}
                     delete={true} deleteAlertOpen={this.state.deleteCommentAlertOpen} handleDeleteAlertClose={this.handleCommentDeleteAlertClose}
                 />
             </Fragment>

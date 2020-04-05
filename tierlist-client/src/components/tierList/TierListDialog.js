@@ -63,6 +63,11 @@ const styles = theme => ({
     expandButton: {
         marginRight: '20px',
     },
+    "@media only screen and (max-width: 600px)": {
+        expandButton: {
+            fontSize: '12px',
+        }
+    },
     selectionContainer: {
         borderRight: '2px solid',
         borderBottom: '2px solid',
@@ -149,11 +154,6 @@ const styles = theme => ({
         marginLeft: '40px',
     },
     "@media only screen and (max-width: 1200px)": {
-        expandButton: {
-            position: 'relative',
-            marginTop: '100px',
-            marginLeft: '115px',
-        },
         selectionContainer: {
             maxWidth: '100%',
             flexBasis: '100%',
@@ -200,7 +200,7 @@ const styles = theme => ({
               borderColor: theme.palette.text.primaryStrong,
             }
         },
-    }
+    },
 });
 
 class TierListDialog extends Component {

@@ -12,6 +12,7 @@ import SnackbarAlert from '../../util/SnackbarAlert';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
+import EditIcon from  '@material-ui/icons/Edit';
 
 // Mui Stuff
 import Grid from '@material-ui/core/Grid';
@@ -22,7 +23,7 @@ import Avatar from '@material-ui/core/Avatar';
 
 // Redux Stuff
 import { connect } from 'react-redux';
-import { getComment, submitReply } from '../../redux/actions/dataActions';
+import { getComment, submitReply, updateComment } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -34,7 +35,6 @@ const styles = theme => ({
     },
     commentInput: {
         width: '100%',
-        marginTop: '12px',
         // '& .MuiInputBase-input': {
         //     color: '#fff', // Text color
         // },
@@ -93,7 +93,11 @@ const styles = theme => ({
     },
     replyInputGrid: {
         maxWidth: '86%'
-    }
+    },
+    editButton: {
+        padding: '0 12px 0 0',
+        float: 'right',
+    },
 });
 
 class Comment extends Component {
@@ -101,6 +105,8 @@ class Comment extends Component {
         replyInput: '',
         replyOpen: false,
         viewOpen: false,
+        editMode: false,
+        commentInput: this.props.comment.body,
 
         addReplyAlertOpen: false,
         updateReplyAlertOpen: false,
@@ -128,6 +134,24 @@ class Comment extends Component {
         this.handleReplyClose();
         this.handleAddAlertOpen();
     }
+    handleCommentInput = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+    handleEditCommentClick = () => {
+        this.setState({ editMode: true });
+    }
+    handleCancelEdit = () => {
+        this.setState({ 
+            commentInput: this.props.comment.body,
+            editMode: false,
+        });
+    }
+    handleEditComment = (comment, commentData) => {
+        this.props.updateComment(comment, commentData);
+        this.setState({ editMode: false });
+        this.props.handleCommentUpdateAlertOpen();
+    }
+
     handleAddAlertOpen = () => {
         this.setState({ addReplyAlertOpen: true });
     }
@@ -160,16 +184,35 @@ class Comment extends Component {
                         <Avatar className={classes.commentAvatar} alt={userName} src={userImage} />
                     </Grid>
                     <Grid item className={classes.commentInputGrid} container xs={11}>
-                        <Grid item xs={11}>
+                        <Grid className={classes.commentNameGrid} item xs={10}>
                             <Typography color="secondary" className={classes.commentUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{userName}</Typography>
                                 <span className={classes.commentCreatedAt}>{dayjs(createdAt).fromNow()}</span>
                         </Grid>
-                        {authenticated && (userId === this.props.user.credentials.userId || isManager) && <Grid item xs={1}>
-                            <DeleteButton comment={this.props.comment} handleDeleteAlertOpen={this.props.handleCommentDeleteAlertOpen}/>
+                        {authenticated && <Grid className={classes.commentButtonGrid} item xs={2}>
+                            {((userId === this.props.user.credentials.userId) || isManager) && 
+                                <DeleteButton comment={this.props.comment} handleDeleteAlertOpen={this.props.handleCommentDeleteAlertOpen}/>
+                            }
+                            {userId === this.props.user.credentials.userId &&
+                                <MyButton tip="Edit Comment" placement="top" onClick={this.handleEditCommentClick} btnClassName={classes.editButton}>
+                                    <EditIcon color="secondary" />
+                                </MyButton>
+                            }  
                         </Grid>}
-                        <Grid item xs={12}>
-                            <Typography className={classes.commentContent} variant="body1">{body}</Typography>
-                        </Grid>
+                        {!this.state.editMode ? ( 
+                            <Grid item xs={12}>
+                                <Typography className={classes.commentContent} variant="body1">{body}</Typography>
+                            </Grid>
+                        ) : (
+                            <Fragment>
+                                <Grid item xs={12}>
+                                    <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment..." name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
+                                </Grid>
+                                <Grid container justify="flex-end" style={{marginTop:'10px',width: '100%'}} item>
+                                    <Button className={classes.commentCancelButton} onClick={this.handleCancelEdit}>Cancel</Button>
+                                    <Button className={classes.commentCommentButton} onClick={this.handleEditComment.bind(this, this.props.comment, {body: this.state.commentInput})} color="secondary" variant="contained">Update</Button>
+                                </Grid>
+                            </Fragment>
+                        )}
                         <Grid className={classes.tierListCount} container>
                             <Grid item>
                                 <LikeButton commentId={commentId} placement="top"></LikeButton>
@@ -214,6 +257,7 @@ Comment.propTypes = {
     classes: PropTypes.object.isRequired,
     getComment: PropTypes.func.isRequired,
     submitReply: PropTypes.func.isRequired,
+    updateComment: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -222,7 +266,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     getComment,
-    submitReply
+    submitReply,
+    updateComment,
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Comment));
