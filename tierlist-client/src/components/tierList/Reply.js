@@ -6,20 +6,24 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LikeButton from './LikeButton';
 import DeleteButton from '../../util/DeleteButton';
+import MyButton from '../../util/MyButton';
 
 // Icons
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import EditIcon from  '@material-ui/icons/Edit';
 
 // Mui Stuff
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 // Redux Stuff
 import { connect } from 'react-redux';
-import { getComment } from '../../redux/actions/dataActions';
+import { getComment, updateReply } from '../../redux/actions/dataActions';
 
 const styles = theme => ({
     ...theme.spreadThis,
@@ -28,7 +32,7 @@ const styles = theme => ({
         maxWidth: '86%',
     },
     replyUserName: {
-        overflow: 'auto',
+        overflowWrap: 'break-word',
         fontWeight: 'bold',
     },
     replyCreatedAt: {
@@ -58,40 +62,103 @@ const styles = theme => ({
     progress: {
         marginLeft: '30px',
         marginTop: '15px',
+    },
+    editButton: {
+        padding: '0 3px 0 0',
+        float: 'right',
+    },
+    replyInput: {
+        width: '100%',
+        // '& .MuiInputBase-input': {
+        //     color: '#fff', // Text color
+        // },
+        '& .MuiInput-underline:before': {
+            borderBottomColor: theme.palette.text.primary, // Semi-transparent underline
+        },
+        '& .MuiInput-underline:hover:before': {
+            borderBottomColor: theme.palette.text.primaryStrong, // Solid underline on hover
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: theme.palette.text.primaryStrong, // Solid underline on focus
+        },
+    },
+    replyCancelButton: {
+        marginRight: '10px',
     }
 });
 
 class Reply extends Component {
     state = {
         viewReplies: false,
+        replyInput: '',
+        replyIndex: -1,
     }
     handleToggle = () => {
         this.props.handleCommentClick();
         this.props.getComment(this.props.comment.commentId);
         this.setState({ viewReplies: !this.state.viewReplies });
     }
+    handleReplyInput = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+    handleEditReplyClick = (body, index) => {
+        this.setState({ 
+            replyInput: body,
+            editMode: true,
+            replyIndex: index,
+        });
+    }
+    handleCancelEdit = (body) => {
+        this.setState({ 
+            replyInput: body,
+            editMode: false,
+        });
+    }
+    handleEditReply = (reply, replyData) => {
+        this.props.updateReply(reply, replyData);
+        this.setState({ editMode: false });
+        this.props.handleUpdateAlertOpen();
+    }
     render() {
         dayjs.extend(relativeTime);
         const { classes, UI: {loading}, user: {authenticated, credentials: { userId, isManager}}, comment: {replyCount, replies}} = this.props;
         const verb = this.state.viewReplies ? 'Hide' : 'View';
 
-        const replyMarkup = replies.map(reply => (
+        const replyMarkup = replies.map((reply, index) => (
             <Grid key={reply.replyId} container item xs={12}>
                 <Grid item>
                     <Avatar className={classes.replyAvatar} alt={reply.userName} src={reply.userImage} />
                 </Grid>
                 <Grid item className={classes.replyInputGrid} container xs={12}>
-                    <Grid item xs={11}>
+                    <Grid item xs={10}>
                         <Typography color="secondary" className={classes.replyUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{reply.userName}</Typography>
                         <span className={classes.replyCreatedAt}>{dayjs(reply.createdAt).fromNow()}</span>
                     </Grid>
-                    {authenticated && (reply.userId === userId || isManager) && 
-                    <Grid item xs={1}>
-                        <DeleteButton handleViewClose={this.props.handleViewClose} reply={reply} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>
+                    {authenticated  && <Grid item xs={2}>
+                        {((userId === reply.userId) || isManager) && 
+                            <DeleteButton handleCancelEdit={this.handleCancelEdit} handleViewClose={this.props.handleViewClose} reply={reply} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>
+                        }
+                        {userId === reply.userId &&
+                            <MyButton tip="Edit Reply" placement="top" onClick={this.handleEditReplyClick.bind(this, reply.body, index)} btnClassName={classes.editButton}>
+                                <EditIcon color="secondary" />
+                            </MyButton>
+                        }
                     </Grid>}
-                    <Grid item xs={12}>
-                        <Typography className={classes.replyContent} variant="body1">{reply.body}</Typography>
-                    </Grid>
+                    {!(this.state.editMode && this.state.replyIndex === index) ? (
+                        <Grid item xs={12}>
+                            <Typography className={classes.replyContent} variant="body1">{reply.body}</Typography>
+                        </Grid>
+                    ) : (
+                        <Fragment>
+                            <Grid item xs={12}>
+                                <TextField color="secondary" className={classes.replyInput} multiline placeholder="Reply..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
+                            </Grid>
+                            <Grid container justify="flex-end" style={{marginTop:'10px',width: '100%'}} item>
+                                <Button className={classes.replyCancelButton} onClick={this.handleCancelEdit.bind(this, reply.body)}>Cancel</Button>
+                                <Button className={classes.replyReplyButton} onClick={this.handleEditReply.bind(this, reply, {body: this.state.replyInput})} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Update</Button>
+                            </Grid>
+                        </Fragment>
+                    )}
                     <Grid className={classes.tierListCount} container>
                         <Grid item>
                             <LikeButton replyId={reply.replyId} placement="top"></LikeButton>
@@ -119,6 +186,7 @@ Reply.propTypes = {
     UI: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getComment: PropTypes.func.isRequired,
+    updateReply: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -127,7 +195,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
-    getComment
+    getComment,
+    updateReply
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Reply));

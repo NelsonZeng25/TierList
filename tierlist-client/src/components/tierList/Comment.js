@@ -59,7 +59,7 @@ const styles = theme => ({
     commentCommentButton: {
     },
     commentUserName: {
-        overflow: 'auto',
+        overflowWrap: 'break-word',
         fontWeight: 'bold',
     },
     commentCreatedAt: {
@@ -190,7 +190,7 @@ class Comment extends Component {
                         </Grid>
                         {authenticated && <Grid className={classes.commentButtonGrid} item xs={2}>
                             {((userId === this.props.user.credentials.userId) || isManager) && 
-                                <DeleteButton comment={this.props.comment} handleDeleteAlertOpen={this.props.handleCommentDeleteAlertOpen}/>
+                                <DeleteButton comment={this.props.comment} handleCancelEdit={this.handleCancelEdit} handleDeleteAlertOpen={this.props.handleCommentDeleteAlertOpen}/>
                             }
                             {userId === this.props.user.credentials.userId &&
                                 <MyButton tip="Edit Comment" placement="top" onClick={this.handleEditCommentClick} btnClassName={classes.editButton}>
@@ -209,7 +209,7 @@ class Comment extends Component {
                                 </Grid>
                                 <Grid container justify="flex-end" style={{marginTop:'10px',width: '100%'}} item>
                                     <Button className={classes.commentCancelButton} onClick={this.handleCancelEdit}>Cancel</Button>
-                                    <Button className={classes.commentCommentButton} onClick={this.handleEditComment.bind(this, this.props.comment, {body: this.state.commentInput})} color="secondary" variant="contained">Update</Button>
+                                    <Button className={classes.commentCommentButton} onClick={this.handleEditComment.bind(this, this.props.comment, {body: this.state.commentInput})} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Update</Button>
                                 </Grid>
                             </Fragment>
                         )}
@@ -237,13 +237,15 @@ class Comment extends Component {
                                 <Button className={classes.replyReplyButton} onClick={this.handleSubmitReply.bind(this, commentId, {body: this.state.replyInput})} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
                             </Grid>
                         </Grid>}
-                        {(replyCount > 0 || this.state.viewOpen) && <Reply handleCommentClick={this.props.handleCommentClick} commentIndexClicked={this.props.commentIndexClicked} index={this.props.index} handleViewClose={this.handleViewClose} comment={this.props.comment} handleDeleteAlertOpen={this.handleDeleteAlertOpen}/>}
+                        {(replyCount > 0 || this.state.viewOpen) && 
+                            <Reply handleCommentClick={this.props.handleCommentClick} commentIndexClicked={this.props.commentIndexClicked} index={this.props.index} 
+                            handleViewClose={this.handleViewClose} comment={this.props.comment} handleDeleteAlertOpen={this.handleDeleteAlertOpen} handleUpdateAlertOpen={this.handleUpdateAlertOpen}/>}
                     </Grid>
                 </Grid>
                 <SnackbarAlert 
                     reply={true}
                     add={true} addAlertOpen={this.state.addReplyAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
-                    //update={true} updateAlertOpen={this.state.updateReplyAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
+                    update={true} updateAlertOpen={this.state.updateReplyAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
                     delete={true} deleteAlertOpen={this.state.deleteReplyAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
                 />
             </Fragment>

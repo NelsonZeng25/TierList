@@ -53,7 +53,7 @@ const styles = theme => ({
     },
     reply: {
         float: 'right',
-        padding: '0 12px 0 0',
+        padding: '0',
         "& svg": {
             color: 'red',
         }
@@ -102,10 +102,12 @@ class DeleteButton extends Component {
             case 'reply':
                 this.props.deleteReply(this.props.reply);
                 this.props.handleViewClose();
+                this.props.handleCancelEdit();
                 this.props.handleDeleteAlertOpen();
                 break;
             case 'comment':
                 this.props.deleteComment(this.props.comment);
+                this.props.handleCancelEdit();
                 this.props.handleDeleteAlertOpen();
                 break;
             case 'category':
