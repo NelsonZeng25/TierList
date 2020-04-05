@@ -19,7 +19,6 @@ exports.getAllCategories = (req, res) => {
 
 exports.getAllCategoriesWithTierLists = (req, res) => {
   let categories = {};
-  let tierLists;
   let tierListData;
   db.collection("categories")
       .orderBy("name", "asc")
@@ -28,20 +27,13 @@ exports.getAllCategoriesWithTierLists = (req, res) => {
         data.forEach(doc => {
           categories[doc.data().name] = [];
         });
-        return db.collection('tierLists').get();
+        return db.collection('tierLists').orderBy("likeCount", "desc").get();
       })
       .then(data => {
         data.forEach(doc => {
-          for (var name in categories) {
-            if (doc.data().category === name) {
-              tierListData = doc.data();
-              tierListData.tierListId = doc.id;
-              tierLists = categories[name];
-              tierLists.push(tierListData);
-              categories[name] = tierLists;
-              break;
-            }
-          }
+            tierListData = doc.data();
+            tierListData.tierListId = doc.id;
+            categories[tierListData.category].push(tierListData);
         });
         return res.json(categories);
       })

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Profile from '../components/profile/Profile';
-import TierListSkeleton from '../util/TierListSkeleton';
+import TierItemSkeleton from '../util/TierItemSkeleton';
 import withStyles from '@material-ui/core/styles/withStyles';
 import ProfileSkeleton from '../util/ProfileSkeleton';
 import StaticProfile from '../components/profile/StaticProfile';
@@ -20,6 +20,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Redux Stuff
 import { connect } from 'react-redux';
@@ -111,6 +112,11 @@ const styles = theme => ({
         marginRight: '10px',
         marginTop: '0px !important',
     },
+    progress: {
+        width: '60px',
+        height: '60px',
+        marginRight: '200px',
+    }
 });
 
 export class tierList extends Component {
@@ -210,11 +216,13 @@ export class tierList extends Component {
             ))
         ) : (
             <Fragment>
-                <Typography variant="h5" className={classes.categoryName}>S-Rank</Typography>
-                <hr className={classes.visibleSeperator}/>
-                {Array.from({ length: 10 }).map((item, index) => (
+                <Grid className={classes.tierWrapper} item xs={12}>
+                    <Typography variant="h2" className={classes.S}>S TIER</Typography>
+                    <hr className={classes.visibleSeperator}/>
+                </Grid>
+                {Array.from({ length: 6 }).map((item, index) => (
                     <Grid className={classes.gridTierList} key={index} item xs={6}>
-                        <TierListSkeleton />
+                        <TierItemSkeleton />
                     </Grid>
                 ))}
             </Fragment>
@@ -264,9 +272,12 @@ export class tierList extends Component {
                                 <Button className={classes.commentCommentButton} onClick={this.handleSubmitComment.bind(this, tierListId, {body: this.state.commentInput})} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Comment</Button>
                             </Grid>
                         </Grid>}
-                        {comments !== undefined && comments.map((comment, index) => (
-                            <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment} handleCommentDeleteAlertOpen={this.handleCommentDeleteAlertOpen} handleCommentUpdateAlertOpen={this.handleCommentUpdateAlertOpen}/>
+                        {!loading && comments !== undefined && comments.map((comment, index) => (
+                                <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment} handleCommentDeleteAlertOpen={this.handleCommentDeleteAlertOpen} handleCommentUpdateAlertOpen={this.handleCommentUpdateAlertOpen}/>
                         ))}
+                        {loading && 
+                            <CircularProgress className={classes.progress} color="secondary" />
+                        }
                     </Grid>
                 </Grid>
                 <SnackbarAlert 

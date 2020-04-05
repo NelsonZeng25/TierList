@@ -45,7 +45,6 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 tierList: action.payload,
-                loading: false,
             };
         case SET_COMMENT:
             index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
@@ -266,6 +265,7 @@ export default function(state = initialState, action){
             }
             return {
                 ...state,
+                loading: false,
             }
         default:
             return state;

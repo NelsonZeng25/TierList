@@ -228,7 +228,7 @@ export const getTierLists = () => (dispatch) => {
 
 // Get a single Tier List
 export const getTierList = (tierListId) => (dispatch) => {
-    dispatch({ type: LOADING_UI });
+    dispatch({ type: LOADING_DATA });
     axios.get(`/tierLists/${tierListId}`)
         .then(res => {
             dispatch({
@@ -236,7 +236,6 @@ export const getTierList = (tierListId) => (dispatch) => {
                 payload: res.data
             });
             dispatch({ type: SORT_VIEW_TIER_LIST });
-            dispatch({ type: STOP_LOADING_UI });
         })
         .catch(err => console.log(err))
 }
