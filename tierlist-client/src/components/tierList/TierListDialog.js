@@ -61,9 +61,7 @@ const styles = theme => ({
         color: theme.palette.text.primary
     },
     expandButton: {
-        position: 'fixed',
-        marginLeft: '115px',
-        marginTop: '100px',
+        marginRight: '20px',
     },
     selectionContainer: {
         borderRight: '2px solid',
@@ -471,8 +469,8 @@ class TierListDialog extends Component {
 
         return(
             <Fragment>
-                <Button className={classes.expandButton} variant="contained" onClick={this.handleOpen}>
-                    Add stuff!
+                <Button className={classes.expandButton} variant="contained" color="secondary" onClick={this.handleOpen}>
+                    Add Tier Items
                 </Button>
                 <Dialog  className={classes.dialog} open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="lg">
                     <DialogTitle className={classes.dialogTitle} >
@@ -570,13 +568,13 @@ class TierListDialog extends Component {
                             </Grid>  
                         </Grid>
                     </DialogContent>
-                </Dialog>
-                <SnackbarAlert 
+                    <SnackbarAlert 
                     tierItem={true}
                     add={true} addAlertOpen={this.state.addTierItemAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
                     update={true} updateAlertOpen={this.state.updateTierItemAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
                     delete={true} deleteAlertOpen={this.state.deleteTierItemAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
-                />
+                    />
+                </Dialog>
             </Fragment>
         )
     }

@@ -120,8 +120,8 @@ export class tierList extends Component {
         commentInput: '',
         commentIndexClicked: -1,
 
-        addTierItemAlertOpen: false,
         updateTierItemAlertOpen: false,
+        deleteTierItemAlertOpen: false,
 
         addCommentAlertOpen: false,
         updateCommentAlertOpen: false,
@@ -155,18 +155,11 @@ export class tierList extends Component {
     handleCommentClick = (index) => {
         this.setState({ commentIndexClicked: index });
     }
-    handleAddAlertOpen = () => {
-        this.setState({ addTierItemAlertOpen: true });
-    }
     handleUpdateAlertOpen = () => {
         this.setState({ updateTierItemAlertOpen: true });
     }
     handleDeleteAlertOpen = () => {
         this.setState({ deleteTierItemAlertOpen: true });
-    }
-    handleAddAlertClose = (event, reason) => {
-        if (reason === 'clickaway') return;
-        this.setState({ addTierItemAlertOpen: false });
     }
     handleUpdateAlertClose = (event, reason) => {
         if (reason === 'clickaway') return;
@@ -240,7 +233,6 @@ export class tierList extends Component {
                             ) : (
                                 <StaticProfile profile={this.state.profile} />
                             ))}
-                            <TierListDialog handleAddAlertOpen={this.handleAddAlertOpen} handleEditTierItem={this.handleEditTierItem}/>
                         </Grid>
                     </Grid>
                     <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
@@ -281,10 +273,6 @@ export class tierList extends Component {
                     tierItemInTierList={true}
                     update={true} updateAlertOpen={this.state.updateTierItemAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
                     delete={true} deleteAlertOpen={this.state.deleteTierItemAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
-                />
-                <SnackbarAlert 
-                    tierItem={true}
-                    add={true} addAlertOpen={this.state.addTierItemAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
                 />
                 <SnackbarAlert 
                     comment={true}

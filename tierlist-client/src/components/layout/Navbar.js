@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Notifications from "./Notifications";
 import { Link, withRouter } from 'react-router-dom';
 import SnackbarAlert from '../../util/SnackbarAlert';
+import TierListDialog from '../tierList/TierListDialog';
 
 //MUI stuff
 import AppBar from "@material-ui/core/AppBar";
@@ -77,6 +78,7 @@ export class Navbar extends Component {
     errors: {},
 
     addTierListAlertOpen: false,
+    addTierItemAlertOpen: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.UI.errors) {
@@ -147,18 +149,30 @@ export class Navbar extends Component {
     if (reason === 'clickaway') return;
     this.setState({ addTierListAlertOpen: false });
   }
+  handleTierItemAddAlertOpen = () => {
+    this.setState({ addTierItemAlertOpen: true });
+  }
+  handleTierItemAddAlertClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    this.setState({ addTierItemAlertOpen: false });
+  }
   render() {
     const { errors } = this.state;
     const { classes, categories, authenticated, userId, tierList, UI: { loading } } = this.props;
+    const isEdit = userId === tierList.userId && window.location.href.includes("users") && window.location.href.includes("tierLists");
     return (
       <Fragment>
         <AppBar className={classes.appbar}>
           <Toolbar className="nav-container">
             {authenticated ? (
               <Fragment>
-                <Button className={classes.button} onClick={this.handleOpen} variant="contained" color="secondary">
-                  Create Tier List
-                </Button>
+                {!isEdit ? (
+                  <Button className={classes.button} onClick={this.handleOpen} variant="contained" color="secondary">
+                    Create Tier List
+                  </Button>
+                ) : (
+                    <TierListDialog handleAddAlertOpen={this.handleTierItemAddAlertOpen} />
+                  )}
                 <Dialog className={classes.dialog} open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                   <DialogTitle className={classes.dialogTitle} >Tier List Information</DialogTitle>
                   <DialogContent>
@@ -217,6 +231,10 @@ export class Navbar extends Component {
         <SnackbarAlert
           tierList={true}
           add={true} addAlertOpen={this.state.addTierListAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
+        />
+        <SnackbarAlert
+          tierItem={true}
+          add={true} addAlertOpen={this.state.addTierItemAlertOpen} handleAddAlertClose={this.handleTierItemAddAlertClose}
         />
       </Fragment>
     );
