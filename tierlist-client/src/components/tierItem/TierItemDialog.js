@@ -85,7 +85,7 @@ export class TierItemDialog extends Component {
                     {(authenticated && userId === tierItem.userId) || isManager ?
                         (
                             <Fragment>
-                                <DeleteButton handleTierItemDelete={this.handleTierItemDelete.bind(this, tierItem)} tierItem={tierItem} />
+                                <DeleteButton handleTierItemDelete={this.handleTierItemDelete.bind(this, tierItem)} tierItem={tierItem} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen} />
                                 <MyButton tip="Update Tier Item" placement="top" onClick={this.props.handleUpdateTierItemClick} btnClassName={classes.updateButton}>
                                     <EditIcon color="secondary" />
                                 </MyButton>

@@ -44,9 +44,6 @@ class TierList extends Component {
                 user : { authenticated, credentials: { isManager } },
         } = this.props;
         const id = this.props.user.credentials.userId;
-        const deleteButton = (authenticated && userId === id) || isManager ? (
-            <DeleteButton tierList={this.props.tierList}/>
-        ) : null
         return (
             <Card id="card">
                 <CardMedia 
@@ -57,7 +54,7 @@ class TierList extends Component {
                     <div style={{overflow: "hidden", textOverflow: "ellipsis", width: '13rem'}}> 
                         <Typography nowrap="true" variant="h5" component={Link} to={`/users/${userId}/tierLists/${tierListId}`} color="secondary">{name}</Typography>
                     </div>
-                    {deleteButton}
+                    {((authenticated && userId === id) || isManager) && <DeleteButton tierList={this.props.tierList} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>}
                     <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>
                     <Typography variant="body2" >Category: {category}</Typography>
                     <Grid className={classes.tierListCount} container>

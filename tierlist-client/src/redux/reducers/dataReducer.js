@@ -65,7 +65,7 @@ export default function(state = initialState, action){
         case LIKE_COMMENT:
         case UNLIKE_COMMENT:
             index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
-            if (index !== -1) state.tierList.comments[index] = action.payload;
+            if (index !== -1) Object.assign(state.tierList.comments[index], action.payload);
             return {
                 ...state,
             };
@@ -108,14 +108,9 @@ export default function(state = initialState, action){
                 ...state,
             };
         case SUBMIT_COMMENT:
-            if (state.tierList.tierListId === action.payload.tierListId) state.tierList.commentCount++;
-            return{
-                ...state,
-                tierList: {
-                    ...state.tierList,
-                    comments: [{...action.payload, replies: []}, ...state.tierList.comments]
-                }
-            };
+            state.tierList.commentCount++;
+            state.tierList.comments.unshift({...action.payload, replies: []});
+            return{ ...state };
         case SUBMIT_REPLY:
             index = state.tierList.comments.findIndex(comment => comment.commentId === action.payload.commentId);
             if (index !== -1) {

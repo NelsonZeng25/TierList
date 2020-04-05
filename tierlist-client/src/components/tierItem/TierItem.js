@@ -124,7 +124,7 @@ class TierItem extends Component {
         );
         return (
             <Fragment>
-                {authenticated && userId === id && <TierItemUpdateDialog tierItem={this.props.tierItem} updateButton={classes.updateButton} />}
+                {authenticated && userId === id && <TierItemUpdateDialog handleUpdateAlertOpen={this.props.handleUpdateAlertOpen} tierItem={this.props.tierItem} updateButton={classes.updateButton} />}
                 <Card  className={classes.tierItem}>
                     <CardMedia 
                     image={imageUrl}
@@ -132,7 +132,7 @@ class TierItem extends Component {
                     className={classes.tierItemImage}
                     onClick={this.handleOpen}
                     ></CardMedia>
-                    {authenticated && userId === id && <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList}/>}
+                    {authenticated && userId === id && <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>}
                     <CardContent onClick={this.handleOpen} className={classes.content}>
                         <div className={classes.scoreWrapper}>
                             <span style={{fontSize: '25px'}}>{score}   </span>

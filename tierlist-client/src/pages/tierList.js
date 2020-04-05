@@ -10,6 +10,7 @@ import TierListDialog from '../components/tierList/TierListDialog';
 import TierItem from  '../components/tierItem/TierItem';
 import Comment from '../components/tierList/Comment';
 import LikeButton from '../components/tierList/LikeButton';
+import SnackbarAlert from '../util/SnackbarAlert';
 
 import ChatIcon from '@material-ui/icons/Chat';
 
@@ -35,6 +36,7 @@ const styles = theme => ({
         }
     },
     gridTierLists: {
+        height: 'fit-content',
         "@media (max-width:1200px)": {
             maxWidth: '100%',
             flexBasis: '100%',
@@ -65,6 +67,7 @@ const styles = theme => ({
         borderBottom: '1px solid rgb(0,0,0, 0.1)',
         marginBottom: '20px',
         marginTop: '100px',
+        height: 'min-content',
     },
     commentInputGrid: {
         maxWidth: '82%',
@@ -116,6 +119,13 @@ export class tierList extends Component {
         open: false,
         commentInput: '',
         commentIndexClicked: -1,
+
+        addTierItemAlertOpen: false,
+        updateTierItemAlertOpen: false,
+
+        addCommentAlertOpen: false,
+        updateCommentAlertOpen: false,
+        deleteCommentAlertOpen: false,
     }
     componentDidMount() {
         // Get the Tier List
@@ -140,9 +150,47 @@ export class tierList extends Component {
     handleSubmitComment = (tierListId, commentData) => {
         this.props.submitComment(tierListId, commentData);
         this.handleCancelComment();
+        this.handleCommentAddAlertOpen();
     }
     handleCommentClick = (index) => {
         this.setState({ commentIndexClicked: index });
+    }
+    handleAddAlertOpen = () => {
+        this.setState({ addTierItemAlertOpen: true });
+    }
+    handleUpdateAlertOpen = () => {
+        this.setState({ updateTierItemAlertOpen: true });
+    }
+    handleDeleteAlertOpen = () => {
+        this.setState({ deleteTierItemAlertOpen: true });
+    }
+    handleAddAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ addTierItemAlertOpen: false });
+    }
+    handleUpdateAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ updateTierItemAlertOpen: false });
+    }
+    handleDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteTierItemAlertOpen: false });
+    }
+
+    handleCommentAddAlertOpen = () => {this.setState({ addCommentAlertOpen: true });}
+    handleCommentAddAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ addCommentAlertOpen: false });
+    }
+    handleCommentUpdateAlertOpen = () => {this.setState({ updateCommentAlertOpen: true });}
+    handleCommentUpdateAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteCommentAlertOpen: false });
+    }
+    handleCommentDeleteAlertOpen = () => {this.setState({ deleteCommentAlertOpen: true });}
+    handleCommentDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteCommentAlertOpen: false });
     }
     render() {
         const { classes, user: { authenticated, credentials: { userId, imageUrl, userName } }, data: { viewTierList, tierList: {tierListId, comments, commentCount, likeCount}} } = this.props;
@@ -151,7 +199,7 @@ export class tierList extends Component {
         const tierItemsMarkup = (tier) => (
             viewTierList[tier].map(tierItem => (
                 <Grid className={classes.gridTierList} key={tierItem.tierItemId} item xs={6}>
-                    <TierItem key={tierItem.tierItemId} tierItem={tierItem} />
+                    <TierItem handleDeleteAlertOpen={this.handleDeleteAlertOpen} handleUpdateAlertOpen={this.handleUpdateAlertOpen} key={tierItem.tierItemId} tierItem={tierItem} />
                 </Grid>
         )));
         const tierMarkup = (tier) => (
@@ -179,55 +227,71 @@ export class tierList extends Component {
             </Fragment>
         );
         return (
-            <Grid className="grid-container" container spacing={3}>
-                <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                    <Typography variant="h3" className={classes.pageName}>TIER LIST</Typography>
-                    <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.data.tierList.name}</Typography>
-                    <Grid item>
-                        {this.state.profile === null ? (
-                            <ProfileSkeleton/>
-                        ): ( this.state.profile.userId === userId ? (
-                            <Profile/>
-                        ) : (
-                            <StaticProfile profile={this.state.profile} />
+            <Fragment>
+                <Grid className="grid-container" container spacing={3}>
+                    <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
+                        <Typography variant="h3" className={classes.pageName}>TIER LIST</Typography>
+                        <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.data.tierList.name}</Typography>
+                        <Grid item>
+                            {this.state.profile === null ? (
+                                <ProfileSkeleton/>
+                            ): ( this.state.profile.userId === userId ? (
+                                <Profile/>
+                            ) : (
+                                <StaticProfile profile={this.state.profile} />
+                            ))}
+                            <TierListDialog handleAddAlertOpen={this.handleAddAlertOpen} handleEditTierItem={this.handleEditTierItem}/>
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
+                        {tierWithTierItemsMarkup}
+                        <hr className={classes.commentSeperator} />
+                        <Grid className={classes.likeCommentGrid} item xs={12} container>
+                            <Grid item>
+                                <LikeButton fontSize="large" tierListId={tierListId} placement="top" />
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h5" color="textPrimary">{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</Typography>
+                            </Grid>
+                            <Grid item>
+                                <ChatIcon className={classes.chatIcon} fontSize="large" color="secondary" />
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h5" color="textPrimary">{commentCount} Comments</Typography>
+                            </Grid>
+                        </Grid>
+                        {authenticated && <Grid container item xs={12}>
+                            <Grid item>
+                                <Avatar className={classes.commentAvatar} alt={userName} src={imageUrl} />
+                            </Grid>
+                            <Grid className={classes.commentInputGrid} item xs={11}>
+                                <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment..." name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
+                            </Grid>
+                            <Grid container justify="flex-end" style={{marginTop:'10px',width: '82%',marginLeft:'75px'}} item>
+                                <Button className={classes.commentCancelButton} onClick={this.handleCancelComment}>Cancel</Button>
+                                <Button className={classes.commentCommentButton} onClick={this.handleSubmitComment.bind(this, tierListId, {body: this.state.commentInput})} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Comment</Button>
+                            </Grid>
+                        </Grid>}
+                        {comments !== undefined && comments.map((comment, index) => (
+                            <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment} handleCommentDeleteAlertOpen={this.handleCommentDeleteAlertOpen}/>
                         ))}
-                        <TierListDialog handleEditTierItem={this.handleEditTierItem}/>
                     </Grid>
                 </Grid>
-                <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
-                    {tierWithTierItemsMarkup}
-                    <hr className={classes.commentSeperator} />
-                    <Grid className={classes.likeCommentGrid} item xs={12} container>
-                        <Grid item>
-                            <LikeButton fontSize="large" tierListId={tierListId} placement="top" />
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="h5" color="textPrimary">{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</Typography>
-                        </Grid>
-                        <Grid item>
-                            <ChatIcon className={classes.chatIcon} fontSize="large" color="secondary" />
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="h5" color="textPrimary">{commentCount} Comments</Typography>
-                        </Grid>
-                    </Grid>
-                    {authenticated && <Grid container item xs={12}>
-                        <Grid item>
-                            <Avatar className={classes.commentAvatar} alt={userName} src={imageUrl} />
-                        </Grid>
-                        <Grid className={classes.commentInputGrid} item xs={11}>
-                            <TextField color="secondary" className={classes.commentInput} multiline placeholder="Write a comment..." name="commentInput" value={this.state.commentInput} type="text" onChange={this.handleCommentInput}></TextField>
-                        </Grid>
-                        <Grid container justify="flex-end" style={{marginTop:'10px',width: '82%',marginLeft:'75px'}} item>
-                            <Button className={classes.commentCancelButton} onClick={this.handleCancelComment}>Cancel</Button>
-                            <Button className={classes.commentCommentButton} onClick={this.handleSubmitComment.bind(this, tierListId, {body: this.state.commentInput})} disabled={this.state.commentInput.trim() === ''} color="secondary" variant="contained">Comment</Button>
-                        </Grid>
-                    </Grid>}
-                    {comments !== undefined && comments.map((comment, index) => (
-                        <Comment handleCommentClick={this.handleCommentClick.bind(this, index)} key={comment.commentId} commentIndexClicked={this.state.commentIndexClicked} index={index} comment={comment}/>
-                    ))}
-                </Grid>
-            </Grid>
+                <SnackbarAlert 
+                    tierItemInTierList={true}
+                    update={true} updateAlertOpen={this.state.updateTierItemAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
+                    delete={true} deleteAlertOpen={this.state.deleteTierItemAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
+                />
+                <SnackbarAlert 
+                    tierItem={true}
+                    add={true} addAlertOpen={this.state.addTierItemAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
+                />
+                <SnackbarAlert 
+                    comment={true}
+                    add={true} addAlertOpen={this.state.addCommentAlertOpen} handleAddAlertClose={this.handleCommentAddAlertClose}
+                    delete={true} deleteAlertOpen={this.state.deleteCommentAlertOpen} handleDeleteAlertClose={this.handleCommentDeleteAlertClose}
+                />
+            </Fragment>
         );
     }
 }

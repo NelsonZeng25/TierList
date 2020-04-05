@@ -102,12 +102,14 @@ export default {
     },
     invisibleSeperator: {
       border: 'none',
-      margin: '4px'
+      margin: '4px',
+      height: 'min-content',
     },
     visibleSeperator: {
       width: '100%',
       borderBottom: '1px solid rgb(0,0,0, 0.1)',
       marginBottom: '20px',
+      height: 'min-content',
     },
     commentButton: {
       padding: '5px 5px 5px 10px',
@@ -117,13 +119,13 @@ export default {
       textAlign: 'center',
       textDecoration: 'underline',
       overflowWrap: 'break-word',
-      maxWidth: '380px',
+      maxWidth: '100%',
       marginTop: '20px',
       color: palette.text.primaryStrong,
     },
     paper: {
       background: palette.primary.main,
-      maxWidth: '373px',
+      maxWidth: '290px',
       minWidth: '19%',
       padding: '15px',
       margin: '20px auto 0px auto',

@@ -7,6 +7,7 @@ import TierList from '../components/tierList/TierList';
 import Profile from '../components/profile/Profile';
 import TierListSkeleton from '../util/TierListSkeleton';
 import withStyles from '@material-ui/core/styles/withStyles';
+import SnackbarAlert from '../util/SnackbarAlert';
 
 import { connect } from 'react-redux';
 import { getTierLists, getCategories, getCategoriesWithTierLists } from '../redux/actions/dataActions';
@@ -40,17 +41,27 @@ const styles = theme => ({
 });
 
 export class home extends Component {
+    state = {
+        deleteTierListAlertOpen: false,
+    }
     componentDidMount(){
         this.props.getCategoriesWithTierLists();
     }
+    handleDeleteAlertOpen = () => {
+        this.setState({ deleteTierListAlertOpen: true });
+    }
+    handleDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteTierListAlertOpen: false });
+    }
     render() {
         const { classes } = this.props;
-        const { tierLists, viewCategory, loading } = this.props.data;
+        const { viewCategory, loading } = this.props.data;
         
         const tierListsMarkup = (category) => (
             viewCategory[category].map(tierList => (
                 <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
-                    <TierList key={tierList.tierListId} tierList={tierList} />
+                    <TierList key={tierList.tierListId} tierList={tierList} handleDeleteAlertOpen={this.handleDeleteAlertOpen.bind(this)}/>
                 </Grid>
         )));
         const categoryMarkup = (category) => (
@@ -78,17 +89,23 @@ export class home extends Component {
             </Fragment>
         );
         return (
-            <Grid className="grid-container" container spacing={3}>
-                <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                    <Typography variant="h3" className={classes.pageName}>HOME</Typography>
-                    <Grid item >
-                        <Profile />
+            <Fragment>
+                <Grid className="grid-container" container spacing={3}>
+                    <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
+                        <Typography variant="h3" className={classes.pageName}>HOME</Typography>
+                        <Grid item >
+                            <Profile />
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
+                        {categoryWithTierListsMarkup}
                     </Grid>
                 </Grid>
-                <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
-                    {categoryWithTierListsMarkup}
-                </Grid>
-            </Grid>
+                <SnackbarAlert 
+                    tierList={true}
+                    delete={true} deleteAlertOpen={this.state.deleteTierListAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
+                />
+            </Fragment>
         );
     }
 }

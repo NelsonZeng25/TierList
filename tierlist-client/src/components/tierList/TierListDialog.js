@@ -6,6 +6,7 @@ import axios from 'axios';
 import TierItemDialog from '../tierItem/TierItemDialog';
 import TierItemDialogSkeleton from '../tierItem/TierItemDialogSkeleton';
 import TierItemUpdateDialog from '../tierItem/TierItemUpdateDialog';
+import SnackbarAlert from '../../util/SnackbarAlert';
 
 // MUI stuff
 import Dialog from '@material-ui/core/Dialog';
@@ -227,6 +228,10 @@ class TierListDialog extends Component {
 
         isAddTierItemDetails: false,
 
+        addTierItemAlertOpen: false,
+        updateTierItemAlertOpen: false,
+        deleteTierItemAlertOpen: false,
+
         search: '',
 
         error: '',
@@ -337,6 +342,7 @@ class TierListDialog extends Component {
                         addTierItemImage: this.state.noImg,
                         addTierItemImageFile: null,
                     });
+                    this.handleAddAlertOpen();
                     if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
                     else this.handleUserTierItemsClick(this.props.user.credentials.userId);
                 })
@@ -353,6 +359,7 @@ class TierListDialog extends Component {
                     addTierItemImage: this.state.noImg,
                     addTierItemImageFile: null,
                 });
+                this.handleAddAlertOpen();
                 if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
                 else this.handleUserTierItemsClick(this.props.user.credentials.userId);
             }
@@ -388,7 +395,7 @@ class TierListDialog extends Component {
                         selectedImage: imageUrl,
                         selectedName: name,
                     });
-
+                    this.handleUpdateAlertOpen();
                     if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
                     else this.handleUserTierItemsClick(this.props.user.credentials.userId);
                 })
@@ -400,6 +407,7 @@ class TierListDialog extends Component {
             
             if (this.state.updateTierItemName.trim() !== '') {
                 this.setState({ selectedName: name });
+                this.handleUpdateAlertOpen();
                 if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
                 else this.handleUserTierItemsClick(this.props.user.credentials.userId);
             }
@@ -425,13 +433,33 @@ class TierListDialog extends Component {
         else if (this.state.selectedTab === 0) this.handleAllTierItemsClick();
         else this.handleUserTierItemsClick(this.props.user.credentials.userId);
     }
-
+    handleAddAlertOpen = () => {
+        this.setState({ addTierItemAlertOpen: true });
+    }
+    handleUpdateAlertOpen = () => {
+        this.setState({ updateTierItemAlertOpen: true });
+    }
+    handleDeleteAlertOpen = () => {
+        this.setState({ deleteTierItemAlertOpen: true });
+    }
+    handleAddAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ addTierItemAlertOpen: false });
+    }
+    handleUpdateAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ updateTierItemAlertOpen: false });
+    }
+    handleDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteTierItemAlertOpen: false });
+    }
     render(){
         const { classes, user: { credentials: { userId }}, UI: { loading }, data: { viewTierItems }} = this.props;
         const { errors } = this.state;
         const tierItemMarkup = ( !loading ? (
             viewTierItems.map((tierItem, index) => (
-                <TierItemDialog key={index} tierItem={tierItem} index={index} handleSelected={this.handleSelected} selectedIndex={this.state.selectedIndex} handleUpdateTierItemClick={this.handleUpdateTierItemClick}/>
+                <TierItemDialog key={index} tierItem={tierItem} index={index} handleSelected={this.handleSelected} selectedIndex={this.state.selectedIndex} handleUpdateTierItemClick={this.handleUpdateTierItemClick} handleDeleteAlertOpen={this.handleDeleteAlertOpen}/>
             ))) : (
                 <Fragment>
                     {Array.from({ length: 8 }).map((item, index) => (
@@ -526,7 +554,7 @@ class TierListDialog extends Component {
                                     <Typography variant="body1" color="error" className={classes.errorMessage}>{this.state.error}</Typography>
                                 </Grid>
                                 <Grid container justify="space-around" item xs={12}>
-                                    <TierItemUpdateDialog handleNext={this.handleNext} handleAddClose={this.handleClose}
+                                    <TierItemUpdateDialog handleNext={this.handleNext} handleAddClose={this.handleClose} handleAddAlertOpen={this.props.handleAddAlertOpen}
                                         tierItem={{
                                             name: this.state.selectedName, 
                                             imageUrl: this.state.selectedImage,
@@ -543,6 +571,12 @@ class TierListDialog extends Component {
                         </Grid>
                     </DialogContent>
                 </Dialog>
+                <SnackbarAlert 
+                    tierItem={true}
+                    add={true} addAlertOpen={this.state.addTierItemAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
+                    update={true} updateAlertOpen={this.state.updateTierItemAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
+                    delete={true} deleteAlertOpen={this.state.deleteTierItemAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
+                />
             </Fragment>
         )
     }

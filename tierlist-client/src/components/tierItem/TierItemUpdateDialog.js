@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
+import SnackbarAlert from '../../util/SnackbarAlert';
 
 // MUI stuff
 import TextField from "@material-ui/core/TextField";
@@ -361,6 +362,7 @@ class TierItemUpdateDialog extends Component {
         else 
             this.props.addTierItemToTierList(this.props.data.tierList.tierListId, tierItem);
         this.handleClose();
+        this.props.handleUpdateAlertOpen();
     }
     handleAddClick = () => {
         let tierItem = {
@@ -374,6 +376,7 @@ class TierItemUpdateDialog extends Component {
         this.props.addTierItemToTierList(this.props.data.tierList.tierListId, tierItem);
         if (this.props.handleAddClose !== undefined) this.props.handleAddClose();
         this.handleClose();
+        if (this.props.handleAddAlertOpen) this.props.handleAddAlertOpen();
     }
     handleNextOpen = () => {
         if (this.props.handleNext()) {
@@ -411,8 +414,7 @@ class TierItemUpdateDialog extends Component {
                     <Fragment>
                         <MyButton tip="Update Tier Item" placement="top" onClick={this.handleOpen} btnClassName={this.props.updateButton}>
                             <EditIcon color="secondary" />
-                        </MyButton>
-                        
+                        </MyButton>      
                     </Fragment>
                 )}
                 <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm"

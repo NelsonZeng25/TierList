@@ -2,14 +2,8 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Notifications from "./Notifications";
-import {
-  refreshCategoriesWithTierLists,
-  getTierListsWithOneCategory,
-  getCategories,
-  postTierList,
-  clearErrors
-} from "../../redux/actions/dataActions";
 import { Link, withRouter } from 'react-router-dom';
+import SnackbarAlert from '../../util/SnackbarAlert';
 
 //MUI stuff
 import AppBar from "@material-ui/core/AppBar";
@@ -28,6 +22,15 @@ import Grid from '@material-ui/core/Grid';
 import HomeIcon from "@material-ui/icons/Home";
 import { withStyles } from "@material-ui/core";
 
+// Redux stuff
+import {
+  refreshCategoriesWithTierLists,
+  getTierListsWithOneCategory,
+  getCategories,
+  postTierList,
+  clearErrors
+} from "../../redux/actions/dataActions";
+
 const styles = theme => ({
   appbar: {
     backgroundColor: theme.palette.primary.dark
@@ -42,24 +45,24 @@ const styles = theme => ({
   },
   dialog: {
     "& .MuiPaper-root": {
-        backgroundColor: theme.palette.primary.main,
-      }
+      backgroundColor: theme.palette.primary.main,
+    }
   },
   dialogTitle: {
     color: theme.palette.text.primaryStrong,
   },
   textField: {
-      "& .MuiFormLabel-root": {
-          color: theme.palette.text.primary,
-      },
-      "& .MuiFormLabel-root.Mui-focused": {
-          color: theme.palette.text.primary,
-      },
-      "& .Mui-focused": {
-          "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.primaryStrong,
-          }
-      },
+    "& .MuiFormLabel-root": {
+      color: theme.palette.text.primary,
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: theme.palette.text.primary,
+    },
+    "& .Mui-focused": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.primaryStrong,
+      }
+    },
   },
   submitButton: {
     margin: '10px 0px'
@@ -72,20 +75,22 @@ export class Navbar extends Component {
     category: '',
     open: false,
     errors: {},
+
+    addTierListAlertOpen: false,
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     if (nextProps.UI.errors) {
-        this.setState({
-            errors: nextProps.UI.errors
-        })
+      this.setState({
+        errors: nextProps.UI.errors
+      })
     }
     if (!nextProps.UI.errors && !nextProps.UI.loading) {
-        this.setState({
-          name: '',
-          category: '',
-          open: false,
-          errors: {},
-        });
+      this.setState({
+        name: '',
+        category: '',
+        open: false,
+        errors: {},
+      });
     }
   }
   componentDidMount() {
@@ -103,7 +108,7 @@ export class Navbar extends Component {
   }
   handleOpen = () => {
     this.setState({
-        open: true,
+      open: true,
     })
   }
   handleClose = () => {
@@ -121,6 +126,7 @@ export class Navbar extends Component {
     })
     if (Object.keys(this.state.errors).length === 0) {
       this.handleClose();
+      this.handleAddAlertOpen();
       setTimeout(() => {
         this.props.history.push(`/users/${this.props.userId}/tierLists/${this.props.tierList.tierListId}`);
       }, 1000);
@@ -133,9 +139,17 @@ export class Navbar extends Component {
       this.props.refreshCategoriesWithTierLists();
     }
   };
+
+  handleAddAlertOpen = () => {
+    this.setState({ addTierListAlertOpen: true });
+  }
+  handleAddAlertClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    this.setState({ addTierListAlertOpen: false });
+  }
   render() {
     const { errors } = this.state;
-    const { classes, categories, authenticated, userId, tierList, UI: {loading} } = this.props;
+    const { classes, categories, authenticated, userId, tierList, UI: { loading } } = this.props;
     return (
       <Fragment>
         <AppBar className={classes.appbar}>
@@ -152,7 +166,7 @@ export class Navbar extends Component {
                       <TextField name="name" type="text" label="Tier List Name"
                         className={classes.textField} value={this.state.name} autoComplete='off'
                         onChange={this.handleChange} fullWidth variant="outlined"
-                        error={errors.name ? true:false} helperText={errors.name} 
+                        error={errors.name ? true : false} helperText={errors.name}
                       ></TextField>
                       <Autocomplete
                         freeSolo
@@ -160,9 +174,9 @@ export class Navbar extends Component {
                         options={categories.map(option => option.name)}
                         onChange={this.handleCategorySelected}
                         renderInput={params => (
-                          <TextField {...params} className={classes.textField} onChange={this.handleChange} 
-                          name="category" label="Category" margin="normal" variant="outlined"
-                          error={errors.category ? true:false} helperText={errors.category}  />
+                          <TextField {...params} className={classes.textField} onChange={this.handleChange}
+                            name="category" label="Category" margin="normal" variant="outlined"
+                            error={errors.category ? true : false} helperText={errors.category} />
                         )}
                       />
                       <Grid container justify="center">
@@ -173,15 +187,15 @@ export class Navbar extends Component {
                 </Dialog>
               </Fragment>
             ) : (
-              <Fragment>
-                <Link to="/login">
-                  <Button className={classes.button} variant="contained" color="secondary">Login</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className={classes.button} variant="contained" color="secondary">Sign up</Button>
-                </Link>
-              </Fragment>
-            )}
+                <Fragment>
+                  <Link to="/login">
+                    <Button className={classes.button} variant="contained" color="secondary">Login</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button className={classes.button} variant="contained" color="secondary">Sign up</Button>
+                  </Link>
+                </Fragment>
+              )}
             <Autocomplete
               id="search"
               name="search"
@@ -200,6 +214,10 @@ export class Navbar extends Component {
             {authenticated && <Notifications />}
           </Toolbar>
         </AppBar>
+        <SnackbarAlert
+          tierList={true}
+          add={true} addAlertOpen={this.state.addTierListAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
+        />
       </Fragment>
     );
   }
@@ -210,7 +228,7 @@ const mapStateToProps = state => ({
   authenticated: state.user.authenticated,
   userId: state.user.credentials.userId,
   tierList: state.data.tierList,
-  UI: state.UI, 
+  UI: state.UI,
 });
 
 Navbar.propTypes = {

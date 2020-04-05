@@ -8,6 +8,7 @@ import LikeButton from './LikeButton';
 import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
 import Reply from  './Reply';
+import SnackbarAlert from '../../util/SnackbarAlert';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
@@ -69,6 +70,7 @@ const styles = theme => ({
     commentContent: {
         overflow: 'auto',
         whiteSpace: 'pre-wrap',
+        overflowWrap: 'break-word',
         color: theme.palette.text.primaryStrong,
         marginTop: '5px',
     },
@@ -99,6 +101,10 @@ class Comment extends Component {
         replyInput: '',
         replyOpen: false,
         viewOpen: false,
+
+        addReplyAlertOpen: false,
+        updateReplyAlertOpen: false,
+        deleteReplyAlertOpen: false,
     }
     handleReplyOpen = () => {
         this.setState({ replyOpen: !this.state.replyOpen });
@@ -120,54 +126,84 @@ class Comment extends Component {
         this.props.submitReply(commentId, replyData);
         this.setState({ viewOpen: true });
         this.handleReplyClose();
+        this.handleAddAlertOpen();
+    }
+    handleAddAlertOpen = () => {
+        this.setState({ addReplyAlertOpen: true });
+    }
+    handleUpdateAlertOpen = () => {
+        this.setState({ updateReplyAlertOpen: true });
+    }
+    handleDeleteAlertOpen = () => {
+        this.setState({ deleteReplyAlertOpen: true });
+    }
+    handleAddAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ addReplyAlertOpen: false });
+    }
+    handleUpdateAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ updateReplyAlertOpen: false });
+    }
+    handleDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        this.setState({ deleteReplyAlertOpen: false });
     }
     render() {
         dayjs.extend(relativeTime);
         const { classes, user: {authenticated, credentials: {isManager, imageUrl}} ,comment: { userName, userImage, userId, body, createdAt, likeCount, replyCount, commentId }} = this.props;
 
         return (
-            <Grid container item xs={12}>
-                <Grid item>
-                    <Avatar className={classes.commentAvatar} alt={userName} src={userImage} />
+            <Fragment>
+                <Grid container item xs={12}>
+                    <Grid item>
+                        <Avatar className={classes.commentAvatar} alt={userName} src={userImage} />
+                    </Grid>
+                    <Grid item className={classes.commentInputGrid} container xs={11}>
+                        <Grid item xs={11}>
+                            <Typography color="secondary" className={classes.commentUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{userName}</Typography>
+                                <span className={classes.commentCreatedAt}>{dayjs(createdAt).fromNow()}</span>
+                        </Grid>
+                        {authenticated && (userId === this.props.user.credentials.userId || isManager) && <Grid item xs={1}>
+                            <DeleteButton comment={this.props.comment} handleDeleteAlertOpen={this.props.handleCommentDeleteAlertOpen}/>
+                        </Grid>}
+                        <Grid item xs={12}>
+                            <Typography className={classes.commentContent} variant="body1">{body}</Typography>
+                        </Grid>
+                        <Grid className={classes.tierListCount} container>
+                            <Grid item>
+                                <LikeButton commentId={commentId} placement="top"></LikeButton>
+                                <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
+                            </Grid>
+                            <Grid item>
+                                <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
+                                    <ChatIcon color="secondary"></ChatIcon>
+                                </MyButton>
+                                <span>{replyCount} Replies</span>
+                            </Grid>
+                        </Grid>
+                        {this.state.replyOpen && <Grid container item xs={12}>
+                            <Grid item>
+                                <Avatar className={classes.replyAvatar} alt={userName} src={imageUrl} />
+                            </Grid>
+                            <Grid className={classes.replyInputGrid} item xs={11}>
+                                <TextField color="secondary" className={classes.commentInput} multiline placeholder="Reply..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
+                            </Grid>
+                            <Grid container justify="flex-end" style={{ marginTop: '10px', marginLeft: '50px', width: '86%', }} item>
+                                <Button className={classes.replyCancelButton} onClick={this.handleReplyClose}>Cancel</Button>
+                                <Button className={classes.replyReplyButton} onClick={this.handleSubmitReply.bind(this, commentId, {body: this.state.replyInput})} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
+                            </Grid>
+                        </Grid>}
+                        {(replyCount > 0 || this.state.viewOpen) && <Reply handleCommentClick={this.props.handleCommentClick} commentIndexClicked={this.props.commentIndexClicked} index={this.props.index} handleViewClose={this.handleViewClose} comment={this.props.comment} handleDeleteAlertOpen={this.handleDeleteAlertOpen}/>}
+                    </Grid>
                 </Grid>
-                <Grid item className={classes.commentInputGrid} container xs={11}>
-                    <Grid item xs={11}>
-                        <Typography color="secondary" className={classes.commentUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{userName}</Typography>
-                            <span className={classes.commentCreatedAt}>{dayjs(createdAt).fromNow()}</span>
-                    </Grid>
-                    {authenticated && (userId === this.props.user.credentials.userId || isManager) && <Grid item xs={1}>
-                        <DeleteButton comment={this.props.comment}/>
-                    </Grid>}
-                    <Grid item xs={12}>
-                        <Typography className={classes.commentContent} variant="body1">{body}</Typography>
-                    </Grid>
-                    <Grid className={classes.tierListCount} container>
-                        <Grid item>
-                            <LikeButton commentId={commentId} placement="top"></LikeButton>
-                            <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
-                        </Grid>
-                        <Grid item>
-                            <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
-                                <ChatIcon color="secondary"></ChatIcon>
-                            </MyButton>
-                            <span>{replyCount} Replies</span>
-                        </Grid>
-                    </Grid>
-                    {this.state.replyOpen && <Grid container item xs={12}>
-                        <Grid item>
-                            <Avatar className={classes.replyAvatar} alt={userName} src={imageUrl} />
-                        </Grid>
-                        <Grid className={classes.replyInputGrid} item xs={11}>
-                            <TextField color="secondary" className={classes.commentInput} multiline placeholder="Reply..." name="replyInput" value={this.state.replyInput} type="text" onChange={this.handleReplyInput}></TextField>
-                        </Grid>
-                        <Grid container justify="flex-end" style={{ marginTop: '10px', marginLeft: '50px', width: '86%', }} item>
-                            <Button className={classes.replyCancelButton} onClick={this.handleReplyClose}>Cancel</Button>
-                            <Button className={classes.replyReplyButton} onClick={this.handleSubmitReply.bind(this, commentId, {body: this.state.replyInput})} disabled={this.state.replyInput.trim() === ''} color="secondary" variant="contained">Reply</Button>
-                        </Grid>
-                    </Grid>}
-                    {(replyCount > 0 || this.state.viewOpen) && <Reply handleCommentClick={this.props.handleCommentClick} commentIndexClicked={this.props.commentIndexClicked} index={this.props.index} handleViewClose={this.handleViewClose} comment={this.props.comment}/>}
-                </Grid>
-            </Grid>
+                <SnackbarAlert 
+                    reply={true}
+                    add={true} addAlertOpen={this.state.addReplyAlertOpen} handleAddAlertClose={this.handleAddAlertClose}
+                    //update={true} updateAlertOpen={this.state.updateReplyAlertOpen} handleUpdateAlertClose={this.handleUpdateAlertClose}
+                    delete={true} deleteAlertOpen={this.state.deleteReplyAlertOpen} handleDeleteAlertClose={this.handleDeleteAlertClose}
+                />
+            </Fragment>
         )
     }
 

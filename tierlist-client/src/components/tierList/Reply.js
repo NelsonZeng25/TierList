@@ -9,6 +9,7 @@ import DeleteButton from '../../util/DeleteButton';
 
 // Icons
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 // Mui Stuff
 import Grid from '@material-ui/core/Grid';
@@ -38,6 +39,7 @@ const styles = theme => ({
     replyContent: {
         overflow: 'auto',
         whiteSpace: 'pre-wrap',
+        overflowWrap: 'break-word',
         color: theme.palette.text.primaryStrong,
         marginTop: '5px',
     },
@@ -85,7 +87,7 @@ class Reply extends Component {
                     </Grid>
                     {authenticated && (reply.userId === userId || isManager) && 
                     <Grid item xs={1}>
-                        <DeleteButton handleViewClose={this.props.handleViewClose} reply={reply}/>
+                        <DeleteButton handleViewClose={this.props.handleViewClose} reply={reply} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>
                     </Grid>}
                     <Grid item xs={12}>
                         <Typography className={classes.replyContent} variant="body1">{reply.body}</Typography>
@@ -102,7 +104,7 @@ class Reply extends Component {
         return (
             <Fragment>
                 <Grid onClick={this.handleToggle} style={{marginTop:'5px',cursor: 'pointer'}} container>
-                    <ArrowDropDownIcon color="secondary"/>
+                    {!this.state.viewReplies ? (<ArrowDropDownIcon color="secondary"/>) : (<ArrowDropUpIcon color="secondary" />)}
                     <Typography color="secondary" variant="body1">{verb} {replyCount} {replyCount > 1 ? 'replies' : 'reply'}</Typography>
                 </Grid>
                 {this.state.viewReplies && ( (loading && this.props.commentIndexClicked === this.props.index) ? <CircularProgress className={classes.progress} color="secondary" />: replyMarkup)}

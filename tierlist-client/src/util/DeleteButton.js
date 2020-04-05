@@ -16,6 +16,7 @@ import { deleteTierList, deleteTierItemFromTierList, deleteComment, deleteReply 
 const styles = theme => ({
     dialog: {
         "& .MuiDialog-paper": {
+            maxWidth: '650px',
             backgroundColor: theme.palette.primary.main,
         }
     },
@@ -88,19 +89,24 @@ class DeleteButton extends Component {
         switch(this.state.class) {
             case 'tierList':
                 this.props.deleteTierList(this.props.tierList);
+                this.props.handleDeleteAlertOpen();
                 break;
             case 'tierItem':
                 this.props.handleTierItemDelete();
+                this.props.handleDeleteAlertOpen();
                 break;
             case 'tierItemInTierList':
                 this.props.deleteTierItemFromTierList(this.props.currentTierList.tierListId, this.props.tierItemInTierList);
+                this.props.handleDeleteAlertOpen();
                 break;
             case 'reply':
                 this.props.deleteReply(this.props.reply);
                 this.props.handleViewClose();
+                this.props.handleDeleteAlertOpen();
                 break;
             case 'comment':
                 this.props.deleteComment(this.props.comment);
+                this.props.handleDeleteAlertOpen();
                 break;
             case 'category':
                 this.props.deleteCategory(this.props.category);
