@@ -4,47 +4,42 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // MUI stuff
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = theme => ({
     card: {
         backgroundColor: theme.palette.primary.main,
-        position: 'relative',
         display: 'flex',
         padding: '15px',
-    },
-    cardContent: {
-        padding: '0 16px 24px 16px',
-        "&:last-child": {
-            paddingBottom: 0
-        }
+        height: '110px',
     },
     cover: {
         margin: '0 0 auto 0',
         display: 'block',
-        width: '60px',
+        minWidth: '60px',
         height: '60px',
         borderRadius: '50%',
     },
     userName: {
-        width: '60px',
-        height: '18px',
+        width: '90px',
+        height: '33px',
         backgroundColor: theme.palette.secondary.main,
         marginBottom: '7px',
+        marginLeft: '20px',
     },
     user: {
-        height: '14px',
+        height: '20px',
         width: '100px',
-        backgroundColor: 'rgba(0,0,0, 0.3)',
+        backgroundColor: theme.palette.text.primary,
         marginBottom: '10px',
+        marginLeft: '20px',
     },
     fullLine: {
         height: '15px',
         width: '200px',
-        backgroundColor: 'rgba(0,0,0, 0.6)',
-        marginBottom: '10px'
+        backgroundColor: '#0B0C17',
+        marginLeft: '20px',
     },
     halfLine: {
         height: '15px',
@@ -56,20 +51,25 @@ const styles = theme => ({
 
 const TierListSkeleton = (props) => {
     const { classes } = props;
-    const content = (
-        <Card className={classes.card}>
-            <CardMedia className={classes.cover} image={NoImg}></CardMedia>
-            <CardContent className={classes.cardContent}>
-                <div className={classes.userName}></div>
-                <div className={classes.user}></div>
-                <div className={classes.user}></div>
-                <div className={classes.fullLine}></div>
-            </CardContent>
-        </Card>
-    );
     return (
         <Fragment>
-            {content}
+            <Skeleton variant="rect" className={classes.card}>
+                <img src={NoImg} alt="profile" className={classes.cover}/>
+                <Grid container spacing={0}>
+                    <Grid style={{height: '30px'}} item xs={12}>
+                        <Skeleton variant="text" className={classes.userName} />
+                    </Grid>
+                    <Grid style={{height: '20px'}} item xs={12}>
+                        <Skeleton variant="text" className={classes.user} />
+                    </Grid>
+                    <Grid style={{height: '20px'}} item xs={12}>
+                        <Skeleton variant="text" className={classes.user} />
+                    </Grid>
+                    <Grid style={{height: '20px'}} item xs={12}>
+                        <Skeleton variant="text" className={classes.fullLine} />
+                    </Grid>
+                </Grid>
+            </Skeleton>
         </Fragment>
     )
 }
