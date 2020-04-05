@@ -17,8 +17,7 @@ import { connect } from 'react-redux';
 import { loginUser } from '../redux/actions/userActions';
 
 // Icons
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import PersonIcon from '@material-ui/icons/Person';
+import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
 
 const styles = theme => ({
@@ -91,7 +90,7 @@ export class login extends Component {
                                 },
                                 startAdornment: (
                                     <InputAdornment className={classes.inputAdornment} position="start">
-                                      <PersonIcon className={classes.inputIcon}/>
+                                      <EmailIcon className={classes.inputIcon}/>
                                     </InputAdornment>
                                   ),
                             }}

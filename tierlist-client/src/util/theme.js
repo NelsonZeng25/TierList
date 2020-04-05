@@ -58,12 +58,12 @@ export default {
       padding: '15px',
     },
     image: {
-      margin: "1rem auto 1rem auto",
-      maxWidth: "5rem"
+      margin: "1rem auto auto auto",
+      maxWidth: "7rem"
     },
     pageTitle: {
       color: palette.primary.contrastText,
-      margin: "0.5rem auto 0.5rem auto"
+      margin: "0.5rem auto 1rem auto"
     },
     textField: {
       margin: "0.5rem auto 0.5rem auto",
