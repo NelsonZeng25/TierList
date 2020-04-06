@@ -1,18 +1,14 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from 'prop-types';
 
-import Button from '@material-ui/core/Button';
-
 // Icons
 import HomeIcon from '@material-ui/icons/Home';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import GroupIcon from '@material-ui/icons/Group';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
-import PostAddIcon from '@material-ui/icons/PostAdd';
 import ListAltIcon from '@material-ui/icons/ListAlt';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 // Redux
 import { connect } from 'react-redux';
@@ -29,14 +25,8 @@ class Sidebar extends Component {
       <Fragment>
         <li className="sidebar-item">
           <a href={`/users/${credentials.userId}`} className="sidebar-link">
-            <FormatListBulletedIcon />
-            <span className="link-text">Your Tier Lists</span>
-          </a>
-        </li>
-        <li className="sidebar-item">
-          <a href={`/users/${credentials.userId}/likes`} className="sidebar-link">
-            <FavoriteIcon />
-            <span className="link-text">Likes</span>
+            <AccountCircleIcon />
+            <span className="link-text">Profile</span>
           </a>
         </li>
       </Fragment>

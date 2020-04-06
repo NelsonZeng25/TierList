@@ -10,7 +10,14 @@ import Profile from '../components/profile/Profile';
 // MUI stuff
 import Grid from '@material-ui/core/Grid';
 import withStyles from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import AppBar from '@material-ui/core/AppBar';
+
+// Icons
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 // Redux stuff
 import { connect } from 'react-redux';
@@ -40,6 +47,14 @@ const styles = theme => ({
         marginTop: '10px',
         textAlign: 'center',
         color: theme.palette.text.primaryStrong
+    },
+    appBar: {
+        margin: 'auto',
+        width: '95%',
+        zIndex: 1,
+    },
+    tab: {
+        width: '50%'
     }
 });
 
@@ -47,6 +62,7 @@ export class user extends Component {
     state = {
         tierListIdParam: null,
         profile: null,
+        selectedTab: 0,
     }
     componentDidMount(){
         const userId = this.props.match.params.userId;
@@ -58,6 +74,12 @@ export class user extends Component {
                 })
             })
             .catch(err => console.log(err))
+    }
+    handleTierItemsClick = () => {
+        this.setState({ selectedTab: 0 });
+    }
+    handleLikesClick = () => {
+        this.setState({ selectedTab: 1 });
     }
     render() {
         const { classes, user: {credentials: { userId }}} = this.props;
@@ -97,9 +119,15 @@ export class user extends Component {
         ));
         return (
             <Grid className="grid-container" container spacing={3}>
+                <AppBar className={classes.appBar} position="static">
+                    <Tabs value={this.state.selectedTab} indicatorColor="secondary">
+                        <Tab className={classes.tab} label="Tier Lists" icon={<ListAltIcon/>} onClick={this.handleTierItemsClick} value={0}/>
+                        <Tab className={classes.tab} label="Likes" icon={<FavoriteIcon/>} onClick={this.handleLikesClick} value={1}/>
+                    </Tabs>
+                </AppBar>
                 <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                    <Typography variant="h3" className={classes.pageName}>USER</Typography>
-                    <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.user.credentials.userName}</Typography>
+                    <Typography variant="h3" className={classes.pageName}>Profile</Typography>
+                    {/* <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.user.credentials.userName}</Typography> */}
                     <Grid item>
                         {this.state.profile === null ? (
                             <ProfileSkeleton/>

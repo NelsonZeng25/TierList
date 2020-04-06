@@ -4,7 +4,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
 import axios from 'axios';
 import TierItemDialog from '../tierItem/TierItemDialog';
-import TierItemDialogSkeleton from '../tierItem/TierItemDialogSkeleton';
+import TierItemDialogSkeleton from '../../util/TierItemDialogSkeleton';
 import TierItemUpdateDialog from '../tierItem/TierItemUpdateDialog';
 import SnackbarAlert from '../../util/SnackbarAlert';
 
@@ -17,7 +17,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
@@ -477,11 +476,11 @@ class TierListDialog extends Component {
                         <AppBar position="static">
                             <Grid container>
                                 <Grid item xs={11}>
-                                <Tabs value={this.state.selectedTab} indicatorColor="secondary" aria-label="simple tabs example">
-                                    <Tab label="Tier Items" onClick={this.handleAllTierItemsClick} value={0}/>
-                                    <Tab label="Your Tier Items" onClick={this.handleUserTierItemsClick.bind(this,userId)} value={1}/>
-                                    <Tab label="Add Tier Items" onClick={this.handleAddTierItemClick} value={2}/>
-                                </Tabs>
+                                    <Tabs value={this.state.selectedTab} indicatorColor="secondary">
+                                        <Tab label="Tier Items" onClick={this.handleAllTierItemsClick} value={0}/>
+                                        <Tab label="Your Tier Items" onClick={this.handleUserTierItemsClick.bind(this,userId)} value={1}/>
+                                        <Tab label="Add Tier Items" onClick={this.handleAddTierItemClick} value={2}/>
+                                    </Tabs>
                                 </Grid>
                                 <Grid item xs={1}>
                                     <MyButton tip="close" onClick={this.handleClose} tipClassName={classes.closeButton}>
@@ -560,7 +559,7 @@ class TierListDialog extends Component {
                                             pros: [],
                                             cons: [],
                                             thoughts: '',
-                                            tier: 'C',
+                                            tier: 'S',
                                             tierItemId: this.state.selectedTierItemId,
                                         }}
                                     />

@@ -34,7 +34,8 @@ import {
 
 const styles = theme => ({
   appbar: {
-    backgroundColor: theme.palette.primary.dark
+    backgroundColor: theme.palette.primary.dark,
+    zIndex: 5,
   },
   button: {
     marginRight: '20px',
