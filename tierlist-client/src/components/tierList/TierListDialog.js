@@ -12,7 +12,6 @@ import SnackbarAlert from '../../util/SnackbarAlert';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogContent';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -500,7 +499,7 @@ class TierListDialog extends Component {
                                     <Fragment>
                                         <Grid className={classes.editGrid} item xs={6}>
                                             <Paper className={classes.addTierItem}>
-                                                <img id="tierItemImage" onClick={this.handleUpdateEditPicture} src={this.state.updateTierItemImage} className={classes.addTierItemImage} alt="Tier Item Picture" />
+                                                <img id="tierItemImage" onClick={this.handleUpdateEditPicture} src={this.state.updateTierItemImage} className={classes.addTierItemImage} alt="Tier Item" />
                                                 <input type="file" id="tierItemUpdateImage" hidden="hidden" onChange={this.handleUpdateImageChange}/>
                                                 <Typography className={classes.addTierItemName}>{this.state.updateTierItemName}</Typography>
                                             </Paper>
@@ -521,7 +520,7 @@ class TierListDialog extends Component {
                                     <Fragment>
                                         <Grid className={classes.editGrid} item xs={6}>
                                             <Paper className={classes.addTierItem}>
-                                                <img id="tierItemImage" onClick={this.handleEditPicture} src={this.state.addTierItemImage} className={classes.addTierItemImage} alt="Tier Item Picture" />
+                                                <img id="tierItemImage" onClick={this.handleEditPicture} src={this.state.addTierItemImage} className={classes.addTierItemImage} alt="Tier Item" />
                                                 <input type="file" id="tierItemImageInput" hidden="hidden" onChange={this.handleImageChange}/>
                                                 <Typography className={classes.addTierItemName}>{this.state.addTierItemName}</Typography>
                                             </Paper>
@@ -543,7 +542,7 @@ class TierListDialog extends Component {
                             <Grid className={classes.selectionGrid} container justify="center" alignItems="center" item xs={3}>
                                 <Grid item xs={12}>
                                     <Paper className={classes.selectedTierItem}>
-                                        <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item Picture" />
+                                        <img src={this.state.selectedImage} className={classes.selectedTierItemImage} alt="Tier Item" />
                                         <Typography className={classes.selectedTierItemName}>{this.state.selectedName}</Typography>
                                     </Paper>
                                 </Grid>

@@ -33,10 +33,10 @@ class Sidebar extends Component {
     );
     const logoutLinkMarkup = (
       <li className="sidebar-item">
-          <a onClick={this.handleLogout} id="logout-link" className="sidebar-link">
+          <div onClick={this.handleLogout} id="logout-link" className="sidebar-link">
             <ExitToAppIcon />
             <span className="link-text">Logout</span>
-          </a>
+          </div>
       </li>
     );
     const managerSidebarLinksMarkup = (

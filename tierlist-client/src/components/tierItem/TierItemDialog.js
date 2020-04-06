@@ -91,7 +91,7 @@ export class TierItemDialog extends Component {
                                 </MyButton>
                             </Fragment>
                         ) : null}
-                    <img src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item Picture" style={!(authenticated && userId === tierItem.userId) && !isManager ? { marginTop: '0px' } : {}} />
+                    <img src={tierItem.imageUrl} className={classes.tierItemImage} alt="Tier Item" style={!(authenticated && userId === tierItem.userId) && !isManager ? { marginTop: '0px' } : {}} />
                     <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                 </Paper>
             </Grid>

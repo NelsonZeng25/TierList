@@ -1,33 +1,21 @@
 import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
 
 // MUI stuff
-import TextField from "@material-ui/core/TextField";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
-import Slide from '@material-ui/core/Slide';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
 // Icons
 import CloseIcon from '@material-ui/icons/Close';
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import Delete from '@material-ui/icons/Delete';
 
 // Redux stuff
-import { connect } from 'react-redux';
-import { clearErrors, addTierItemToTierList, updateTierItemFromTierList } from '../../redux/actions/dataActions';
-import DeleteButton from "../../util/DeleteButton";
 
 
 const styles = theme => ({
@@ -67,11 +55,6 @@ const styles = theme => ({
         objectFit: 'cover',
         // borderTopRightRadius: '7px',
         // borderTopLeftRadius: '7px',
-    },
-    tierItemName: {
-        color: theme.palette.text.primaryStrong,
-        textAlign: 'center',
-        overflow: 'auto',
     },
     ratingGrid: {
         marginTop: '15px',
@@ -224,7 +207,7 @@ const styles = theme => ({
 
 class TierItemDisplayDialog extends Component {
     render(){
-        const { classes, UI: { loading }} = this.props;
+        const { classes } = this.props;
         const { tierItem: { name, imageUrl, score, pros, cons, tier, thoughts } } = this.props;
 
         const input = (isPros, index) => (
@@ -234,18 +217,13 @@ class TierItemDisplayDialog extends Component {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="body1">{isPros ? (pros[index]):(cons[index])}</Typography>
-                        {/* <TextField value={isPros ? (this.state.pros[index]):(this.state.cons[index])} className={classes.textField} variant="outlined"></TextField> */}
                     </Grid>
                 </Grid>
         )
 
-        // const Transition = React.forwardRef(function Transition(props, ref) {
-        //     return <Slide direction="up" ref={ref} {...props} />;
-        //   });
         return(
             <Fragment>
                 <Dialog className={classes.dialog} scroll="body" open={this.props.open} onClose={this.props.handleClose} fullWidth maxWidth="sm"
-                    // TransitionComponent={<Slide direction="up"/>}
                 >
                     <DialogContent>
                         <Grid container direction="column" justify="flex-start" alignItems="center" spacing={2}>
@@ -253,7 +231,7 @@ class TierItemDisplayDialog extends Component {
                                 <Grid className={classes.leftContainer} item xs={5}>
                                     <Paper className={classes.tierItem}>
                                         <Typography className={classes[tier]} variant="h4">{tier} TIER</Typography>
-                                        <img className={classes.image} src={imageUrl} alt="Tier Item Picture" />
+                                        <img className={classes.image} src={imageUrl} alt="Tier Item" />
                                         <Typography className={classes.tierItemName}>{name}</Typography>
                                     </Paper>
                                 </Grid>
@@ -297,16 +275,4 @@ class TierItemDisplayDialog extends Component {
     }
 }
 
-TierItemDisplayDialog.propTypes = {
-    UI: PropTypes.object.isRequired,
-}
-
-const mapStateToProps = (state) => ({
-    UI: state.UI,
-})
-
-const mapActionsToProps = {
-    
-};
-
-export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(TierItemDisplayDialog));
+export default (withStyles(styles)(TierItemDisplayDialog));

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
-import LikeButton from './LikeButton';
+import LikeButton from '../../util/LikeButton';
 
 // MUI
 import Card from '@material-ui/core/Card';

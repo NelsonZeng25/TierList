@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import EditDetails from "./EditDetails";
 import MyButton from "../../util/MyButton";
 import ProfileSkeleton from '../../util/ProfileSkeleton';
-import PostTierList from '../tierList/PostTierList';
 
 // MUI Stuff
 import Button from "@material-ui/core/Button";
@@ -23,7 +22,6 @@ import { logoutUser, uploadImage } from "../../redux/actions/userActions";
 import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ImageIcon from '@material-ui/icons/Image';
 
 const styles = theme => ({

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MyButton from '../../util/MyButton';
+import MyButton from './MyButton';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -9,7 +9,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 // Redux
 import { connect } from  'react-redux';
-import { likeTierList, unlikeTierList, likeComment, unlikeComment, likeReply, unlikeReply } from '../../redux/actions/dataActions';
+import { likeTierList, unlikeTierList, likeComment, unlikeComment, likeReply, unlikeReply } from '../redux/actions/dataActions';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
@@ -54,6 +54,7 @@ export class LikeButton extends Component {
             case 'reply':
                 this.props.likeReply(this.props.replyId);
                 break;
+            default:
         }
     }
     unlikeClick = () => {
@@ -68,6 +69,7 @@ export class LikeButton extends Component {
             case 'reply':
                 this.props.unlikeReply(this.props.replyId);
                 break;
+            default:
         }
     }
     render() {

@@ -2,17 +2,14 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MyButton from '../../util/MyButton';
-import SnackbarAlert from '../../util/SnackbarAlert';
 
 // MUI stuff
 import TextField from "@material-ui/core/TextField";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
-import Slide from '@material-ui/core/Slide';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
@@ -28,7 +25,6 @@ import Delete from '@material-ui/icons/Delete';
 // Redux stuff
 import { connect } from 'react-redux';
 import { clearErrors, addTierItemToTierList, updateTierItemFromTierList } from '../../redux/actions/dataActions';
-import DeleteButton from "../../util/DeleteButton";
 
 
 const styles = theme => ({
@@ -76,11 +72,6 @@ const styles = theme => ({
         objectFit: 'cover',
         // borderTopRightRadius: '7px',
         // borderTopLeftRadius: '7px',
-    },
-    tierItemName: {
-        color: theme.palette.text.primaryStrong,
-        textAlign: 'center',
-        overflow: 'auto',
     },
     ratingGrid: {
         marginTop: '15px',
@@ -384,7 +375,7 @@ class TierItemUpdateDialog extends Component {
         }
     }
     render(){
-        const { classes, UI: { loading }} = this.props;
+        const { classes } = this.props;
         const { tierItem } = this.props;
 
         const input = (isPros, index) => (
@@ -402,10 +393,6 @@ class TierItemUpdateDialog extends Component {
                     </Grid>
                 </Grid>
         )
-
-        // const Transition = React.forwardRef(function Transition(props, ref) {
-        //     return <Slide direction="up" ref={ref} {...props} />;
-        //   });
         return(
             <Fragment>
                 {this.props.handleNext !== undefined ? (
@@ -417,14 +404,11 @@ class TierItemUpdateDialog extends Component {
                         </MyButton>      
                     </Fragment>
                 )}
-                <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm"
-                    // TransitionComponent={<Slide direction="up"/>}
-                >
+                <Dialog className={classes.dialog} scroll="body" open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <DialogContent>
                         <Grid container direction="column" justify="flex-start" alignItems="center" spacing={2}>
                             <Grid item container className={classes.topContainer}>
                                 <Grid className={classes.leftContainer} item xs={5}>
-                                    {/* <Typography className={classes.tierItemName} variant="h3">A Tier</Typography> */}
                                     <Paper className={classes.tierItem}>
                                         <Select
                                             value={this.state.tier}
@@ -441,7 +425,7 @@ class TierItemUpdateDialog extends Component {
                                             <MenuItem className={classes.E} value={'E'}>E TIER</MenuItem>
                                             <MenuItem className={classes.F} value={'F'}>F TIER</MenuItem>
                                         </Select>
-                                        <img className={classes.image} src={tierItem.imageUrl} alt="Tier Item Picture" />
+                                        <img className={classes.image} src={tierItem.imageUrl} alt="Tier Item" />
                                         <Typography className={classes.tierItemName}>{tierItem.name}</Typography>
                                     </Paper>
                                 </Grid>
@@ -507,7 +491,6 @@ TierItemUpdateDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired,
     addTierItemToTierList: PropTypes.func.isRequired,
     updateTierItemFromTierList: PropTypes.func.isRequired,
-    UI: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
 }
@@ -515,7 +498,6 @@ TierItemUpdateDialog.propTypes = {
 const mapStateToProps = (state) => ({
     user: state.user,
     data: state.data,
-    UI: state.UI,
 })
 
 const mapActionsToProps = {

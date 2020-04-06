@@ -83,7 +83,6 @@ export class user extends Component {
     }
     render() {
         const { classes, user: {credentials: { userId }}} = this.props;
-        const { tierListIdParam } = this.state;
         const { categoriesWithTierLists, viewCategory, loading } = this.props.data;
         const tierListsMarkup = (category) => (
             viewCategory[category].map(tierList => (

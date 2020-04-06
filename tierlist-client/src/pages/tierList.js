@@ -6,10 +6,9 @@ import TierItemSkeleton from '../util/TierItemSkeleton';
 import withStyles from '@material-ui/core/styles/withStyles';
 import ProfileSkeleton from '../util/ProfileSkeleton';
 import StaticProfile from '../components/profile/StaticProfile';
-import TierListDialog from '../components/tierList/TierListDialog';
 import TierItem from  '../components/tierItem/TierItem';
 import Comment from '../components/tierList/Comment';
-import LikeButton from '../components/tierList/LikeButton';
+import LikeButton from '../util/LikeButton';
 import SnackbarAlert from '../util/SnackbarAlert';
 
 import ChatIcon from '@material-ui/icons/Chat';

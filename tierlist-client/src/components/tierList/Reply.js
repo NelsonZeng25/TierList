@@ -4,7 +4,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import LikeButton from './LikeButton';
+import LikeButton from '../../util/LikeButton';
 import DeleteButton from '../../util/DeleteButton';
 import MyButton from '../../util/MyButton';
 
@@ -131,7 +131,7 @@ class Reply extends Component {
                 </Grid>
                 <Grid item className={classes.replyInputGrid} container xs={12}>
                     <Grid item xs={10}>
-                        <Typography color="secondary" className={classes.replyUserName} variant="body1" component={Link} to={`/users/${userId}`} color="secondary">{reply.userName}</Typography>
+                        <Typography color="secondary" className={classes.replyUserName} variant="body1" component={Link} to={`/users/${userId}`}>{reply.userName}</Typography>
                         <span className={classes.replyCreatedAt}>{dayjs(reply.createdAt).fromNow()}</span>
                     </Grid>
                     {authenticated  && <Grid item xs={2}>

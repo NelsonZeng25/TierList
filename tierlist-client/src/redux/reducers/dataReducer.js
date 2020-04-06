@@ -255,9 +255,8 @@ export default function(state = initialState, action){
             }
         case SORT_VIEW_TIER_LIST:
             // https://stackoverflow.com/questions/8900732/sort-objects-in-an-array-alphabetically-on-one-property-of-the-array
-            var nameA, nameB;
-            for (var tier in state.viewTierList) {
-                state.viewTierList[tier].sort(function(a,b) {
+            for (tier in state.viewTierList) {
+                state.viewTierList[tier].sort(function(a,b, nameA, nameB) {
                     nameA = a.name.toUpperCase();
                     nameB = b.name.toUpperCase();
                     return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;

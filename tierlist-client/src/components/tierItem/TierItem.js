@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
-import MyButton from '../../util/MyButton';
 import DeleteButton from '../../util/DeleteButton';
 import TierItemUpdateDialog from './TierItemUpdateDialog';
 import TierItemDisplayDialog from './TierItemDisplayDialog';
@@ -101,14 +100,10 @@ class TierItem extends Component {
         const { 
             classes,
             data: { tierList: { userId }}, 
-            tierItem: { name, imageUrl, score, pros, cons, thoughts, tier },
+            tierItem: { name, imageUrl, score, pros, cons },
             user : { authenticated },
         } = this.props;
         const id = this.props.user.credentials.userId;
-
-        const deleteButton = (authenticated && userId === id) ? (
-            <DeleteButton tierList={this.props.tierList}/>
-        ) : null;
 
         const detailGrid = (content, isPros) => (
             <div className={classes.wrapper}>

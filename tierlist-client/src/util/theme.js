@@ -1,5 +1,3 @@
-import { ThemeProvider } from "@material-ui/core";
-
 const palette = {
   text: {
     primary: "#C5C6C7",
