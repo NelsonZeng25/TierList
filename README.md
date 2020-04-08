@@ -11,6 +11,7 @@ Since I'm using the free version of for the Firebase Cloud Functions, it limits 
 If you run into this problem, you simply need to wait a little bit before continuing to use the website since it only checks the quota every 100 seconds.
 
 ## Missing Features (to be implemented in the near future)
+* Make the page titles look better
 * Finish the likes tab in the profile page
 * Search for users page
 * Fix the style of the notifications
@@ -18,6 +19,7 @@ If you run into this problem, you simply need to wait a little bit before contin
 * Categories page
 * Implement forget password? in Login
 * Allow users to change password
+* Make the HTML title change with different pages
 ## Motivation
 This was one of my project ideas I was planning to do in summer. However, with all this free time I got because of the pandemic, I've decided to dedicate all my time on this project rather than doing nothing.
 
