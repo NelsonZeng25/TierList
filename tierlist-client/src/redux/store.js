@@ -9,6 +9,9 @@ const intialState = {};
 
 const middleware = [thunk];
 
+//https://github.com/leonardomso/react-bolt/issues/1
+const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const reducers = combineReducers({
   user: userReducer,
   data: dataReducer,
@@ -18,9 +21,9 @@ const reducers = combineReducers({
 const store = createStore(
   reducers,
   intialState,
-  compose(
-    applyMiddleware(...middleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  reduxDevTools(
+    applyMiddleware(...middleware)
+    //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
 

@@ -34,22 +34,23 @@ const StaticProfile = (props) => {
                     to={`/users/${userId}`}
                     color="secondary"
                     variant="h5"
+                    style={{overflowWrap: 'break-word'}}
                 >
                     @{userName}
                 </MuiLink>
                 <hr />
-                {bio && <Typography color="textPrimary" variant="body2">{bio}</Typography>}
+                {bio && <Typography color="textPrimary" variant="body2" style={{whiteSpace: 'pre-wrap', letterSpacing: 0, overflowWrap: 'break-word'}}>{bio}</Typography>}
                 <hr />
                 {location && (
                     <Fragment>
-                        <LocationOn color="secondary" /> <span>{location}</span>
+                        <LocationOn color="secondary" /> <span style={{overflowWrap: 'break-word'}}>{location}</span>
                         <hr />
                     </Fragment>
                 )}
                 {website && (
                     <Fragment>
                     <LinkIcon color="secondary" />
-                    <a href={website} className="website" target="_blank" rel="noopener noreferrer">
+                    <a href={website} className="website" target="_blank" rel="noopener noreferrer" style={{overflowWrap: 'break-word'}}>
                         {" "}
                         {website}
                     </a>

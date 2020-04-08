@@ -1,13 +1,26 @@
 const functions = require("firebase-functions");
 const firebase = require('firebase');
 const express = require("express");
+
+// const cors = require('cors');
 const app = express();
+// app.use(cors);
+
+// https://stackoverflow.com/questions/46337471/how-to-allow-cors-in-react-js
+app.use(function(req, res, next) {
+    res.set('Access-Control-Allow-Origin', 'https://tierlist-57d59.web.app');
+    res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.set('Access-Control-Allow-Credentials', 'true');
+    next();
+  });
+
+// CORS ERROR FIX (more like a realization than a fix)
+// https://stackoverflow.com/questions/52597210/how-to-solve-cors-in-firebase-functions-enviroment/52598794
+
 const config = require('./util/config');
 const { admin, db } = require('./util/admin');
 const FBAuth = require('./util/fbAuth');
-
-const cors = require('cors');
-app.use(cors());
 
 const { getAllTierLists, postOneTierList, getTierList, 
     commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList, deleteTierItemFromTierList } = require('./handlers/tierLists');
