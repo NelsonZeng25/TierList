@@ -3,10 +3,12 @@ A website to create Tier Lists about anything and browse other user made Tier Li
 ## Website
 Click on this link: [https://tierlist-57d59.web.app](https://tierlist-57d59.web.app)
 
+**NOT MOBILE FRIENDLY**
+
 **STILL A WORK IN PROGRESS**
 
 ## Cors Error / Quota exceeded Error / Why are things not loading?
-Since I'm using the free version of for the Firebase Cloud Functions, it limits the number of API calls per 100 seconds. So, if you use the functionalities of the website really quickly (e.g. switching pages quickly, liking and unliking rapidly), it will stop the API call. There will be stuff that won't load on the page and the console will show you (client side) a Cors Error. It is not a Cors Error, it is a Quota Exceeded Error but the console will show a Cors Error for some reason.
+Since I'm using the free version of the Firebase Cloud Functions, it limits the number of API calls per 100 seconds. So, if you use the functionalities of the website really quickly (e.g. switching pages quickly, liking and unliking rapidly), it will stop the API call. There will be stuff that won't load on the page and the console will show you (client side) a Cors Error. It is not a Cors Error, it is a Quota Exceeded Error but the console will show a Cors Error for some reason.
 
 If you run into this problem, you simply need to wait a little bit before continuing to use the website since it only checks the quota every 100 seconds.
 
@@ -20,6 +22,7 @@ If you run into this problem, you simply need to wait a little bit before contin
 * Implement forget password? in Login
 * Allow users to change password
 * Make the HTML title change with different pages
+* Mobile Friendly
 ## Motivation
 This was one of my project ideas I was planning to do in summer. However, with all this free time I got because of the pandemic, I've decided to dedicate all my time on this project rather than doing nothing.
 
