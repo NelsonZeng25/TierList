@@ -7,7 +7,19 @@ Click on this link: [https://tierlist-57d59.web.app](https://tierlist-57d59.web.
 **NOT MOBILE FRIENDLY**
 
 ## Main Feature
-Whenever you create a Tier List, you must pick or create a category. After creating it, you'll be directed to the Tier List Page where you can add your items.
+Whenever you create a Tier List, you must pick or create a category for it. After creating it, you'll be directed to the Tier List Page where you can add your items.
+
+| ![Preview1.png](tierlist-client/src/images/Preview1.png) | 
+|:--:| 
+| *Add Tier Item Dialog* |
+
+On this screen, you'll be shown all added Tier Items for the given category. You can switch to the 2nd tab which will display only Tier Items that you have added personally and you are allowed you to edit or delete only those who were created by you. The 3rd tab lets you upload an image to create a Tier Item for this category.
+
+| ![Preview2.png](tierlist-client/src/images/Preview2.png) | 
+|:--:| 
+| *Edit Tier Item Dialog* |
+
+Once you've selected your Tier Item, you can customize it by adding specific attributes such as Tier, Score, Pros, Cons and Detailed Thoughts. You can always change the attributes of your Tier Items after you've added it.
 
 ## Cors Error / Quota exceeded Error / Why are things not loading?
 Since I'm using the free version of the Firebase Cloud Functions, it limits the number of API calls per 100 seconds. So, if you use the functionalities of the website really quickly (e.g. switching pages quickly, liking and unliking rapidly), it will stop the API call. There will be stuff that won't load on the page and the console will show you (client side) a Cors Error. It is not a Cors Error, it is a Quota Exceeded Error but the console will show a Cors Error because Google Cloud Functions doesn't console log the right error.
