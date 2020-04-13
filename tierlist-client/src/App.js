@@ -28,7 +28,7 @@ import tierList from './pages/tierList';
 const theme = createMuiTheme(themeFile);
 
 // Only when its deploying time!
-axios.defaults.baseURL = "us-central1-tierlist-57d59.cloudfunctions.net/api";
+//axios.defaults.baseURL = "us-central1-tierlist-57d59.cloudfunctions.net/api";
 
 const token = localStorage.FBIdToken;
 if (token) {

@@ -29,7 +29,7 @@ const styles = theme => ({
     dialog: {
         "& .MuiDialog-paper": {
             backgroundColor: theme.palette.primary.main,
-            minHeight: 620,
+            minHeight: 450,
         },
     },
     dialogContent: {
@@ -261,12 +261,11 @@ class TierItemDisplayDialog extends Component {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item container direction="column" className={classes.bottomContainer}>
+                            {thoughts.trim() !== '' && <Grid item container direction="column" className={classes.bottomContainer}>
                                 <Typography className={classes.thoughtsTitle} variant="h5">Detailed Thoughts</Typography>
                                 <hr className={classes.visibleSeperator}/>
                                 <Typography  className={classes.thoughts} variant="body1">{thoughts}</Typography>
-                                {/* <TextField name="thoughts" className={classes.thoughtsTextfield} value={this.state.thoughts} multiline variant="outlined"/> */}
-                            </Grid>
+                            </Grid>}
                         </Grid>
                     </DialogContent>
                 </Dialog>
