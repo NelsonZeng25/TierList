@@ -1,7 +1,5 @@
 # Tier List Maker (Work in progress)
-A website to create Tier Lists about anything and browse other user made Tier Lists
 
-## Website
 Click on this link: [https://tierlist-57d59.web.app](https://tierlist-57d59.web.app)
 
 **NOT MOBILE FRIENDLY**
