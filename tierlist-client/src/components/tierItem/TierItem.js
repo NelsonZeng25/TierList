@@ -11,6 +11,8 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Paper from '@material-ui/core/Paper';
 
 // Icons
 import AddIcon from '@material-ui/icons/Add';
@@ -35,7 +37,29 @@ const styles = theme => ({
         },
         "& .MuiCardContent-root:last-child": {
             paddingBottom: '12px',
-        }
+        },
+        "@media (max-width:450px)": {
+            display: 'none',
+        },
+    },
+    tierItemMobile: {
+        display: 'none',
+        "@media (max-width:450px)": {
+            display: 'block',
+        },
+        margin: '0px auto',
+        backgroundColor: theme.palette.primary.dark,
+        minWidth: '200px',
+        maxWidth: '215px',
+        minHeight: '295px',
+        borderRadius: '10px',
+        paddingBottom: '6px',
+        border: '2px solid transparent',
+        transition: '600ms',
+        cursor: 'pointer',
+        "&:hover": {
+            borderColor: theme.palette.text.primaryStrong,
+        },
     },
     tierItemImage: {
         margin: '0',
@@ -47,6 +71,15 @@ const styles = theme => ({
         borderBottomLeftRadius: '7px',
         borderTopLeftRadius: '7px',
         objectFit: 'cover',
+        "@media (max-width:450px)": {
+            width: '100%',
+            marginTop: '-50px',
+            height: '250px',
+            borderTopRightRadius: '7px',
+            borderBottomLeftRadius: '0px',
+            display: 'initial',
+            minHeight: '0px',
+        },
     },
     tierItemName: {
         marginBottom: '10px',
@@ -54,12 +87,25 @@ const styles = theme => ({
         overflow: 'auto',
         textAlign: 'center',
         color: theme.palette.text.primaryStrong,
+        "@media (max-width:450px)": {
+            margin: '10px 6px 2px 6px',
+            marginBottom: '0px',
+        }
     },
     content: {
         width: '300px',
     },
+    content2: {
+        display: 'none',
+        "@media (max-width:450px)": {
+            display: 'block',
+        },
+    },
     wrapper: {
         marginLeft: '35px',
+        "@media (max-width:450px)": {
+            marginLeft: '0px',
+        },
         "& span, svg": {
             verticalAlign: 'middle',
         }
@@ -74,12 +120,32 @@ const styles = theme => ({
         position: 'absolute',
         marginTop: '5px',
         zIndex: 3,
+        "@media (max-width:450px)": {
+            display: 'none',
+        },
+    },
+    updateButton2: {
+        position: 'relative',
+        zIndex: 3,
     },
     scoreWrapper: {
         float: 'right',
         marginLeft: '10px',
         "& span, svg": {
             verticalAlign: 'middle',
+        },
+        "@media (max-width:450px)": {
+            display: 'none',
+        },
+    },
+    proTitle: {
+        "@media (max-width:450px)": {
+            display: 'none',
+        }
+    },
+    conTitle: {
+        "@media (max-width:450px)": {
+            display: 'none',
         }
     }
 });
@@ -134,13 +200,13 @@ class TierItem extends Component {
                             <StarIcon style={{color: '#ffb400'}}/>
                         </div>
                         <Typography className={classes.tierItemName} nowrap="true" variant="h5">{name}</Typography>
-                        {pros.length > 0 && <Typography variant="body1" >Pros:</Typography>}
+                        {pros.length > 0 && <Typography className={classes.proTitle} variant="body1" >Pros:</Typography>}
                             {Array.from({ length: pros.length }).map((item, index) => (
                                 <Fragment key={index}>
                                     {detailGrid( pros[index], true)}
                                 </Fragment>
                             ))}
-                        {cons.length > 0 && <Typography variant="body1" >Cons:</Typography>}
+                        {cons.length > 0 && <Typography className={classes.conTitle} variant="body1" >Cons:</Typography>}
                             {Array.from({ length: cons.length }).map((item, index) => (
                                 <Fragment key={index}>
                                     {detailGrid( cons[index], false)}
@@ -148,6 +214,17 @@ class TierItem extends Component {
                             ))}
                     </CardContent>
                 </Card>
+                <Paper className={classes.tierItemMobile}>
+                    {authenticated && userId === id ?
+                        (
+                            <Fragment>
+                                <DeleteButton tierItemInTierList={this.props.tierItem} currentTierList={this.props.data.tierList} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>
+                                <TierItemUpdateDialog handleUpdateAlertOpen={this.props.handleUpdateAlertOpen} tierItem={this.props.tierItem} updateButton={classes.updateButton2} />
+                            </Fragment>
+                        ) : null}
+                    <img src={imageUrl} className={classes.tierItemImage} alt="Tier Item" style={!(authenticated && userId === id) ? { marginTop: '0px' } : {}} onClick={this.handleOpen}/>
+                    <Typography onClick={this.handleOpen} className={classes.tierItemName}>{name}</Typography>
+                </Paper>
                 <TierItemDisplayDialog open={this.state.open} handleClose={this.handleClose} tierItem={this.props.tierItem} />
             </Fragment>
         )

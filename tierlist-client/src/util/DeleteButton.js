@@ -42,7 +42,11 @@ const styles = theme => ({
         height: '50px',
         "& svg": {
             color: 'red',
-        }
+        },
+        "@media (max-width:450px)": {
+            position: 'relative',
+            float: 'right',
+        },
     },
     comment: {
         float: 'right',

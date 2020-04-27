@@ -28,6 +28,9 @@ const styles = theme => ({
         width: '60px',
         height: '60px',
         borderRadius: '50%',
+        "@media (max-width:400px)": {
+            display: 'none',
+        }
     },
     content: {
         padding: '0 16px 24px 16px',
