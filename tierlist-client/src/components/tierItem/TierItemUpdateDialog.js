@@ -67,7 +67,7 @@ const styles = theme => ({
         minHeight: '280px',
     },
     image: {
-        width: '230px',
+        width: '100%',
         height: '280px',
         objectFit: 'cover',
         // borderTopRightRadius: '7px',
@@ -80,7 +80,12 @@ const styles = theme => ({
         marginLeft: '30px',
         "& .MuiRating-iconEmpty": {
             color: 'dimgrey',
-        }
+        },
+        "@media (max-width:450px)": {
+            "& span": {
+                fontSize: '1.475rem',
+            }
+        },
     },
     score: {
         marginLeft: '35px',
@@ -88,10 +93,22 @@ const styles = theme => ({
     },
     proconGrid: {
         marginTop: '30px',
-        marginLeft: '15px',
+        paddingLeft: '15px',
+        "@media (max-width:700px)": {
+            paddingLeft: '35px',
+        },
+        "@media (max-width:500px)": {
+            paddingLeft: '0px'
+        }
     },
     addProsButton: {
         marginLeft: '25px',
+        "@media (max-width:700px)": {
+            marginLeft: '60px',
+        },
+        "@media (max-width:500px)": {
+            marginLeft: '20px',
+        }
     },
     addConsButton: {
         marginLeft: '15px',
@@ -110,13 +127,13 @@ const styles = theme => ({
     },
     textField: {
         color: theme.palette.primary.dark,
-        marginLeft: '-20px',
+        //marginLeft: '-20px',
         "& input": {
             padding: '12px 14px',
-            width: '200px',
         },
         "& div": {
             height: '30px',
+            width: '95%',
         },
         "& .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.text.primary,
@@ -136,7 +153,8 @@ const styles = theme => ({
     tierItem: {
         marginTop: '10px',
         backgroundColor: theme.palette.primary.dark,
-        width: '100%',
+        maxWidth: '230px',
+        minWidth: '200px',
         minHeight: '340px',
         borderRadius: '10px',
         paddingBottom: '6px',
@@ -207,12 +225,11 @@ const styles = theme => ({
             justifyContent: 'center',
         },
         leftContainer: {
-            maxWidth: '80%',
-            flexBasis: '80%',
+            maxWidth: '100%',
+            flexBasis: '100%',
         },
-        image: {
-            width: '310px',
-            height: '350px',
+        tierItem: {
+            margin: '40px auto 0px auto',
         },
         rightContainer: {
             maxWidth: '100%',
@@ -224,12 +241,6 @@ const styles = theme => ({
         },
         ratingItem: {
             marginLeft: '0px',
-        },
-        proconGrid: {
-            marginLeft: '0px',
-        },
-        addProsButton: {
-            marginLeft: '60px',
         },
         addConsButton: {
             marginLeft: '20px',

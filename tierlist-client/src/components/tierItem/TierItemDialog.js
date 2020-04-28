@@ -70,6 +70,12 @@ const styles = theme => ({
             flexBasis: '50%',
         },
     },
+    "@media only screen and (max-width: 400px)": {
+        tierItemGrid: {
+            maxWidth: '100%',
+            flexBasis: '100%',
+        },
+    },
 });
 
 export class TierItemDialog extends Component {

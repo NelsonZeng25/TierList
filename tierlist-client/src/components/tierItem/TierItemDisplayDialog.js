@@ -47,10 +47,10 @@ const styles = theme => ({
         minHeight: '420px',
     },
     bottomContainer: {
-        minHeight: '160px',
+        minHeight: '150px',
     },
     image: {
-        width: '230px',
+        width: '100%',
         height: '280px',
         objectFit: 'cover',
         // borderTopRightRadius: '7px',
@@ -63,6 +63,11 @@ const styles = theme => ({
         marginLeft: '30px',
         "& .MuiRating-iconEmpty": {
             color: 'dimgrey',
+        },
+        "@media (max-width:450px)": {
+            "& span": {
+                fontSize: '1.475rem',
+            }
         }
     },
     score: {
@@ -72,7 +77,13 @@ const styles = theme => ({
     },
     proconGrid: {
         marginTop: '20px',
-        marginLeft: '5px',
+        paddingLeft: '5px',
+        "@media (max-width:700px)": {
+            paddingLeft: '35px',
+        },
+        "@media (max-width:450px)": {
+            paddingLeft: '5px',
+        }
     },
     add: {
         color: 'lawngreen',
@@ -115,7 +126,8 @@ const styles = theme => ({
     tierItem: {
         marginTop: '10px',
         backgroundColor: theme.palette.primary.dark,
-        width: '100%',
+        maxWidth: '230px',
+        minWidth: '200px',
         minHeight: '340px',
         borderRadius: '10px',
         paddingBottom: '6px',
@@ -182,16 +194,15 @@ const styles = theme => ({
             justifyContent: 'center',
         },
         leftContainer: {
-            maxWidth: '80%',
-            flexBasis: '80%',
-        },
-        image: {
-            width: '310px',
-            height: '350px',
+            maxWidth: '100%',
+            flexBasis: '100%',
         },
         rightContainer: {
             maxWidth: '100%',
             flexBasis: '100%',
+        },
+        tierItem: {
+            margin: '40px auto 0px auto',
         },
         score: {
             marginLeft: '0px',
@@ -199,9 +210,6 @@ const styles = theme => ({
         ratingItem: {
             marginLeft: '0px',
         },
-        proconGrid: {
-            marginLeft: '35px',
-        }
     }
 });
 
@@ -261,11 +269,11 @@ class TierItemDisplayDialog extends Component {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            {thoughts.trim() !== '' && <Grid item container direction="column" className={classes.bottomContainer}>
+                            <Grid item container direction="column" className={classes.bottomContainer}>
                                 <Typography className={classes.thoughtsTitle} variant="h5">Detailed Thoughts</Typography>
                                 <hr className={classes.visibleSeperator}/>
                                 <Typography  className={classes.thoughts} variant="body1">{thoughts}</Typography>
-                            </Grid>}
+                            </Grid>
                         </Grid>
                     </DialogContent>
                 </Dialog>
