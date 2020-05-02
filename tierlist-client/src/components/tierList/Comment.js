@@ -232,9 +232,17 @@ class Comment extends Component {
                                 <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
                             </Grid>
                             <Grid item>
-                                <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
-                                    <ChatIcon color="secondary"></ChatIcon>
-                                </MyButton>
+                                {authenticated ? (
+                                    <MyButton onClick={this.handleReplyOpen} btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
+                                        <ChatIcon color="secondary"></ChatIcon>
+                                    </MyButton>
+                                ) : (
+                                    <Link to="/login">
+                                        <MyButton btnClassName={classes.commentButton} tip="Reply to comment" placement="top">
+                                            <ChatIcon color="secondary"></ChatIcon>
+                                        </MyButton>
+                                    </Link>
+                                )}
                                 <span>{replyCount} Replies</span>
                             </Grid>
                         </Grid>
