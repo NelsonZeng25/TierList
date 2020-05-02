@@ -57,7 +57,7 @@ function App() {
                   <AuthRoute exact path='/login' component={login}></AuthRoute>
                   <AuthRoute exact path='/signup' component={signup}></AuthRoute>
                   <Route exact path='/users/:userId' component={user}></Route>
-                  <Route exact path='/users/:userId/tierLists/:tierListId' component={tierList}></Route>
+                  <Route exact path='/tierLists/:tierListId' component={tierList}></Route>
                 </Switch>
               </div>
             </div>

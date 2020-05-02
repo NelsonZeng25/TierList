@@ -55,7 +55,7 @@ class TierList extends Component {
                 className={classes.image}/>
                 <CardContent className={classes.content}>
                     <div style={{overflow: "hidden", textOverflow: "ellipsis", width: '13rem'}}> 
-                        <Typography nowrap="true" variant="h5" component={Link} to={`/users/${userId}/tierLists/${tierListId}`} color="secondary">{name}</Typography>
+                        <Typography nowrap="true" variant="h5" component={Link} to={`/tierLists/${tierListId}`} color="secondary">{name}</Typography>
                     </div>
                     {((authenticated && userId === id) || isManager) && <DeleteButton tierList={this.props.tierList} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>}
                     <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>

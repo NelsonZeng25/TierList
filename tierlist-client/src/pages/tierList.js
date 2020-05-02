@@ -138,12 +138,12 @@ export class tierList extends Component {
         this.props.getTierList(tierListId);
 
         // Get the user associated to Tier List
-        const userId = this.props.match.params.userId;
-        axios.get(`/users/${userId}`)
-            .then(res => {
-                this.setState({ profile: res.data.user })
-            })
-            .catch(err => console.log(err))
+        // const userId = this.props.data.tierList.userId;
+        // axios.get(`/users/${userId}`)
+        //     .then(res => {
+        //         this.setState({ profile: res.data.user })
+        //     })
+        //     .catch(err => console.log(err))
         
     }
     handleCommentInput = (event) => {
@@ -191,8 +191,7 @@ export class tierList extends Component {
         this.setState({ deleteCommentAlertOpen: false });
     }
     render() {
-        const { classes, user: { authenticated, credentials: { userId, imageUrl, userName } }, data: { viewTierList, tierList: {tierListId, comments, commentCount, likeCount}} } = this.props;
-        const { loading } = this.props.data;
+        const { classes, user: { authenticated, credentials: { userId, imageUrl, userName } }, data: { loading, viewTierList, tierList: {tierListId, comments, commentCount, likeCount}} } = this.props;
 
         const tierItemsMarkup = (tier) => (
             viewTierList[tier].map(tierItem => (
@@ -233,12 +232,12 @@ export class tierList extends Component {
                         <Typography variant="h3" className={classes.pageName}>TIER LIST</Typography>
                         <Typography variant="h4" className={classes.pageName} style={{textDecoration: 'unset'}}>{this.props.data.tierList.name}</Typography>
                         <Grid item>
-                            {this.state.profile === null ? (
+                            {loading ? (
                                 <ProfileSkeleton/>
-                            ): ( this.state.profile.userId === userId ? (
+                            ): ( this.props.data.tierList.userId === userId ? (
                                 <Profile/>
                             ) : (
-                                <StaticProfile profile={this.state.profile} />
+                                <StaticProfile userId={this.props.data.tierList.userId} />
                             ))}
                         </Grid>
                     </Grid>
