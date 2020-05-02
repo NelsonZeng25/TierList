@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import Profile from '../components/profile/Profile';
 import TierItemSkeleton from '../util/TierItemSkeleton';

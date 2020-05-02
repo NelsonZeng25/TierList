@@ -21,6 +21,9 @@ const styles = theme => ({
   });
 
 class StaticProfile extends Component {
+    // https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component
+    _isMounted = false;
+
     state = {
         profile: {
             userName: '',
@@ -34,15 +37,23 @@ class StaticProfile extends Component {
         loading: true,
     }
     componentDidMount() {
+        this._isMounted = true;
         // Get the user associated to Tier List
-        axios.get(`/users/${this.props.userId}`)
-            .then(res => {
-                this.setState({ 
-                    profile: res.data.user, 
-                    loading: false,
+        if (this.props.userId) {
+            axios.get(`/users/${this.props.userId}`)
+                .then(res => {
+                    if (this._isMounted) {
+                        this.setState({ 
+                            profile: res.data.user, 
+                            loading: false,
+                        })
+                    }
                 })
-            })
-            .catch(err => console.log(err))
+                .catch(err => console.log(err))
+        }
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
     render() {
         const { classes } = this.props;
@@ -101,7 +112,6 @@ class StaticProfile extends Component {
 }
 
 StaticProfile.propTypes = {
-    userId: PropTypes.string.isRequired,
     classes: PropTypes.object.isRequired,
 }
 
