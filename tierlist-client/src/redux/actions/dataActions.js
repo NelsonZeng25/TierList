@@ -5,7 +5,8 @@ import {
     SET_CATEGORIES, SET_CATEGORIES_WITH_TIERLISTS, SET_CATEGORY, RESET_VIEW_CATEGORY, RESET_CATEGORIES,
     SET_TIER_ITEMS, SET_USER_TIER_ITEMS, RESET_VIEW_TIER_ITEMS, DELETE_TIER_ITEM, POST_TIER_ITEM, UPDATE_TIER_ITEM, SET_SEARCH_TIER_ITEMS, SET_SEARCH_USER_TIER_ITEMS,
     SET_VIEW_TIER_LIST, ADD_TO_VIEW_TIER_LIST, DELETE_FROM_VIEW_TIER_LIST, SORT_VIEW_TIER_LIST,
-    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY, UPDATE_COMMENT, UPDATE_REPLY
+    LIKE_COMMENT, UNLIKE_COMMENT, LIKE_REPLY, UNLIKE_REPLY, DELETE_COMMENT, DELETE_REPLY, SET_COMMENT, SUBMIT_COMMENT, SUBMIT_REPLY, UPDATE_COMMENT, UPDATE_REPLY,
+    SET_LIKES,
 } from '../types';
 import axios from 'axios';
 
@@ -460,20 +461,30 @@ export const updateReply = (reply, replyData) => (dispatch) => {
 // Get the user data for user page
 export const getUserData = (userId) => (dispatch) => {
     dispatch({ type: LOADING_DATA });
-    axios.get(`/categoriesWithTierLists/${userId}`)
+    axios.get(`/users/${userId}`)
         .then(res => {
             dispatch({
                 type: SET_CATEGORIES_WITH_TIERLISTS,
-                payload: res.data,
+                payload: res.data.tierLists,
             });
             dispatch(refreshCategories());
+
+            dispatch({
+                type: SET_LIKES,
+                payload: res.data.likes,
+            });
         })
         .catch(() => {
             dispatch({
                 type: SET_CATEGORIES_WITH_TIERLISTS,
-                payload: null,
+                payload: {},
             });
             dispatch(refreshCategories());
+
+            dispatch({
+                type: SET_LIKES,
+                payload: [],
+            });
         })
 }
 

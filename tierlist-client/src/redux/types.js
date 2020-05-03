@@ -48,3 +48,4 @@ export const SET_COMMENT = 'SET_COMMENT';
 export const SUBMIT_REPLY = 'SUBMIT_REPLY';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const UPDATE_REPLY = 'UPDATE_REPLY';
+export const SET_LIKES = 'SET_LIKES';

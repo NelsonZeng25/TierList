@@ -60,7 +60,7 @@ class TierList extends Component {
                     {((authenticated && userId === id) || isManager) && <DeleteButton tierList={this.props.tierList} handleDeleteAlertOpen={this.props.handleDeleteAlertOpen}/>}
                     <Typography variant="body2" >Created by <Link className={classes.login_signup_link} to={`/users/${userId}`}>{userName}</Link></Typography>
                     <Typography variant="body2" >Category: {category}</Typography>
-                    <Grid className={classes.tierListCount} container>
+                    {(likeCount !== undefined && commentCount !== undefined) && <Grid className={classes.tierListCount} container>
                         <Grid item>
                             <LikeButton tierListId={tierListId} placement="bottom"></LikeButton>
                             <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
@@ -71,7 +71,7 @@ class TierList extends Component {
                             </MyButton>
                             <span>{commentCount} Comments</span>
                         </Grid>
-                    </Grid>
+                    </Grid>}
                     
                     {/* <TierListDialog tierListId={tierListId} userId={userId} openDialog={this.props.openDialog}></TierListDialog> */}
                 </CardContent>

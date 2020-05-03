@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import TierList from '../components/tierList/TierList';
 import StaticProfile from '../components/profile/StaticProfile';
 import TierListSkeleton from '../util/TierListSkeleton';
@@ -86,8 +85,8 @@ export class user extends Component {
         this.setState({ selectedTab: 2 });
     }
     render() {
-        const { classes, user: {credentials: { userId }}} = this.props;
-        const { categoriesWithTierLists, viewCategory, loading } = this.props.data;
+        const { classes, user: { credentials: { userId }}} = this.props;
+        const { categoriesWithTierLists, viewCategory, loading, likes } = this.props.data;
         const tierListsMarkup = (category) => (
             viewCategory[category].map(tierList => (
                 <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
@@ -102,8 +101,10 @@ export class user extends Component {
         );
         const categoryWithTierListsMarkup = loading ? (
             <Fragment>
-                <Typography variant="h5" className={classes.categoryName}>Category</Typography>
-                <hr className={classes.visibleSeperator}/>
+                <Grid item xs={12}>
+                    <Typography variant="h5" className={classes.categoryName}>Category</Typography>
+                    <hr className={classes.visibleSeperator}/>
+                </Grid>
                 {Array.from({ length: 10 }).map((item, index) => (
                     <Grid className={classes.gridTierList} key={index} item xs={6}>
                         <TierListSkeleton />
@@ -120,6 +121,24 @@ export class user extends Component {
                 </Fragment>
             ))
         ));
+
+        const likedTierListMarkup = (
+            <Fragment>
+                <Grid item xs={12}>
+                    <Typography variant="h5" className={classes.categoryName}>Liked Tier Lists</Typography>
+                    <hr className={classes.visibleSeperator}/>
+                </Grid>
+                {likes.map(like => (
+                    <Grid className={classes.gridTierList} key={like.tierListId} item xs={6}>
+                        <TierList tierList={{
+                            name: like.tierListName, tierListId: like.tierListId,
+                            userId: like.recipientId, userImage: like.recipientImage, userName: like.recipientName, 
+                            category: like.category,
+                        }}/>
+                    </Grid>
+                ))}
+            </Fragment>
+        );
         return (
             <Grid className="grid-container" container spacing={3}>
                 <AppBar className={classes.appBar} position="static">
@@ -142,9 +161,17 @@ export class user extends Component {
                         ))}
                     </Grid>
                 </Grid>
-                <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
-                    {categoryWithTierListsMarkup}
-                </Grid>
+                {this.state.selectedTab === 0 && 
+                    <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
+                        {categoryWithTierListsMarkup}
+                    </Grid>}
+                {this.state.selectedTab === 1 && 
+                    <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
+                        {likedTierListMarkup}
+                    </Grid>}
+                {this.state.selectedTab === 2 && 
+                    <Grid className={classes.gridTierLists} container item xs={9} spacing={3} justify="center">
+                    </Grid>}
             </Grid>
         )
     }

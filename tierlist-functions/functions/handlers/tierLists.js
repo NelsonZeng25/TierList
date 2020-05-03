@@ -138,6 +138,11 @@ exports.likeTierList = (req, res) => {
       if (data.empty) {
         return db.collection('likes').add({
           tierListId: req.params.tierListId,
+          tierListName: tierListData.name,
+          recipientName: tierListData.userName,
+          recipientImage: tierListData.userImage,
+          recipientId: tierListData.userId,
+          category: tierListData.category,
           userName: req.user.userName,
           userId: req.user.uid,
         })
