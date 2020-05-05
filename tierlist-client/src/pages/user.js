@@ -53,7 +53,10 @@ const styles = theme => ({
         width: '95%',
         zIndex: 1,
     },
-    tab: {
+    tab1: {
+        width: '50%'
+    },
+    tab2: {
         width: '33.33%'
     }
 });
@@ -75,6 +78,13 @@ export class user extends Component {
         //     })
         //     .catch(err => console.log(err))
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.location.pathname !== prevProps.location.pathname) {
+            const userId = this.props.match.params.userId;
+            this.props.getUserData(userId);
+            this.setState({ selectedTab: 0 });
+        }
+    }
     handleTierItemsClick = () => {
         this.setState({ selectedTab: 0 });
     }
@@ -87,6 +97,7 @@ export class user extends Component {
     render() {
         const { classes, user: { credentials: { userId }}} = this.props;
         const { categoriesWithTierLists, viewCategory, loading, likes } = this.props.data;
+        const Id = this.props.match.params.userId;
         const tierListsMarkup = (category) => (
             viewCategory[category].map(tierList => (
                 <Grid className={classes.gridTierList} key={tierList.tierListId} item xs={6}>
@@ -143,9 +154,9 @@ export class user extends Component {
             <Grid className="grid-container" container spacing={3}>
                 <AppBar className={classes.appBar} position="static">
                     <Tabs value={this.state.selectedTab} indicatorColor="secondary">
-                        <Tab className={classes.tab} label="Tier Lists" icon={<ListAltIcon/>} onClick={this.handleTierItemsClick} value={0}/>
-                        <Tab className={classes.tab} label="Likes" icon={<FavoriteIcon/>} onClick={this.handleLikesClick} value={1}/>
-                        <Tab className={classes.tab} label="Settings" icon={<SettingsIcon/>} onClick={this.handleSettingsClick} value={2}/>
+                        <Tab className={userId === Id ? classes.tab2 : classes.tab1} label="Tier Lists" icon={<ListAltIcon/>} onClick={this.handleTierItemsClick} value={0}/>
+                        <Tab className={userId === Id ? classes.tab2 : classes.tab1} label="Likes" icon={<FavoriteIcon/>} onClick={this.handleLikesClick} value={1}/>
+                        {userId === Id && <Tab className={classes.tab2} label="Settings" icon={<SettingsIcon/>} onClick={this.handleSettingsClick} value={2}/>}
                     </Tabs>
                 </AppBar>
                 <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
