@@ -157,7 +157,7 @@ export class Navbar extends Component {
   render() {
     const { errors } = this.state;
     const { classes, categories, authenticated, userId, tierList, UI: { loading } } = this.props;
-    const isEdit = userId === tierList.userId && window.location.href.includes("users") && window.location.href.includes("tierLists");
+    const isEdit = userId === tierList.userId && window.location.href.includes("tierLists");
     return (
       <Fragment>
         <AppBar className={classes.appbar}>
@@ -244,6 +244,7 @@ const mapStateToProps = state => ({
   authenticated: state.user.authenticated,
   userId: state.user.credentials.userId,
   tierList: state.data.tierList,
+  user: state.user,
   UI: state.UI,
 });
 

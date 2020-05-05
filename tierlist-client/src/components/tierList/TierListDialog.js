@@ -210,7 +210,7 @@ class TierListDialog extends Component {
 
         selectedIndex: -1,
         selectedImage: '',
-        selectedName: 'name',
+        selectedName: 'Name',
         selectedTierItemId: '',
         selectedTab: 0,
 
@@ -245,7 +245,7 @@ class TierListDialog extends Component {
             selectedImage: this.state.noImg,
             addTierItemImage: this.state.noImg,
             addTierItemName: '',
-            selectedName: 'name',
+            selectedName: 'Name',
             selectedTierItemId: '',
             error: '',
         });
