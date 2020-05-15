@@ -4,11 +4,16 @@ const express = require("express");
 
 // const cors = require('cors');
 const app = express();
-// app.use(cors);
+//app.use(require("cors")());
 
 // https://stackoverflow.com/questions/46337471/how-to-allow-cors-in-react-js
 app.use(function(req, res, next) {
-    res.set('Access-Control-Allow-Origin', 'https://tierlist-57d59.web.app');
+    var allowedOrigins = ['http://127.0.0.1:8080', 'https://tierlist-57d59.web.app', 'https://tierlist-57d59.firebaseapp.com'];
+    var origin = req.headers.origin;
+    if (allowedOrigins.indexOf(origin) > -1) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    //res.set('Access-Control-Allow-Origin', 'https://tierlist-57d59.web.app, https://tierlist-57d59.firebaseapp.com');
     res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     res.set('Access-Control-Allow-Credentials', 'true');
