@@ -24,10 +24,11 @@ import login from './pages/login';
 import signup from './pages/signup';
 import user from './pages/user';
 import tierList from './pages/tierList';
+import users from './pages/users';
 
 const theme = createMuiTheme(themeFile);
 
-// Only when its deploying time!
+// Only when it's deploying time!
 //axios.defaults.baseURL = "us-central1-tierlist-57d59.cloudfunctions.net/api";
 
 const token = localStorage.FBIdToken;
@@ -56,6 +57,7 @@ function App() {
                   <Route exact path='/' component={home}></Route>
                   <AuthRoute exact path='/login' component={login}></AuthRoute>
                   <AuthRoute exact path='/signup' component={signup}></AuthRoute>
+                  <Route exact path='/users' component={users}></Route>
                   <Route exact path='/users/:userId' component={user}></Route>
                   <Route exact path='/tierLists/:tierListId' component={tierList}></Route>
                 </Switch>
