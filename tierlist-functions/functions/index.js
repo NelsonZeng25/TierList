@@ -1,9 +1,7 @@
 import { https, firestore } from "firebase-functions";
 import express from "express";
 
-// const cors = require('cors');
 const app = express();
-//app.use(require("cors")());
 
 // https://stackoverflow.com/questions/46337471/how-to-allow-cors-in-react-js
 // app.use(function(req, res, next) {
