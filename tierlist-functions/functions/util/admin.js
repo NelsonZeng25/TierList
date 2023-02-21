@@ -1,21 +1,16 @@
 import admin from "firebase-admin";
 import config from "./config.js";
-
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'
-const { credential: _credential } = admin;
-
 import { readFile } from 'fs/promises';
 
 const json = JSON.parse(
   await readFile(new URL('../admin.json', import.meta.url))
 );
 
-const app = initializeApp({
+const app = admin.initializeApp({
     ...config,
-    credential: _credential.cert(json),
+    credential: admin.credential.cert(json)
 });
 
-const db = getFirestore(app);
+const db = admin.firestore();
 
 export { app, admin, db };

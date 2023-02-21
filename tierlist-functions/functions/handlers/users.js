@@ -1,5 +1,8 @@
-import { app, admin, db } from "../util/admin.js";
-import { getAuth } from 'firebase/auth';
+import { admin, db } from "../util/admin.js";
+import config from '../util/config.js';
+import firebase from 'firebase';
+
+firebase.initializeApp(config);
 
 import { validateSignupData, validateLoginData, reduceUserDetails } from "../util/validators.js";
 
@@ -10,7 +13,7 @@ import fs from 'fs'
 
 const noImg = "no-img.png";
 
-const auth = getAuth(app);
+const auth = firebase.auth();
 
 // Sign up user
 export function signup(req, res) {
