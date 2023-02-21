@@ -29,7 +29,7 @@ import users from './pages/users';
 const theme = createMuiTheme(themeFile);
 
 // Only when it's deploying time!
-axios.defaults.baseURL = "https://us-central1-tierlist-57d59.cloudfunctions.net/api";
+// axios.defaults.baseURL = "https://us-central1-tierlist-57d59.cloudfunctions.net/api";
 
 const token = localStorage.FBIdToken;
 if (token) {

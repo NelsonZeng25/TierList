@@ -1,6 +1,6 @@
-const { db } = require('../util/admin');
+import { db } from '../util/admin.js';
 
-exports.getAllManagers = (req, res) => {
+export function getAllManagers(req, res) {
     db.collection("managers")
       .orderBy("userName", "asc")
       .get()
@@ -17,7 +17,7 @@ exports.getAllManagers = (req, res) => {
       .catch(err => console.error(err));
 }
 
-exports.postOneManager = (req, res) => {
+export function postOneManager(req, res) {
     if (req.user.isManager) {
         const newManager = {
             userId: req.body.userId,
@@ -40,7 +40,7 @@ exports.postOneManager = (req, res) => {
     }
 }
 
-exports.deleteManager = (req, res) => {
+export function deleteManager(req, res) {
   const document = db.doc(`/managers/${req.params.managerId}`);
   document.get()
     .then(doc => {
@@ -60,5 +60,5 @@ exports.deleteManager = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}
 

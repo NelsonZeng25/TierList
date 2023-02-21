@@ -1,10 +1,10 @@
-const { admin, db } = require("../util/admin");
+import { admin, db } from "../util/admin.js";
 
-const config = require("../util/config");
+import config from "../util/config.js";
 
 const noImg = "no-img.png";
 
-exports.getAllTierItems = (req, res) => {
+export function getAllTierItems(req, res) {
   db.collection("tierItems")
     .orderBy("name", "asc")
     .get()
@@ -19,9 +19,9 @@ exports.getAllTierItems = (req, res) => {
       return res.json(tierItems);
     })
     .catch(err => console.error(err));
-};
+}
 
-exports.postOneTierItem = (req, res) => {
+export function postOneTierItem(req, res) {
   const updateTierItem = {
     name: req.body.name,
     imageUrl: req.body.imageUrl,
@@ -49,10 +49,10 @@ exports.postOneTierItem = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: "Something went wrong" });
     });
-};
+}
 
 // Upload an image for the Tier Item
-exports.uploadTierItemImage = (req, res) => {
+export function uploadTierItemImage(req, res) {
   const BusBoy = require("busboy");
   const path = require("path");
   const os = require("os");
@@ -101,10 +101,10 @@ exports.uploadTierItemImage = (req, res) => {
       });
   });
   busboy.end(req.rawBody);
-};
+}
 
 // Get 1 Tier Item
-exports.getTierItem = (req, res) => {
+export function getTierItem(req, res) {
   db.doc(`tierItems/${req.params.tierItemId}`)
     .get()
     .then(doc => {
@@ -117,10 +117,10 @@ exports.getTierItem = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}
 
 // Delete Tier Item
-exports.deleteTierItem = (req, res) => {
+export function deleteTierItem(req, res) {
   const document = db.doc(`/tierItems/${req.params.tierItemId}`);
   document
     .get()
@@ -138,10 +138,10 @@ exports.deleteTierItem = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}
 
 // Update Tier Item
-exports.updateTierItem = (req, res) => {
+export function updateTierItem(req, res) {
   const document = db.doc(`/tierItems/${req.params.tierItemId}`);
   const updateTierItem = {
     name: req.body.name,
@@ -173,4 +173,4 @@ exports.updateTierItem = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}

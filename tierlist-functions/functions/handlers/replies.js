@@ -1,6 +1,6 @@
-const { db } = require('../util/admin');
+import { db } from '../util/admin.js';
 
-exports.getAllReplies = (req, res) => {
+export function getAllReplies(req, res) {
     db.collection("replies")
       .orderBy("createdAt", "desc")
       .get()
@@ -21,7 +21,7 @@ exports.getAllReplies = (req, res) => {
 }
 
 // Get 1 Reply
-exports.getReply = (req, res) => {
+export function getReply(req, res) {
     db.doc(`replies/${req.params.replyId}`).get()
       .then(doc => {
         if (!doc.exists) return res.status(404).json({ error: 'Reply not found'})
@@ -34,7 +34,7 @@ exports.getReply = (req, res) => {
 }
 
 // Like a Reply
-exports.likeReply = (req, res) => {
+export function likeReply(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
     .where('replyId', '==', req.params.replyId).limit(1);
 
@@ -73,10 +73,10 @@ exports.likeReply = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     })
-};
+}
 
 // Unlike a Reply
-exports.unlikeReply = (req, res) => {
+export function unlikeReply(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
   .where('replyId', '==', req.params.replyId).limit(1);
 
@@ -115,7 +115,7 @@ exports.unlikeReply = (req, res) => {
 }
 
 // Delete Reply
-exports.deleteReply = (req, res) => {
+export function deleteReply(req, res) {
   const document = db.doc(`/replies/${req.params.replyId}`);
   let commentDocument;
   document.get()
@@ -142,7 +142,7 @@ exports.deleteReply = (req, res) => {
 }
 
 // Update Reply
-exports.updateReply = (req, res) => {
+export function updateReply(req, res) {
   const document = db.doc(`/replies/${req.params.replyId}`);
   const updateReply = {
     body: req.body.body,
