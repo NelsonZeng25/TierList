@@ -30,7 +30,7 @@ export function signup(req, res) {
 
   let token, userId;
 
-  auth()
+  auth
     .createUserWithEmailAndPassword(newUser.email, newUser.password)
     .then(data => {
       userId = data.user.uid;
@@ -70,7 +70,7 @@ export function login(req, res) {
   const { valid, errors } = validateLoginData(user);
   if (!valid) return res.status(400).json(errors);
 
-  auth()
+  auth
     .signInWithEmailAndPassword(user.email, user.password)
     .then(data => {
       return data.user.getIdToken();
