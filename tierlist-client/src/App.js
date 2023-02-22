@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import {ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core';
 import themeFile from './util/theme';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
@@ -26,7 +26,7 @@ import user from './pages/user';
 import tierList from './pages/tierList';
 import users from './pages/users';
 
-const theme = createMuiTheme(themeFile);
+const theme = createTheme(themeFile);
 
 // Dev env
 axios.defaults.baseURL = "http://localhost:5000/tierlist-57d59/us-central1/api";
