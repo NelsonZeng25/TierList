@@ -1,8 +1,25 @@
-# Tier List Maker (Work in progress)
+# Tier List Maker
 
 Click on this link: [https://tierlist-57d59.web.app](https://tierlist-57d59.web.app)
 
-**NOT MOBILE FRIENDLY**
+## Deployment Instructions
+
+For the frontend, build the application first and then deploy.
+
+Ensure that the `axios.defaults.baseURL` in `App.js` is pointing to the prod URL
+```
+$ npm run build
+$ firebase deploy
+```
+
+For the backend, run one of these commands (first one deploys all functions)
+
+Ensure that the proper origins are allowed in `index.js`
+```
+$ firebase deploy
+
+$ firebase deploy --only functions:api
+```
 
 ## Main Feature
 Whenever you create a Tier List, you must pick or create a category for it. After creating it, you'll be directed to the Tier List Page where you can add your items.
