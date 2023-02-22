@@ -93,7 +93,6 @@ export class home extends Component {
             <Fragment>
                 <Grid className="grid-container" container spacing={3}>
                     <Grid className={classes.gridProfile} container direction="column" item xs={3} spacing={0}>
-                        <Typography variant="h3" className={classes.pageName}>HOME</Typography>
                         <Grid item >
                             <Profile />
                         </Grid>
