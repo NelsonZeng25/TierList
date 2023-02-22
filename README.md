@@ -1,8 +1,6 @@
-# Tier List Maker (Work in progress)
+# Tier List Maker
 
-Click on this link: [https://tierlist-57d59.web.app](https://tierlist-57d59.web.app)
-
-**NOT MOBILE FRIENDLY**
+Link to application: https://tierlist-57d59.web.app
 
 ## Main Feature
 Whenever you create a Tier List, you must pick or create a category for it. After creating it, you'll be directed to the Tier List Page where you can add your items.
@@ -35,6 +33,7 @@ If you run into this problem, you simply need to wait a little bit before contin
 * Allow users to change password
 * Make the HTML title change with different pages
 * Mobile Friendly
+
 ## Motivation
 This was one of my project ideas I was planning to do in summer. However, with all this free time I got because of the pandemic, I've decided to dedicate all my time on this project rather than doing nothing for 2 weeks.
 
