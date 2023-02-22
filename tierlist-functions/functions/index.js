@@ -1,49 +1,46 @@
-const functions = require("firebase-functions");
-const firebase = require('firebase');
-const express = require("express");
+import { https, firestore } from "firebase-functions";
+import express from "express";
 
-// const cors = require('cors');
 const app = express();
-//app.use(require("cors")());
 
 // https://stackoverflow.com/questions/46337471/how-to-allow-cors-in-react-js
 app.use(function(req, res, next) {
-    var allowedOrigins = ['http://127.0.0.1:8080', 'https://tierlist-57d59.web.app', 'https://tierlist-57d59.firebaseapp.com'];
-    var origin = req.headers.origin;
-    if (allowedOrigins.indexOf(origin) > -1) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    }
-    //res.set('Access-Control-Allow-Origin', 'https://tierlist-57d59.web.app, https://tierlist-57d59.firebaseapp.com');
+    // Dev env
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    // Prod env
+    // var allowedOrigins = ['https://tierlist-57d59.web.app', 'https://tierlist-57d59.firebaseapp.com'];
+    // var origin = req.headers.origin;
+    // if (allowedOrigins.includes(origin)) {
+    //     res.setHeader('Access-Control-Allow-Origin', origin);
+    // }
+    
     res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     res.set('Access-Control-Allow-Credentials', 'true');
     next();
-  });
+});
 
 // CORS ERROR FIX (more like a realization than a fix)
 // https://stackoverflow.com/questions/52597210/how-to-solve-cors-in-firebase-functions-enviroment/52598794
 
-const config = require('./util/config');
-const { admin, db } = require('./util/admin');
-const FBAuth = require('./util/fbAuth');
+import config from './util/config.js';
+import { admin, db } from './util/admin.js';
+import FBAuth from './util/fbAuth.js';
 
-const { getAllTierLists, postOneTierList, getTierList, 
-    commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList, deleteTierItemFromTierList } = require('./handlers/tierLists');
+import { getAllTierLists, postOneTierList, getTierList, commentOnTierList, likeTierList, unlikeTierList, deleteTierList, addTierItemToTierList, deleteTierItemFromTierList } from './handlers/tierLists.js';
 
-const { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } = require('./handlers/tierItems');
+import { getAllTierItems, postOneTierItem, getTierItem, deleteTierItem, updateTierItem, uploadTierItemImage } from './handlers/tierItems.js';
 
-const { getAllCategories, getAllCategoriesWithTierLists, getAllCategoriesWithTierListsForUser, getTierItemsForOneCategory,
-    postOneCategory, getCategory, deleteCategory, updateCategory } = require('./handlers/categories');
+import { getAllCategories, getAllCategoriesWithTierLists, getAllCategoriesWithTierListsForUser, getTierItemsForOneCategory, postOneCategory, getCategory, deleteCategory, updateCategory } from './handlers/categories.js';
 
-const { getAllComments, getComment, replyOnComment, deleteComment, likeComment, 
-    unlikeComment, updateComment } = require('./handlers/comments');
+import { getAllComments, getComment, replyOnComment, deleteComment, likeComment, unlikeComment, updateComment } from './handlers/comments.js';
 
-const { getAllReplies, getReply, deleteReply, likeReply, unlikeReply, updateReply } = require('./handlers/replies');
+import { getAllReplies, getReply, deleteReply, likeReply, unlikeReply, updateReply } from './handlers/replies.js';
 
-const { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUser, 
-    markNotificationsRead, deleteUser, getAllUsers } = require('./handlers/users');
+import { signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUser, markNotificationsRead, deleteUser, getAllUsers } from './handlers/users.js';
 
-const { getAllManagers, postOneManager, deleteManager } = require('./handlers/managers');
+import { getAllManagers, postOneManager, deleteManager } from './handlers/managers.js';
 
 // tierLists routes
 app.get("/tierLists", getAllTierLists);
@@ -107,10 +104,9 @@ app.get('/managers', getAllManagers);
 app.post('/managers/createManager', FBAuth, postOneManager);
 app.delete('/managers/:managerId', FBAuth, deleteManager);
 
-exports.api = functions.https.onRequest(app);
+export const api = https.onRequest(app);
 
-// Create notification on Likes
-exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
+export const createNotificationOnLike = firestore.document('likes/{id}')
     .onCreate((snapshot) => {
         let collection, itemId;
         if (snapshot.data().hasOwnProperty('tierListId')) {
@@ -144,8 +140,7 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
             })
 });
 
-// Delete notifications on Unlikes
-exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
+export const deleteNotificationOnUnlike = firestore.document('likes/{id}')
     .onDelete((snapshot) => {
         return db.doc(`/notifications/${snapshot.id}`)
             .delete()
@@ -154,8 +149,7 @@ exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}')
             })
 })
 
-// Create notifications on Comments
-exports.createNotificationOnComment = functions.firestore.document('comments/{id}')
+export const createNotificationOnComment = firestore.document('comments/{id}')
     .onCreate((snapshot) => {
         return db.doc(`/tierLists/${snapshot.data().tierListId}`).get()
             .then(doc => {
@@ -177,8 +171,7 @@ exports.createNotificationOnComment = functions.firestore.document('comments/{id
             })
     });
 
-// Create notifications on Replies
-exports.createNotificationOnReply = functions.firestore.document('replies/{id}')
+export const createNotificationOnReply = firestore.document('replies/{id}')
     .onCreate((snapshot) => {
         return db.doc(`/comments/${snapshot.data().commentId}`).get()
             .then(doc => {
@@ -201,9 +194,7 @@ exports.createNotificationOnReply = functions.firestore.document('replies/{id}')
 });
 
 const defaultUserImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/userImages%2Fno-img.png?alt=media';
-// Delete all tierLists, notifications, likes and managers associated with deleted User
-// For comments, replies and tierItems, we simply replace userId/userName with [Deleted] and replace userImage with default image
-exports.onUserDelete = functions.firestore.document('/users/{userId}')
+export const onUserDelete = firestore.document('/users/{userId}')
     .onDelete((snapshot, context) => {
         const userId = context.params.userId;
         const batch = db.batch();
@@ -268,8 +259,7 @@ exports.onUserDelete = functions.firestore.document('/users/{userId}')
             .catch(err => console.error(err));
     })
 
-// Changes all Names and Images of user if user updates name/image
-exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}')
+export const onUserNameOrImageChange = firestore.document('/users/{userId}')
     .onUpdate((change) => {
         const batch = db.batch();
         if (change.before.data().imageUrl !== change.after.data().imageUrl || change.before.data().userName !== change.after.data().userName) {
@@ -339,8 +329,7 @@ exports.onUserNameOrImageChange = functions.firestore.document('/users/{userId}'
 })
 
 const defaultTierItemImg = 'https://firebasestorage.googleapis.com/v0/b/tierlist-57d59.appspot.com/o/tierItemImages%2Fno-img.png?alt=media';
-// Changes all names and image of a Tier Item when user/manager updates it
-exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{tierItemId}')
+export const onTierItemNameOrImageChange = firestore.document('/tierItems/{tierItemId}')
     .onUpdate((change, context) => {
         const tierItemId = context.params.tierItemId;
         let tierList, tierItemData;
@@ -379,8 +368,7 @@ exports.onTierItemNameOrImageChange = functions.firestore.document('/tierItems/{
         }
     })
 
-// Delete all related Tier Items in different TierLists when it gets deleted
-exports.onTierItemDelete = functions.firestore.document("/tierItems/{tierItemId}")
+export const onTierItemDelete = firestore.document("/tierItems/{tierItemId}")
     .onDelete((snapshot, context) => {
         const tierItemId = context.params.tierItemId;
         let tierList, tierItemData;
@@ -406,8 +394,7 @@ exports.onTierItemDelete = functions.firestore.document("/tierItems/{tierItemId}
             .catch(err => console.error(err));
   });
 
-// Deletes all related components when Tier List gets deleted
-exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}')
+export const onTierListDelete = firestore.document('/tierLists/{tierListId}')
     .onDelete((snapshot, context) => {
         const tierListId = context.params.tierListId;
         const batch = db.batch();
@@ -447,8 +434,7 @@ exports.onTierListDelete = functions.firestore.document('/tierLists/{tierListId}
             .catch(err => console.error(err));
 })
 
-// Deletes all replies and likes when Comment gets deleted
-exports.onCommentDelete = functions.firestore.document('/comments/{commentId}')
+export const onCommentDelete = firestore.document('/comments/{commentId}')
     .onDelete((snapshot, context) => {
         const commentId = context.params.commentId;
         const batch = db.batch();
@@ -479,8 +465,7 @@ exports.onCommentDelete = functions.firestore.document('/comments/{commentId}')
             .catch(err => console.error(err));
 })
 
-// Deletes all likes when Reply gets deleted
-exports.onReplyDelete = functions.firestore.document('/replies/{replyId}')
+export const onReplyDelete = firestore.document('/replies/{replyId}')
     .onDelete((snapshot, context) => {
         const replyId = context.params.replyId;
         const batch = db.batch();

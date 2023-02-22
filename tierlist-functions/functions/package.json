@@ -9,7 +9,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "16"
   },
   "dependencies": {
     "busboy": "^0.3.1",
@@ -23,5 +23,6 @@
   "devDependencies": {
     "firebase-functions-test": "^0.1.6"
   },
-  "private": true
+  "private": true,
+  "type": "module"
 }

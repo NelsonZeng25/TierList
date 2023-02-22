@@ -1,6 +1,6 @@
-const { db } = require('../util/admin');
+import { db } from '../util/admin.js';
 
-exports.getAllComments = (req, res) => {
+export function getAllComments(req, res) {
     db.collection("comments")
       .orderBy("createdAt", "desc")
       .get()
@@ -21,7 +21,7 @@ exports.getAllComments = (req, res) => {
 }
 
 // Get 1 Comment
-exports.getComment = (req, res) => {
+export function getComment(req, res) {
   let commentData = {};
   db.doc(`comments/${req.params.commentId}`).get()
     .then(doc => {
@@ -51,7 +51,7 @@ exports.getComment = (req, res) => {
 }
 
 // Reply to 1 Comment
-exports.replyOnComment = (req, res) => {
+export function replyOnComment(req, res) {
   if (req.body.body.trim() === '') return res.status(400).json({ reply: 'Must not be empty'});
 
   const newReply = {
@@ -86,7 +86,7 @@ exports.replyOnComment = (req, res) => {
 }
 
 // Like a Comment
-exports.likeComment = (req, res) => {
+export function likeComment(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
     .where('commentId', '==', req.params.commentId).limit(1);
 
@@ -125,10 +125,10 @@ exports.likeComment = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     })
-};
+}
 
 // Unlike a Comment
-exports.unlikeComment = (req, res) => {
+export function unlikeComment(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
   .where('commentId', '==', req.params.commentId).limit(1);
 
@@ -167,7 +167,7 @@ exports.unlikeComment = (req, res) => {
 }
 
 // Delete Comment
-exports.deleteComment = (req, res) => {
+export function deleteComment(req, res) {
   const document = db.doc(`/comments/${req.params.commentId}`);
   let tierListDocument;
   document.get()
@@ -194,7 +194,7 @@ exports.deleteComment = (req, res) => {
 }
 
 // Update Comment
-exports.updateComment = (req, res) => {
+export function updateComment(req, res) {
   const document = db.doc(`/comments/${req.params.commentId}`);
   const updateComment = {
     body: req.body.body,

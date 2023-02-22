@@ -1,6 +1,6 @@
-const { db } = require('../util/admin');
+import { db } from '../util/admin.js';
 
-exports.getAllTierLists = (req, res) => {
+export function getAllTierLists(req, res) {
     db.collection("tierLists")
       .orderBy("name", "asc")
       .get()
@@ -17,7 +17,7 @@ exports.getAllTierLists = (req, res) => {
       .catch(err => console.error(err));
 }
 
-exports.postOneTierList = (req, res) => {
+export function postOneTierList(req, res) {
     error = {};
     if (req.body.name.trim() === '') error.name = 'Must not be empty';
     if (req.body.category.trim() === '') error.category = 'Must not be empty';
@@ -50,7 +50,7 @@ exports.postOneTierList = (req, res) => {
 }
 
 // Get 1 Tier List
-exports.getTierList = (req, res) => {
+export function getTierList(req, res) {
   let tierListData = {};
   db.doc(`tierLists/${req.params.tierListId}`).get()
     .then(doc => {
@@ -81,7 +81,7 @@ exports.getTierList = (req, res) => {
 }
 
 // Comment on 1 Tier List
-exports.commentOnTierList = (req, res) => {
+export function commentOnTierList(req, res) {
   if (req.body.body.trim() === '') return res.status(400).json({ comment: 'Must not be empty'});
 
   const newComment = {
@@ -117,7 +117,7 @@ exports.commentOnTierList = (req, res) => {
 }
 
 // Like a Tier List
-exports.likeTierList = (req, res) => {
+export function likeTierList(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
     .where('tierListId', '==', req.params.tierListId).limit(1);
 
@@ -161,10 +161,10 @@ exports.likeTierList = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     })
-};
+}
 
 // Unlike a Tier List
-exports.unlikeTierList = (req, res) => {
+export function unlikeTierList(req, res) {
   const likeDocument = db.collection('likes').where('userId', '==', req.user.uid)
   .where('tierListId', '==', req.params.tierListId).limit(1);
 
@@ -203,7 +203,7 @@ exports.unlikeTierList = (req, res) => {
 }
 
 // Delete Tier List
-exports.deleteTierList = (req, res) => {
+export function deleteTierList(req, res) {
   const document = db.doc(`/tierLists/${req.params.tierListId}`);
   document.get()
     .then(doc => {
@@ -224,7 +224,7 @@ exports.deleteTierList = (req, res) => {
 }
 
 // Add a edited Tier Item to a Tier List
-exports.addTierItemToTierList = (req, res) => {
+export function addTierItemToTierList(req, res) {
   const tierListdocument = db.doc(`/tierLists/${req.params.tierListId}`);
   const tierItemdocument = db.doc(`/tierItems/${req.params.tierItemId}`);
 
@@ -277,7 +277,7 @@ exports.addTierItemToTierList = (req, res) => {
 }
 
 // Remove a edited Tier Item from the Tier List (not from Tier Items in general)
-exports.deleteTierItemFromTierList = (req, res) => {
+export function deleteTierItemFromTierList(req, res) {
   const tierListdocument = db.doc(`/tierLists/${req.params.tierListId}`);
   const tierItemdocument = db.doc(`/tierItems/${req.params.tierItemId}`);
   

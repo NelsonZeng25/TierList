@@ -1,6 +1,6 @@
-const { db } = require('../util/admin');
+import { db } from '../util/admin.js';
 
-exports.getAllCategories = (req, res) => {
+export function getAllCategories(req, res) {
     db.collection("categories")
       .orderBy("name", "asc")
       .get()
@@ -17,7 +17,7 @@ exports.getAllCategories = (req, res) => {
       .catch(err => console.error(err));
 }
 
-exports.getAllCategoriesWithTierLists = (req, res) => {
+export function getAllCategoriesWithTierLists(req, res) {
   let categories = {};
   let tierListData;
   db.collection("categories")
@@ -40,7 +40,7 @@ exports.getAllCategoriesWithTierLists = (req, res) => {
       .catch(err => console.error(err))
 }
 
-exports.getAllCategoriesWithTierListsForUser = (req, res) => {
+export function getAllCategoriesWithTierListsForUser(req, res) {
   let categories = {};
   let tierListData;
   db.collection('tierLists').orderBy("name", "asc").where('userId', '==', req.params.userId).get()
@@ -64,7 +64,7 @@ exports.getAllCategoriesWithTierListsForUser = (req, res) => {
 }
 
 // Get Tier Items for 1 category
-exports.getTierItemsForOneCategory = (req, res) => {
+export function getTierItemsForOneCategory(req, res) {
   let tierItemData = {};
   let tierItems = [];
   db.collection('tierItems').orderBy("name", "asc").where('category', '==', req.params.category).get()
@@ -82,7 +82,7 @@ exports.getTierItemsForOneCategory = (req, res) => {
 }
 
 // Get 1 Category
-exports.getCategory = (req, res) => {
+export function getCategory(req, res) {
     let categoryData = {};
     db.doc(`categories/${req.params.categoryId}`).get()
       .then(doc => {
@@ -99,7 +99,7 @@ exports.getCategory = (req, res) => {
       })
   }
 
-exports.postOneCategory = (req, res) => {
+export function postOneCategory(req, res) {
   if (req.body.name.trim() === '') return res.status(400).json({ name: 'Must not be empty'});
 
   const updateCategory = {
@@ -125,7 +125,7 @@ exports.postOneCategory = (req, res) => {
     });
 }
 
-exports.deleteCategory = (req, res) => {
+export function deleteCategory(req, res) {
   const document = db.doc(`/categories/${req.params.categoryId}`);
   document.get()
     .then(doc => {
@@ -143,10 +143,10 @@ exports.deleteCategory = (req, res) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
     });
-};
+}
 
 // Update Category
-exports.updateCategory = (req, res) => {
+export function updateCategory(req, res) {
   const document = db.doc(`/categories/${req.params.categoryId}`);
   const updateCategory = {
     name: req.body.name.toUpperCase(),

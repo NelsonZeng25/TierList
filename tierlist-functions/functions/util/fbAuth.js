@@ -1,8 +1,8 @@
-const { admin, db } = require('./admin');
+import { admin, db } from './admin.js';
 
 // Checks if the user is logged in
 // This method is used as a middleware for methods that require user to be logged in
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
     let idToken;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         idToken = req.headers.authorization.split('Bearer ')[1];

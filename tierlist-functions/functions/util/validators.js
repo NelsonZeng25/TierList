@@ -9,7 +9,7 @@ const isEmail = (email) => {
     else return false;
 };
 
-exports.validateSignupData = (data) => {
+export function validateSignupData(data) {
     // Error Checking for Sign Up
     let errors = {};
     
@@ -30,7 +30,7 @@ exports.validateSignupData = (data) => {
     }
 }
 
-exports.validateLoginData = (data) => {
+export function validateLoginData(data) {
     let errors = {};
     if (isEmpty(data.email)) errors.email = "Must not be empty";
     if (isEmpty(data.password)) errors.password = "Must not be empty";
@@ -41,7 +41,7 @@ exports.validateLoginData = (data) => {
     }
 }
 
-exports.reduceUserDetails = (data) => {
+export function reduceUserDetails(data) {
   let userDetails = {};
 
   if (!isEmpty(data.userName.trim())) userDetails.userName = data.userName.trim();
